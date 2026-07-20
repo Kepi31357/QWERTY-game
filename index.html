@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=overlays-content">
+  <meta name="description" content="QWERTY - a colorful word game inspired by classic Pogo">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>QWERTY Word Game</title>
+  <link rel="stylesheet" href="styles.css?v=283">
+  <script>
+    window.QWERTY_WS_PORT = 3001;
+    if (location.protocol === 'file:') {
+      var ports = [3001, 18432, 18433, 18434, 8766, 8767];
+      (function tryPort(i) {
+        if (i >= ports.length) return;
+        var url = 'http://127.0.0.1:' + ports[i] + '/';
+        fetch(url).then(function (r) {
+          if (r.ok) location.replace(url);
+          else tryPort(i + 1);
+        }).catch(function () { tryPort(i + 1); });
+      })(0);
+    }
+  </script>
+</head>
+<body class="menu-visible">
+  <div class="main-menu-overlay" id="main-menu" aria-hidden="false">
+    <div class="main-menu-dialog" role="dialog" aria-labelledby="main-menu-title">
+            <h1 class="main-menu-title" id="main-menu-title">
+        <img class="qwerty-header-img" src="/images/qwerty-header.png?v=283" srcset="/images/qwerty-header.png?v=283 1x, /images/qwerty-header-2x.png?v=283 2x" width="478" height="105" alt="QWERTY">
+      </h1>
+      <div class="main-menu-section main-menu-section--online">
+        <h2 class="main-menu-heading">Play with a Friend</h2>
+        <p class="main-menu-online-hint">Each room has its own private game — multiple pairs can play at once without interfering. Leave the code blank to auto-generate, or type a simple code (e.g. TESTA).</p>
+        <label class="online-nickname-label" for="online-nickname">Your nickname</label>
+        <input type="text" class="online-nickname-input" id="online-nickname" maxlength="20" autocomplete="nickname" placeholder="Deb or Blake">
+        <label class="online-nickname-label" for="online-join-code">Room code</label>
+        <div class="online-join-row">
+          <input type="text" class="online-code-input" id="online-join-code" maxlength="6" autocomplete="off" placeholder="Blank = auto" aria-label="Room code">
+          <button type="button" class="btn btn-primary" id="btn-create-room">Create</button>
+          <button type="button" class="btn btn-secondary" id="btn-join-room">Join</button>
+        </div>
+        <p class="online-status" id="online-status" aria-live="polite"></p>
+        <div class="online-waiting" id="online-waiting" hidden>
+          <p class="online-code-label">Share this code with your friend:</p>
+          <p class="online-room-code" id="online-room-code" aria-live="polite"></p>
+          <div class="online-share-block" id="online-share-block" hidden>
+            <p class="online-code-label">Friend opens this exact link (tap Copy link - do not type xxx or XXXXXX):</p>
+            <p class="online-share-url" id="online-share-url"></p>
+            <button type="button" class="btn btn-secondary btn-copy-link" id="btn-copy-share-link">Copy link</button>
+          </div>
+          <p class="online-waiting-msg">Waiting for opponent to join...</p>
+        </div>
+      </div>
+      <div class="main-menu-section">
+        <h2 class="main-menu-heading">Play vs Computer</h2>
+        <p class="main-menu-online-hint">No room needed — single-player on this device.</p>
+        <h3 class="main-menu-subheading">Computer Difficulty</h3>
+        <div class="difficulty-picker" id="difficulty-picker" role="group" aria-label="Computer difficulty">
+          <button type="button" class="difficulty-btn" data-difficulty="easy">Easy</button>
+          <button type="button" class="difficulty-btn selected" data-difficulty="medium">Medium</button>
+          <button type="button" class="difficulty-btn" data-difficulty="hard">Hard</button>
+        </div>
+        <ul class="difficulty-hints">
+          <li><strong>Easy</strong> - Bot plays short easy words</li>
+          <li><strong>Medium</strong> - Bot plays solid common words</li>
+          <li><strong>Hard</strong> - Bot plays a lot of words you may have never known</li>
+        </ul>
+      </div>
+      <div class="main-menu-actions">
+        <button type="button" class="btn btn-primary main-menu-start" id="btn-start-game">Start Game</button>
+        <button type="button" class="btn btn-secondary main-menu-continue" id="btn-continue-game" hidden>Continue Game</button>
+        <button type="button" class="btn btn-secondary sound-toggle" id="btn-sound-toggle" aria-pressed="true" title="Mute game sounds">Sound: On</button>
+      </div>
+      <p class="main-menu-rules">
+        <a href="#" class="legend-link main-menu-rules-link" id="main-menu-rules-link">Game rules</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="game-over-splash" id="game-over-splash" hidden aria-hidden="true">
+    <div class="game-over-splash-card" role="status" aria-live="polite">
+      <p class="game-over-splash-title" id="game-over-splash-title">GAME OVER</p>
+      <p class="game-over-splash-winner" id="game-over-splash-winner"></p>
+    </div>
+  </div>
+
+  <div class="game-over-overlay" id="play-again-overlay" hidden aria-hidden="true">
+    <div class="game-over-dialog" role="dialog" aria-labelledby="play-again-title" aria-modal="true">
+      <div class="game-over-header">
+        <h2 class="game-over-title" id="play-again-title">YOU WON!</h2>
+        <p class="game-over-subtitle" id="play-again-summary">No one could think of a word to play but you scored more than your opponent.</p>
+      </div>
+      <div class="game-over-divider" aria-hidden="true">
+        <span class="game-over-divider-line"></span>
+        <div class="game-over-medal">
+          <span class="game-over-medal-disc"></span>
+          <span class="game-over-difficulty" id="play-again-difficulty">MEDIUM</span>
+        </div>
+      </div>
+      <div class="game-over-body">
+        <div class="game-over-scores">
+          <div class="game-over-score-col">
+            <div class="game-over-score-label">YOUR SCORE</div>
+            <div class="game-over-score-box" id="play-again-human-score">0</div>
+          </div>
+          <div class="game-over-score-col">
+            <div class="game-over-score-label game-over-score-label--opponent">Opponent's Score</div>
+            <div class="game-over-score-box" id="play-again-ai-score">0</div>
+          </div>
+        </div>
+        <div class="game-over-actions">
+          <button type="button" class="game-over-play-btn" id="btn-play-again-yes">PLAY AGAIN</button>
+          <button type="button" class="game-over-leave-btn" id="btn-play-again-leave">LEAVE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-exit-screen" id="game-exit-screen" hidden aria-hidden="true">
+    <div class="game-exit-dialog">
+      <h2 class="game-exit-title">Thanks for playing!</h2>
+      <p class="game-exit-subtitle">Your game has ended.</p>
+      <button type="button" class="btn btn-primary game-exit-play" id="btn-exit-play">Play QWERTY</button>
+    </div>
+  </div>
+
+  <div class="app">
+    <div class="online-host-waiting" id="online-host-waiting" hidden aria-live="polite">
+      <div class="online-host-waiting-card">
+        <p class="online-code-label">Share this code with your friend:</p>
+        <p class="online-room-code" id="online-host-room-code"></p>
+        <div class="online-share-block" id="online-host-share-block" hidden>
+          <p class="online-code-label">Friend opens this exact link (tap Copy link - do not type xxx or XXXXXX):</p>
+          <p class="online-share-url" id="online-host-share-url"></p>
+          <button type="button" class="btn btn-secondary btn-copy-link" id="btn-copy-host-share-link">Copy link</button>
+        </div>
+        <p class="online-waiting-msg" id="online-host-waiting-msg">Waiting for opponent to join...</p>
+        <p class="online-host-status" id="online-host-status" aria-live="polite"></p>
+      </div>
+    </div>
+    <div class="game-layout">
+      <div class="game-main">
+    <div class="game-play-area">
+      <div class="game-play-stack">
+      <div class="game-table">
+      <div class="game-board-row">
+      <div class="board-play-row">
+      <div class="board-top-header">
+                <header class="header opponent-grid-header board-grid-header">
+      <h1 class="header-logo">
+        <img class="qwerty-header-img" src="/images/qwerty-header.png?v=283" srcset="/images/qwerty-header.png?v=283 1x, /images/qwerty-header-2x.png?v=283 2x" width="478" height="105" alt="QWERTY">
+      </h1>
+    </header>
+      </div>
+      <div class="board-opponent-rack board-grid-rack">
+          <div class="rack-slot">
+            <canvas id="opponent-rack-canvas" width="400" height="50" aria-label="Opponent letter rack, face down"></canvas>
+          </div>
+        </div>
+      <div class="game-board-column">
+      <div class="board-wrap">
+        <div class="board-gutter board-gutter-left" id="board-gutter-left">
+          <div class="board-gutter-stack" id="board-stack-ai">
+            <div class="board-avatar-slot" id="board-avatar-ai">
+              <div class="turn-ribbon" id="ai-turn-ribbon" aria-hidden="true">Thinking...</div>
+              <div class="avatar avatar-ai" role="img" aria-label="Computer opponent">
+                <svg class="avatar-art" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="40" r="38" fill="#dbeafe"/>
+                <ellipse cx="40" cy="72" rx="26" ry="10" fill="#3d85c4"/>
+                <circle cx="40" cy="34" r="18" fill="#f5c89a"/>
+                <path d="M22 30c0-10 8-16 18-16s18 6 18 16" fill="#5a4a42"/>
+                <circle cx="33" cy="34" r="2.5" fill="#2d1b4e"/>
+                <circle cx="47" cy="34" r="2.5" fill="#2d1b4e"/>
+                <path d="M34 42q6 5 12 0" fill="none" stroke="#2d1b4e" stroke-width="2" stroke-linecap="round"/>
+                <rect x="28" y="52" width="24" height="18" rx="4" fill="#6eb0e0"/>
+                <path d="M18 24h8M54 24h8" stroke="#5a4a42" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="board-gutter-score board-gutter-score-ai">
+              <div class="board-gutter-name" id="ai-name">Computer</div>
+              <div class="board-gutter-score-value">
+                <span id="ai-score">0</span>
+              </div>
+            </div>
+            <div class="board-difficulty-picker" id="board-difficulty-picker" role="group" aria-label="Computer difficulty">
+              <button type="button" class="board-difficulty-btn" data-difficulty="easy">Easy</button>
+              <button type="button" class="board-difficulty-btn" data-difficulty="medium">Medium</button>
+              <button type="button" class="board-difficulty-btn" data-difficulty="hard">Hard</button>
+            </div>
+          </div>
+        </div>
+        <div class="board-center">
+        <canvas id="game-canvas" width="570" height="570" aria-label="Game board">Your browser does not support canvas.</canvas>
+        </div>
+        <div class="board-gutter board-gutter-right" id="board-gutter-right">
+          <div class="board-gutter-stack board-gutter-stack-human" id="board-stack-human">
+            <div class="board-gutter-score board-gutter-score-human">
+              <div class="board-gutter-name" id="player-name">You</div>
+              <div class="board-gutter-score-value">
+                <span id="player-score">0</span>
+              </div>
+            </div>
+            <div class="board-avatar-slot" id="board-avatar-human">
+              <div class="turn-ribbon" id="player-turn-ribbon" aria-hidden="true">Your Turn</div>
+              <div class="avatar avatar-human" role="img" aria-label="You">
+                <svg class="avatar-art" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="40" r="38" fill="#ffe8cc"/>
+                <ellipse cx="40" cy="72" rx="26" ry="10" fill="#d97838"/>
+                <circle cx="40" cy="34" r="18" fill="#f0c090"/>
+                <path d="M22 28c0-11 8-18 18-18s18 7 18 18" fill="#4a3728"/>
+                <circle cx="33" cy="34" r="2.5" fill="#2d1b4e"/>
+                <circle cx="47" cy="34" r="2.5" fill="#2d1b4e"/>
+                <path d="M33 42q7 6 14 0" fill="none" stroke="#2d1b4e" stroke-width="2" stroke-linecap="round"/>
+                <rect x="26" y="52" width="28" height="18" rx="4" fill="#f0a060"/>
+                <circle cx="40" cy="18" r="4" fill="#4a3728"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div class="sidebar-column">
+        <aside class="score-sidebar" id="score-sidebar" aria-label="Game scores">
+          <div class="score-sidebar-inner">
+            <h2 class="score-sidebar-heading">Scores</h2>
+            <div class="score-players">
+              <div class="score-player score-player-you">
+                <span class="score-player-name" id="sidebar-player-name">You</span>
+                <span class="score-player-value">
+                  <span id="sidebar-player-score">0</span>
+                  <span class="score-player-goal"> / 1000</span>
+                </span>
+              </div>
+              <div class="score-player score-player-ai">
+                <span class="score-player-name" id="sidebar-opponent-name">Computer</span>
+                <span class="score-player-value">
+                  <span id="sidebar-ai-score">0</span>
+                  <span class="score-player-goal"> / 1000</span>
+                </span>
+              </div>
+            </div>
+            <div class="score-last-word">
+              <div class="score-last-word-title">Last Word Played</div>
+              <div class="score-last-word-body" id="sidebar-last-word">
+                <span class="score-last-word-placeholder">No words played yet</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+      <aside class="chat-panel" id="chat-panel" aria-label="Game chat">
+        <div class="chat-panel-header">
+          <h2 class="chat-panel-title">Who's Here <span class="chat-count">(2)</span></h2>
+        </div>
+
+        <ul class="whos-here" id="whos-here">
+          <li class="whos-here-row whos-here-you">
+            <span class="whos-here-name" id="chat-self-name">You</span>
+          </li>
+          <li class="whos-here-row whos-here-opponent">
+            <span class="whos-here-name" id="chat-opponent-name">Computer</span>
+            <div class="chat-mod-buttons">
+              <button type="button" class="btn-chat-mod" id="btn-mute" title="Mute opponent chat">Mute</button>
+              <button type="button" class="btn-chat-mod" id="btn-block" title="Block opponent chat">Block</button>
+            </div>
+          </li>
+        </ul>
+
+        <div class="chat-log" id="chat-log" role="log" aria-live="polite" aria-relevant="additions"></div>
+
+        <form class="chat-compose" id="chat-form">
+          <label class="sr-only" for="chat-input">Chat message</label>
+          <input type="text" class="chat-input" id="chat-input" maxlength="200" autocomplete="off" placeholder="Say something...">
+          <button type="button" class="btn chat-send" id="btn-chat-send">Send</button>
+        </form>
+      </aside>
+      </div>
+      </div>
+      </div>
+
+      <div class="player-panel human" id="player-panel">
+        <div class="mobile-play-bar" id="mobile-play-bar" aria-label="Scores and timer">
+          <div class="mobile-play-score mobile-play-score-you">
+            <span class="mobile-play-score-label" id="mobile-player-name">You</span>
+            <span class="mobile-play-score-num" id="mobile-player-score">0</span>
+          </div>
+          <div class="mobile-play-timer turn-timer human-panel-timer visible" id="mobile-turn-timer" aria-live="polite">2:00</div>
+          <div class="mobile-play-score mobile-play-score-opp">
+            <span class="mobile-play-score-label" id="mobile-opp-name">Opponent</span>
+            <span class="mobile-play-score-num" id="mobile-opp-score">0</span>
+          </div>
+        </div>
+        <p class="message-bar" id="message" aria-live="off" hidden>Loading game…</p>
+        <div class="human-panel-body">
+          <div class="human-panel-links-wrap" aria-label="Reference links">
+            <div class="human-panel-links">
+              <a href="#" class="legend-link panel-rules-link" id="rules-link">Game rules</a>
+              <a href="#" class="legend-link panel-rules-link" id="two-letter-link">2-letter words</a>
+            </div>
+          </div>
+          <div class="human-panel-spacer" aria-hidden="true"></div>
+          <div class="panel-details panel-details-wide human-panel-main">
+            <div class="rack-row">
+              <div class="rack-center">
+                <div class="rack-main">
+                  <canvas id="rack-canvas" width="400" height="50" aria-label="Letter rack"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="controls-row">
+            <div class="controls">
+              <button type="button" class="btn btn-warn" id="btn-recall">Recall All</button>
+              <button type="button" class="btn btn-secondary" id="btn-shuffle">Shuffle Rack</button>
+              <button type="button" class="btn btn-warn" id="btn-pass">Exchange Tiles</button>
+              <button type="button" class="btn btn-secondary" id="btn-cancel-exchange" hidden>Cancel Exchange</button>
+              <button type="button" class="btn btn-secondary" id="btn-new">New Game</button>
+              <button type="button" class="btn btn-secondary sound-toggle" id="btn-sound-toggle-ingame" aria-pressed="true" title="Mute game sounds">Sound: On</button>
+            </div>
+            </div>
+          </div>
+          <div class="human-panel-right" id="human-panel-right">
+            <button type="button" class="btn btn-submit human-panel-submit" id="btn-play">Submit</button>
+          </div>
+        </div>
+        <div class="human-panel-sidebar-gap">
+          <div class="turn-timer visible human-panel-timer" id="turn-timer" aria-live="polite">2:00</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend-row">
+    <div class="legend">
+      <span class="legend-item"><span class="legend-swatch start-p1" id="legend-swatch-you"></span> <span id="legend-start-you">P1 start (bottom-left, green)</span></span>
+      <span class="legend-item"><span class="legend-swatch start-p2" id="legend-swatch-opponent"></span> <span id="legend-start-opponent">P2 start (top-right, amber)</span></span>
+      <span class="legend-item"><span class="legend-swatch star"></span> Gold star (+50 bonus)</span>
+      <span class="legend-item"><span class="legend-swatch tile-you"></span> Your words</span>
+      <span class="legend-item"><span class="legend-swatch tile-ai"></span> <span id="legend-opponent-tiles">Opponent words</span></span>
+    </div>
+    </div>
+      </div>
+    </div>
+
+    <div class="blank-picker-overlay" id="blank-picker" hidden aria-hidden="true">
+      <div class="blank-picker-dialog" role="dialog" aria-labelledby="blank-picker-title">
+        <h2 class="blank-picker-title" id="blank-picker-title">Choose letter for blank</h2>
+        <p class="blank-picker-hint">Tap a letter - you can change it anytime before playing.</p>
+        <div class="blank-picker-grid" id="blank-picker-grid"></div>
+        <button type="button" class="btn btn-ghost blank-picker-cancel" id="blank-picker-cancel">Cancel</button>
+      </div>
+    </div>
+
+    <div class="two-letter-overlay" id="two-letter-modal" hidden aria-hidden="true">
+      <div class="two-letter-dialog" role="dialog" aria-labelledby="two-letter-title">
+        <p class="two-letter-intro" id="two-letter-title">
+          Here is the full list of 2-letter words in our dictionary. You can play any of these words:
+        </p>
+        <div class="two-letter-grid" id="two-letter-grid"></div>
+        <button type="button" class="btn btn-primary two-letter-close" id="two-letter-close">OK</button>
+      </div>
+    </div>
+
+    <div class="rules-overlay" id="rules-modal" hidden aria-hidden="true">
+      <div class="rules-dialog" role="dialog" aria-labelledby="rules-title">
+        <h2 class="rules-title" id="rules-title">Game Rules</h2>
+        <div class="rules-body" id="rules-body"></div>
+        <button type="button" class="btn btn-primary rules-close" id="rules-close">OK</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="exchange-notice-overlay" id="exchange-notice-overlay" hidden aria-hidden="true">
+    <div class="exchange-notice-dialog" role="alertdialog" aria-labelledby="exchange-notice-title" aria-describedby="exchange-notice-body" aria-modal="true">
+      <h2 class="exchange-notice-title" id="exchange-notice-title">Tile Exchange</h2>
+      <p class="exchange-notice-body" id="exchange-notice-body"></p>
+      <p class="exchange-notice-hint" id="exchange-notice-hint">No word was placed on the board this turn.</p>
+      <button type="button" class="btn btn-primary exchange-notice-ok" id="exchange-notice-ok">OK</button>
+    </div>
+  </div>
+
+  <script>
+    function qwertyBootError(msg) {
+      var el = document.getElementById('message');
+      if (el) {
+        el.hidden = false;
+        el.textContent = msg;
+        el.className = 'message-bar error';
+      }
+      var menu = document.getElementById('main-menu');
+      if (menu) {
+        menu.hidden = false;
+        menu.setAttribute('aria-hidden', 'false');
+      }
+      document.body.classList.add('menu-visible');
+    }
+    window.onerror = function (msg, url, line, col, err) {
+      var detail = msg;
+      if (line) detail += ' (line ' + line + ')';
+      if (err && err.message) detail = err.message;
+      qwertyBootError('Error: ' + detail);
+      return false;
+    };
+  </script>
+  <script src="dictionary.js?v=283" onerror="qwertyBootError('Failed to load dictionary.js — make sure it is in the game folder.')"></script>
+  <script src="board-view.js?v=283"></script>
+  <script src="getAllWordsFormed.js?v=283"></script>
+  <script src="validateAndScorePlacement.js?v=283"></script>
+  <script src="game-engine.js?v=283"></script>
+  <script src="online.js?v=283"></script>
+  <script src="game.js?v=283" onerror="qwertyBootError('Failed to load game.js — use OPEN ONLINE GAME.bat to launch.')"></script>
+</body>
+</html>

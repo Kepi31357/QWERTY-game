@@ -1,0 +1,11 @@
+﻿Paste this ENTIRE line into Blake's phone browser (Chrome or Safari):
+
+http://192.168.1.236:3001/?guest
+
+After Deb creates a game, tap Copy link on her screen instead â€” it includes the friend code.
+
+WRONG (do not use):
+  http://127.0.0.1:3001/
+  http://192.168.1.xxx:3001/   (xxx is not real â€” use digits like 150)
+  http:\192.168.1.150\...     (use forward slashes / not backslash \)
+  C:\Users\...\http:...        (no folder path â€” only the http link)

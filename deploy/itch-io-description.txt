@@ -1,0 +1,92 @@
+================================================================================
+QWERTY WORD GAME — itch.io LISTING COPY (ready to paste)
+================================================================================
+Copy everything below the line into your itch.io project Description field.
+Replace [YourName] and optional links before publishing.
+itch.io supports Markdown in descriptions.
+================================================================================
+
+**Drag tiles • Build words • Capture gold stars**
+
+QWERTY is a colorful browser word game inspired by classic Pogo QWERTY. Place letters from your rack onto a linked board, form words in rows or columns, and race the computer to **1,000 points** while capturing **gold stars** for bonus scoring.
+
+## Features
+
+- Drag-and-drop tile placement on board and rack
+- Play against the computer (Easy, Medium, or Hard)
+- Linked boards — once connected, play on both players' words for link bonuses
+- Gold star squares (+50 bonus when covered)
+- Blank wild tiles — choose any letter
+- Exchange unwanted tiles from your rack
+- 2-minute turn timer with audio cues in the final seconds
+- Shuffle rack, recall tiles, and reorder letters on your rack
+- Built-in game rules and 2-letter word reference
+- Progress saves automatically in your browser
+
+## How to play
+
+1. Click **Run game** (or open the page in your browser).
+2. Choose difficulty and start a new game or continue a saved game.
+3. Place your **first word on your green corner square** (bottom-left).
+4. On later turns, connect new words to words already on the board.
+5. When your word is ready, click **Submit**.
+6. First player to **1,000 points** wins.
+
+**Controls:** Mouse or touch — drag tiles between your rack and the board.
+
+## Tips
+
+- Tap a rack tile twice to swap it with another slot, or drag to reorder.
+- Use **Recall All** to bring unplayed tiles back from the board.
+- Check **Game rules** and **2-letter words** from the legend at the bottom of the screen.
+
+## Technical notes
+
+- HTML5 / JavaScript — runs in modern desktop and mobile browsers.
+- No install required when played in the browser.
+- Save data is stored locally in your browser (not synced across devices).
+
+## Credits
+
+Game design and development: **[YourName]**
+
+Inspired by the classic Pogo QWERTY word game.
+
+---
+
+*Also available at: [your-domain.com] (optional — add when you have a domain)*
+
+================================================================================
+SHORT TAGLINE (for itch.io subtitle / one-line summary field, if shown)
+================================================================================
+
+Drag tiles, build words, capture gold stars. Linked-board word play vs the computer.
+
+================================================================================
+SUGGESTED TAGS (enter separately in itch.io tag fields)
+================================================================================
+
+word-game
+puzzle
+singleplayer
+browser
+html5
+board-game
+turn-based
+word-puzzle
+
+================================================================================
+SUGGESTED PROJECT SETTINGS (fill in creator dashboard, not description)
+================================================================================
+
+Title:              QWERTY Word Game
+Classification:     Game
+Kind of project:    HTML
+Release status:     Released
+Pricing:            Free (or Pay what you want)
+Embed:              Yes — "This file will be played in the browser"
+Suggested viewport: 1280 x 800 (test and adjust after upload)
+Orientation:        Landscape
+
+Cover image:        630 x 500 px recommended (logo + board screenshot)
+Screenshots:        3–5 images (menu, mid-game board, rack/controls, stars)

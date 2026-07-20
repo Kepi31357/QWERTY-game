@@ -1,0 +1,1 @@
+FAIL: invalid play → error SFX

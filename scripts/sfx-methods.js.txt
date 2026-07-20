@@ -1,0 +1,147 @@
+  ensureAudioContext() {
+    if (!this._audioCtx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      this._audioCtx = new AC();
+    }
+    if (this._audioCtx.state === 'suspended') {
+      this._audioCtx.resume();
+    }
+    return this._audioCtx;
+  }
+
+  sfxUrl(kind) {
+    return SFX_BASE + kind + '.mp3';
+  }
+
+  /** Preload /sounds/*.mp3 so first play is snappy. */
+  preloadSfx() {
+    var self = this;
+    if (!this._sfxAudio) this._sfxAudio = {};
+    SFX_KINDS.forEach(function (kind) {
+      if (self._sfxAudio[kind] || self._sfxFailed[kind]) return;
+      try {
+        var audio = new Audio(self.sfxUrl(kind));
+        audio.preload = 'auto';
+        audio.addEventListener('error', function () {
+          self._sfxFailed[kind] = true;
+        });
+        self._sfxAudio[kind] = audio;
+      } catch (_) {
+        self._sfxFailed[kind] = true;
+      }
+    });
+  }
+
+  /** Soft synth tone helper (fallback if an MP3 is missing). */
+  _tone(ctx, opts) {
+    var t0 = ctx.currentTime + (opts.delay || 0);
+    var dur = opts.dur != null ? opts.dur : 0.08;
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.type = opts.type || 'sine';
+    var freq = Math.max(40, opts.freq || 440);
+    osc.frequency.setValueAtTime(freq, t0);
+    if (opts.freqEnd && opts.freqEnd > 0) {
+      osc.frequency.exponentialRampToValueAtTime(Math.max(40, opts.freqEnd), t0 + dur);
+    }
+    var vol = opts.vol != null ? opts.vol : 0.14;
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.linearRampToValueAtTime(vol, t0 + Math.min(0.012, dur * 0.2));
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.03);
+  }
+
+  /** Play file from /sounds/<kind>.mp3; fall back to short synth recipes. */
+  playSfx(kind) {
+    if (!this.soundEnabled) return;
+    if (!kind || SFX_KINDS.indexOf(kind) < 0) return;
+    this.ensureAudioContext();
+    if (!this._sfxFailed[kind]) {
+      try {
+        if (!this._sfxAudio[kind]) this.preloadSfx();
+        var base = this._sfxAudio[kind];
+        if (base && !this._sfxFailed[kind]) {
+          var node = base.cloneNode ? base.cloneNode(true) : new Audio(this.sfxUrl(kind));
+          node.volume = 0.85;
+          var playPromise = node.play();
+          if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(function () {});
+          }
+          return;
+        }
+      } catch (_) {
+        this._sfxFailed[kind] = true;
+      }
+    }
+    this.playSfxSynth(kind);
+  }
+
+  /**
+   * Synth fallback recipes (used only if /sounds/<kind>.mp3 fails to load).
+   * Kinds: submit | error | bingo | connection | exchange | win | lose | tick
+   */
+  playSfxSynth(kind) {
+    var ctx = this.ensureAudioContext();
+    if (!ctx) return;
+    try {
+      if (kind === 'submit') {
+        this._tone(ctx, { type: 'sine', freq: 523.25, dur: 0.08, vol: 0.11, delay: 0 });
+        this._tone(ctx, { type: 'sine', freq: 659.25, dur: 0.1, vol: 0.1, delay: 0.06 });
+        return;
+      }
+      if (kind === 'error') {
+        this._tone(ctx, { type: 'sawtooth', freq: 220, freqEnd: 110, dur: 0.16, vol: 0.08 });
+        this._tone(ctx, { type: 'square', freq: 160, freqEnd: 90, dur: 0.12, vol: 0.04, delay: 0.04 });
+        return;
+      }
+      if (kind === 'bingo') {
+        this._tone(ctx, { type: 'sine', freq: 659.25, dur: 0.07, vol: 0.11, delay: 0 });
+        this._tone(ctx, { type: 'sine', freq: 830.61, dur: 0.07, vol: 0.11, delay: 0.06 });
+        this._tone(ctx, { type: 'triangle', freq: 1046.5, dur: 0.09, vol: 0.12, delay: 0.12 });
+        this._tone(ctx, { type: 'sine', freq: 1318.51, dur: 0.16, vol: 0.1, delay: 0.2 });
+        return;
+      }
+      if (kind === 'connection') {
+        this._tone(ctx, { type: 'triangle', freq: 392, dur: 0.1, vol: 0.11, delay: 0 });
+        this._tone(ctx, { type: 'sine', freq: 587.33, dur: 0.12, vol: 0.12, delay: 0.08 });
+        this._tone(ctx, { type: 'sine', freq: 784, dur: 0.16, vol: 0.1, delay: 0.18 });
+        return;
+      }
+      if (kind === 'exchange') {
+        this._tone(ctx, { type: 'triangle', freq: 420, freqEnd: 560, dur: 0.09, vol: 0.09 });
+        this._tone(ctx, { type: 'triangle', freq: 560, freqEnd: 380, dur: 0.1, vol: 0.07, delay: 0.07 });
+        return;
+      }
+      if (kind === 'win') {
+        this._tone(ctx, { type: 'sine', freq: 523.25, dur: 0.1, vol: 0.12, delay: 0 });
+        this._tone(ctx, { type: 'triangle', freq: 659.25, dur: 0.1, vol: 0.08, delay: 0 });
+        this._tone(ctx, { type: 'sine', freq: 783.99, dur: 0.11, vol: 0.13, delay: 0.1 });
+        this._tone(ctx, { type: 'triangle', freq: 987.77, dur: 0.11, vol: 0.08, delay: 0.1 });
+        this._tone(ctx, { type: 'sine', freq: 1046.5, dur: 0.14, vol: 0.14, delay: 0.2 });
+        this._tone(ctx, { type: 'sine', freq: 1318.51, dur: 0.22, vol: 0.11, delay: 0.32 });
+        this._tone(ctx, { type: 'triangle', freq: 1567.98, dur: 0.2, vol: 0.07, delay: 0.4 });
+        return;
+      }
+      if (kind === 'lose') {
+        this._tone(ctx, { type: 'triangle', freq: 349.23, dur: 0.14, vol: 0.1, delay: 0 });
+        this._tone(ctx, { type: 'sine', freq: 293.66, dur: 0.16, vol: 0.09, delay: 0.12 });
+        this._tone(ctx, { type: 'sine', freq: 246.94, dur: 0.2, vol: 0.08, delay: 0.26 });
+        this._tone(ctx, { type: 'triangle', freq: 196, dur: 0.28, vol: 0.07, delay: 0.42 });
+        return;
+      }
+      if (kind === 'tick') {
+        this._tone(ctx, { type: 'square', freq: 1100, freqEnd: 750, dur: 0.07, vol: 0.14 });
+      }
+    } catch (e) {
+      /* ignore audio errors */
+    }
+  }
+
+  playTimerTickSound() {
+    this.playSfx('tick');
+  }
+

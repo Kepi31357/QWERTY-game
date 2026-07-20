@@ -1,0 +1,37 @@
+QWERTY — Phone connection (same Wi-Fi)
+======================================
+
+If the phone says "This site can't be reached", do these IN ORDER:
+
+1. On Deb's PC (host): double-click FIX PHONE ACCESS.bat
+   - Click YES when Windows asks for permission
+   - Wait until you see SUCCESS
+
+2. Turn OFF NordVPN (or any VPN) on Deb's PC while playing
+
+3. Restart OPEN ONLINE GAME.bat
+   - Copy the link shown in the black window (must start with 192.168)
+   - Example: http://192.168.1.150:3001/?guest
+
+4. On Blake's phone:
+   - Same Wi-Fi as Deb (not guest Wi-Fi)
+   - Turn OFF cellular / mobile data (Wi-Fi only)
+   - Paste the link in Chrome or Safari
+
+5. Enter Deb's friend code and tap Join Game
+
+WRONG links (will not work on phone):
+  http://127.0.0.1:3001/
+  http://10.5.0.2:3001/   (VPN address)
+
+RIGHT link format (example — your numbers will differ):
+  http://192.168.1.150:3001/?guest
+
+  Replace 150 with YOUR PC's last numbers from ipconfig or the server window.
+  Do NOT type the letters "xxx" or "XXX" — use digits only (e.g. 150, 5, 42).
+
+  Use forward slashes / not backslashes \
+  Do NOT add C:\Users\... or any folder path — only the http://... link
+
+  After Create Game, Deb taps "Copy link" — that pastes the full real URL.
+  Friend code is 6 letters/numbers shown on Deb's screen (not "XXXXXX").
