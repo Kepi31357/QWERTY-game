@@ -27,7 +27,11 @@ var gameSrc = fs.readFileSync(path.join(root, 'game.js'), 'utf8');
 
 assert(htmlSrc.indexOf('btn-chat-emoji') >= 0, 'emoji button in HTML');
 assert(htmlSrc.indexOf('chat-emoji-picker') >= 0, 'emoji picker panel in HTML');
-assert(htmlSrc.indexOf('type="submit"') >= 0 && htmlSrc.indexOf('btn-chat-send') >= 0, 'Send is submit');
+assert(htmlSrc.indexOf('btn-chat-send') >= 0, 'Send button present');
+assert(/id="btn-chat-send"[^>]*>/.test(htmlSrc) || htmlSrc.indexOf('id="btn-chat-send"') >= 0, 'Send button id');
+assert(gameSrc.indexOf("btnChatSend.addEventListener('click'") >= 0, 'Send click listener attached');
+assert(gameSrc.indexOf('e.preventDefault()') >= 0 && gameSrc.indexOf('sendPlayerChat') >= 0, 'send path prevents default');
+assert(cssSrc.indexOf('mobile-chat-open') >= 0 && cssSrc.indexOf('z-index: 2603') >= 0, 'open chat stacks above backdrop');
 assert(cssSrc.indexOf('.chat-emoji-picker') >= 0, 'emoji picker CSS');
 assert(cssSrc.indexOf('.chat-emoji-btn') >= 0, 'emoji button CSS');
 assert(gameSrc.indexOf('CHAT_EMOJI_LIST') >= 0, 'emoji list defined');

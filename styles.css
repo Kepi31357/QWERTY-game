@@ -2990,6 +2990,7 @@ body.menu-visible .game-over-splash {
     display: block;
     position: fixed;
     inset: 0;
+    /* Below backdrop when closed; raised above it when open (see .mobile-chat-open). */
     z-index: 2600;
     width: auto !important;
     min-width: 0 !important;
@@ -3000,6 +3001,14 @@ body.menu-visible .game-over-splash {
     pointer-events: none;
     background: transparent;
     overflow: visible;
+  }
+
+  /*
+   * Critical: sidebar creates a stacking context. When open it must sit ABOVE
+   * the backdrop (2601), or Send/emoji taps hit the backdrop and close chat.
+   */
+  body.mobile-chat-open:not(.menu-visible):not(.game-exited) .sidebar-column {
+    z-index: 2603;
   }
 
   body:not(.menu-visible):not(.game-exited) .score-sidebar {
@@ -3023,7 +3032,7 @@ body.menu-visible .game-over-splash {
     border-bottom: none;
     transform: translate3d(0, 110%, 0);
     transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-    z-index: 2602;
+    z-index: 1;
     box-shadow: 0 -14px 40px rgba(0, 0, 0, 0.42);
     padding-bottom: env(safe-area-inset-bottom, 0);
     will-change: transform;
@@ -3034,6 +3043,13 @@ body.menu-visible .game-over-splash {
     pointer-events: auto;
     transform: translate3d(0, 0, 0);
     visibility: visible;
+  }
+
+  body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-compose,
+  body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-send,
+  body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-input,
+  body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-emoji-btn {
+    pointer-events: auto;
   }
 
   body:not(.menu-visible):not(.game-exited) .chat-panel-close {

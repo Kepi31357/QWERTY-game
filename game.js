@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '297';
+  var QWERTY_BUILD = '298';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -8094,17 +8094,32 @@ class Game {
   setupChat() {
     var self = this;
     if (!this.ui.chatLog) return;
+    if (this._chatReady) return;
+    this._chatReady = true;
 
     if (this.ui.chatForm) {
       this.ui.chatForm.addEventListener('submit', function (e) {
         e.preventDefault();
+        e.stopPropagation();
         self.hideChatEmojiPicker();
         self.sendPlayerChat();
       });
     }
 
     if (this.ui.btnChatSend) {
-      this.ui.btnChatSend.addEventListener('click', function () {
+      this.ui.btnChatSend.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        self.hideChatEmojiPicker();
+        self.sendPlayerChat();
+      });
+    }
+
+    if (this.ui.chatInput) {
+      this.ui.chatInput.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        e.stopPropagation();
         self.hideChatEmojiPicker();
         self.sendPlayerChat();
       });
@@ -8363,21 +8378,32 @@ class Game {
   }
 
   sendPlayerChat() {
-    if (!this.ui.chatInput) return;
-    var text = this.ui.chatInput.value.trim();
-    if (!text) return;
+    if (!this.ui.chatInput) {
+      console.warn('[QWERTY] chat send ignored — missing #chat-input');
+      return false;
+    }
+    var text = String(this.ui.chatInput.value || '').trim();
+    if (!text) return false;
     if (this.chatBlocked) {
       this.addChatSystem('You blocked ' + CHAT_AI_NAME + '. Unblock to chat.');
       this.ui.chatInput.value = '';
-      return;
+      return false;
     }
-    this.addChatLine(CHAT_PLAYER_NAME, text, 'you');
+    var author =
+      (this.isOnlineMode() && this.onlineSelfName) || CHAT_PLAYER_NAME;
+    this.addChatLine(author, text, 'you');
     this.ui.chatInput.value = '';
     if (this.isOnlineMode()) {
       try {
-        QWERTYOnline.chat(text);
-      } catch (_) {}
-      return;
+        if (typeof QWERTYOnline !== 'undefined' && QWERTYOnline.chat) {
+          QWERTYOnline.chat(text);
+        } else {
+          console.warn('[QWERTY] chat send — online client unavailable');
+        }
+      } catch (err) {
+        console.warn('[QWERTY] chat send failed', err);
+      }
+      return true;
     }
     if (!this.chatMuted && !this.chatBlocked && Math.random() < 0.35) {
       var self = this;
@@ -8385,6 +8411,7 @@ class Game {
         self.sendOpponentChat(AI_CHAT_LINES[Math.floor(Math.random() * AI_CHAT_LINES.length)]);
       }, 600 + Math.random() * 1200);
     }
+    return true;
   }
 
   sendOpponentChat(text) {
