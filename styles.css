@@ -985,6 +985,14 @@ body.game-exited .app {
   background: linear-gradient(180deg, #e8e4dc 0%, #d4cfc4 100%);
   padding: 8px 10px;
   border-bottom: 1px solid #a09888;
+  flex-shrink: 0;
+}
+
+.chat-panel-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .chat-panel-title {
@@ -992,6 +1000,52 @@ body.game-exited .app {
   font-weight: 800;
   color: #2a2a36;
   text-transform: none;
+  margin: 0;
+}
+
+.chat-panel-close {
+  display: none;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  margin: -4px -2px -4px 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(42, 42, 54, 0.1);
+  color: #2a2a36;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.chat-panel-close:hover,
+.chat-panel-close:focus-visible {
+  background: rgba(42, 42, 54, 0.18);
+  outline: none;
+}
+
+.chat-room-code {
+  margin: 4px 0 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #5c2d91;
+}
+
+.chat-room-code[hidden] {
+  display: none !important;
+}
+
+.chat-room-code #chat-room-code-value {
+  letter-spacing: 0.2em;
+}
+
+/* Mobile chat FAB / backdrop — hidden on desktop */
+.mobile-chat-fab,
+.mobile-chat-backdrop {
+  display: none;
 }
 
 .chat-count {
@@ -2928,9 +2982,148 @@ body.menu-visible .game-over-splash {
     display: none;
   }
 
+  /*
+   * Mobile chat: keep the real #chat-panel (same messages/emoji/send),
+   * but host it as a slide-up sheet so the closed state never covers board/rack.
+   */
   body:not(.menu-visible):not(.game-exited) .sidebar-column {
-    display: none;
-    padding-top: 0;
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 2600;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+    pointer-events: none;
+    background: transparent;
+    overflow: visible;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .score-sidebar {
+    display: none !important;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .chat-panel {
+    pointer-events: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 100%;
+    height: min(72vh, 520px);
+    max-height: min(72vh, 520px);
+    min-height: 260px;
+    margin: 0;
+    flex: none;
+    border-radius: 18px 18px 0 0;
+    border-bottom: none;
+    transform: translate3d(0, 110%, 0);
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 2602;
+    box-shadow: 0 -14px 40px rgba(0, 0, 0, 0.42);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    will-change: transform;
+    visibility: hidden;
+  }
+
+  body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-panel {
+    pointer-events: auto;
+    transform: translate3d(0, 0, 0);
+    visibility: visible;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .chat-panel-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .chat-log {
+    min-height: 0;
+    flex: 1 1 auto;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .chat-emoji-picker {
+    grid-template-columns: repeat(7, 1.65rem);
+    max-width: calc(100vw - 24px);
+  }
+
+  body:not(.menu-visible):not(.game-exited) .mobile-chat-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 2601;
+    background: rgba(18, 12, 32, 0.48);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+  }
+
+  body.mobile-chat-open:not(.menu-visible):not(.game-exited) .mobile-chat-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .mobile-chat-fab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    right: max(10px, env(safe-area-inset-right, 0px));
+    /* Sit above rack/controls so closed chat never fights the board. */
+    bottom: max(148px, calc(env(safe-area-inset-bottom, 0px) + 136px));
+    z-index: 2550;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    background: linear-gradient(165deg, #6eb0e0 0%, #3d85c4 55%, #2a5a8a 100%);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(26, 39, 68, 0.4);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .mobile-chat-fab:active {
+    transform: scale(0.96);
+  }
+
+  body.mobile-chat-open:not(.menu-visible):not(.game-exited) .mobile-chat-fab {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .mobile-chat-fab-icon {
+    font-size: 1.35rem;
+    line-height: 1;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .mobile-chat-fab-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: #e74c3c;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+
+  body:not(.menu-visible):not(.game-exited) .mobile-chat-fab-badge[hidden] {
+    display: none !important;
   }
 
   body:not(.menu-visible):not(.game-exited) .legend-row {
@@ -3395,7 +3588,9 @@ body.menu-visible .game-over-splash {
     overflow: visible;
   }
 
-  .chat-panel {
+  /* Desktop-in-sidebar chat sizing only when not using the mobile sheet. */
+  body.menu-visible .chat-panel,
+  body.game-exited .chat-panel {
     flex: 0 1 auto;
     min-height: 240px;
     max-height: 280px;
@@ -3404,6 +3599,26 @@ body.menu-visible .game-over-splash {
 }
 
 @media (max-width: 480px) {
+  body:not(.menu-visible):not(.game-exited) .mobile-chat-fab {
+    width: 48px;
+    height: 48px;
+    bottom: max(168px, calc(env(safe-area-inset-bottom, 0px) + 156px));
+  }
+
+  body:not(.menu-visible):not(.game-exited) .chat-panel {
+    height: min(78vh, 560px);
+    max-height: min(78vh, 560px);
+  }
+
+  body:not(.menu-visible):not(.game-exited) .chat-compose {
+    flex-wrap: wrap;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .chat-send {
+    flex: 1 1 100%;
+    min-height: 40px;
+  }
+
   .player-panel {
     padding: 10px;
     gap: 10px;

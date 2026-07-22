@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '296';
+  var QWERTY_BUILD = '297';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -811,12 +811,19 @@ class Game {
       rulesModal: document.getElementById('rules-modal'),
       rulesBody: document.getElementById('rules-body'),
       rulesClose: document.getElementById('rules-close'),
+      chatPanel: document.getElementById('chat-panel'),
       chatLog: document.getElementById('chat-log'),
       chatInput: document.getElementById('chat-input'),
       chatForm: document.getElementById('chat-form'),
       btnChatSend: document.getElementById('btn-chat-send'),
       btnChatEmoji: document.getElementById('btn-chat-emoji'),
       chatEmojiPicker: document.getElementById('chat-emoji-picker'),
+      btnChatClose: document.getElementById('btn-chat-close'),
+      btnMobileChat: document.getElementById('btn-mobile-chat'),
+      mobileChatBackdrop: document.getElementById('mobile-chat-backdrop'),
+      mobileChatBadge: document.getElementById('mobile-chat-badge'),
+      chatRoomCode: document.getElementById('chat-room-code'),
+      chatRoomCodeValue: document.getElementById('chat-room-code-value'),
       btnMute: document.getElementById('btn-mute'),
       btnBlock: document.getElementById('btn-block'),
       chatOpponentRow: document.querySelector('.whos-here-opponent'),
@@ -905,6 +912,8 @@ class Game {
     this.menuResumePending = false;
     this.chatMuted = false;
     this.chatBlocked = false;
+    this.mobileChatOpen = false;
+    this.mobileChatUnread = 0;
     this.turnTimerId = null;
     this._audioCtx = null;
     this._sfxAudio = {};
@@ -2346,6 +2355,8 @@ class Game {
     var show = !!(code && this.gameMode === 'online');
     if (codeEl) codeEl.textContent = code || '';
     if (badge) badge.hidden = !show;
+    if (this.ui.chatRoomCodeValue) this.ui.chatRoomCodeValue.textContent = code || '';
+    if (this.ui.chatRoomCode) this.ui.chatRoomCode.hidden = !show;
   }
 
   createOnlineRoom() {
@@ -4087,6 +4098,7 @@ class Game {
     if (!this.ui.mainMenu) {
       return;
     }
+    this.closeMobileChat();
     this.hideExitScreen();
     this.syncDifficultyPickerUI();
     var showContinue = false;
@@ -4224,6 +4236,7 @@ class Game {
   }
 
   showExitScreen() {
+    this.closeMobileChat();
     this.ensureMainMenuHidden();
     this.hidePlayAgainDialog();
     document.body.classList.add('game-exited');
@@ -8098,6 +8111,7 @@ class Game {
     }
 
     this.setupChatEmojiPicker();
+    this.setupMobileChatSheet();
 
     if (this.ui.btnMute) {
       this.ui.btnMute.addEventListener('click', function () {
@@ -8112,6 +8126,122 @@ class Game {
     }
 
     this.addChatSystem('Welcome to the table! Say hello in chat.');
+  }
+
+  isCompactChatLayout() {
+    try {
+      return window.matchMedia('(max-width: 900px)').matches;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  setupMobileChatSheet() {
+    var self = this;
+    if (this.ui.btnMobileChat) {
+      this.ui.btnMobileChat.addEventListener('click', function (e) {
+        e.preventDefault();
+        self.openMobileChat();
+      });
+    }
+    if (this.ui.btnChatClose) {
+      this.ui.btnChatClose.addEventListener('click', function (e) {
+        e.preventDefault();
+        self.closeMobileChat();
+      });
+    }
+    if (this.ui.mobileChatBackdrop) {
+      this.ui.mobileChatBackdrop.addEventListener('click', function () {
+        self.closeMobileChat();
+      });
+      this.ui.mobileChatBackdrop.hidden = false;
+      this.ui.mobileChatBackdrop.setAttribute('aria-hidden', 'true');
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && self.mobileChatOpen) {
+        e.preventDefault();
+        self.closeMobileChat();
+      }
+    });
+    try {
+      var mq = window.matchMedia('(max-width: 900px)');
+      var onChange = function () {
+        if (!mq.matches) self.closeMobileChat();
+      };
+      if (mq.addEventListener) mq.addEventListener('change', onChange);
+      else if (mq.addListener) mq.addListener(onChange);
+    } catch (_) {}
+  }
+
+  openMobileChat() {
+    if (!this.isCompactChatLayout()) return;
+    this.mobileChatOpen = true;
+    document.body.classList.add('mobile-chat-open');
+    if (this.ui.btnMobileChat) {
+      this.ui.btnMobileChat.setAttribute('aria-expanded', 'true');
+    }
+    if (this.ui.mobileChatBackdrop) {
+      this.ui.mobileChatBackdrop.setAttribute('aria-hidden', 'false');
+    }
+    if (this.ui.chatPanel) {
+      this.ui.chatPanel.setAttribute('aria-modal', 'true');
+    }
+    this.clearMobileChatUnread();
+    if (this.ui.chatLog) {
+      this.ui.chatLog.scrollTop = this.ui.chatLog.scrollHeight;
+    }
+    var input = this.ui.chatInput;
+    if (input) {
+      setTimeout(function () {
+        try {
+          input.focus({ preventScroll: true });
+        } catch (_) {
+          try {
+            input.focus();
+          } catch (__) {}
+        }
+      }, 280);
+    }
+  }
+
+  closeMobileChat() {
+    if (!this.mobileChatOpen && !document.body.classList.contains('mobile-chat-open')) {
+      return;
+    }
+    this.mobileChatOpen = false;
+    document.body.classList.remove('mobile-chat-open');
+    this.hideChatEmojiPicker();
+    if (this.ui.btnMobileChat) {
+      this.ui.btnMobileChat.setAttribute('aria-expanded', 'false');
+    }
+    if (this.ui.mobileChatBackdrop) {
+      this.ui.mobileChatBackdrop.setAttribute('aria-hidden', 'true');
+    }
+    if (this.ui.chatPanel) {
+      this.ui.chatPanel.removeAttribute('aria-modal');
+    }
+    if (this.ui.chatInput && document.activeElement === this.ui.chatInput) {
+      try {
+        this.ui.chatInput.blur();
+      } catch (_) {}
+    }
+  }
+
+  clearMobileChatUnread() {
+    this.mobileChatUnread = 0;
+    if (this.ui.mobileChatBadge) {
+      this.ui.mobileChatBadge.hidden = true;
+      this.ui.mobileChatBadge.textContent = '0';
+    }
+  }
+
+  bumpMobileChatUnread() {
+    if (!this.isCompactChatLayout() || this.mobileChatOpen) return;
+    this.mobileChatUnread += 1;
+    if (!this.ui.mobileChatBadge) return;
+    var n = this.mobileChatUnread > 9 ? '9+' : String(this.mobileChatUnread);
+    this.ui.mobileChatBadge.textContent = n;
+    this.ui.mobileChatBadge.hidden = false;
   }
 
   setupChatEmojiPicker() {
@@ -8192,6 +8322,7 @@ class Game {
   resetChat(keepHistory) {
     this.chatMuted = false;
     this.chatBlocked = false;
+    this.clearMobileChatUnread();
     this.updateChatModUI();
     if (!keepHistory && this.ui.chatLog) {
       this.ui.chatLog.innerHTML = '';
@@ -8221,6 +8352,10 @@ class Game {
     }
     this.ui.chatLog.appendChild(line);
     this.ui.chatLog.scrollTop = this.ui.chatLog.scrollHeight;
+    /* Badge only for opponent chat while the mobile sheet is closed. */
+    if (kind === 'opponent') {
+      this.bumpMobileChatUnread();
+    }
   }
 
   addChatSystem(text) {

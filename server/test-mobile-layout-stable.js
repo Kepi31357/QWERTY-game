@@ -62,5 +62,14 @@ assert(
   'short exchange status copy'
 );
 
+assert(htmlSrc.indexOf('id="btn-mobile-chat"') >= 0, 'mobile chat FAB present');
+assert(htmlSrc.indexOf('id="mobile-chat-backdrop"') >= 0, 'mobile chat backdrop present');
+assert(htmlSrc.indexOf('id="btn-chat-close"') >= 0, 'mobile chat close button');
+assert(htmlSrc.indexOf('id="chat-room-code"') >= 0, 'chat room code in panel');
+assert(cssSrc.indexOf('mobile-chat-open') >= 0, 'mobile chat open styles');
+assert(cssSrc.indexOf('translate3d(0, 110%, 0)') >= 0, 'chat sheet starts off-screen');
+assert(gameSrc.indexOf('openMobileChat') >= 0 && gameSrc.indexOf('closeMobileChat') >= 0, 'mobile chat open/close API');
+assert(gameSrc.indexOf('bumpMobileChatUnread') >= 0, 'unread badge for closed mobile chat');
+
 console.log('Summary: ' + PASS + ' passed, ' + FAIL + ' failed');
 process.exit(FAIL ? 1 : 0);
