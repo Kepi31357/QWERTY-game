@@ -45,6 +45,8 @@ assert(
   /body\.mobile-chat-open[\s\S]*?\.sidebar-column[\s\S]*?z-index:\s*2603/.test(cssSrc),
   'mobile-chat-open raises sidebar stacking context'
 );
+assert(cssSrc.indexOf('-webkit-text-fill-color: #1a1a1a') >= 0, 'typed chat text forced dark');
+assert(cssSrc.indexOf('caret-color: #1a1a1a') >= 0, 'chat caret visible');
 
 /* Mirror sendPlayerChat core (offline). */
 function mockSend(inputValue, opts) {

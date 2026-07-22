@@ -1175,18 +1175,45 @@ body.game-exited .app {
 .chat-input {
   flex: 1;
   min-width: 0;
-  border: 2px inset #ccc;
-  border-radius: 4px;
-  padding: 6px 8px;
-  font-size: 0.82rem;
+  border: 2px solid #9a9080;
+  border-radius: 6px;
+  padding: 8px 10px;
+  min-height: 40px;
+  font-size: 1rem; /* >=16px avoids iOS zoom; keeps typed text readable */
+  line-height: 1.35;
   font-family: inherit;
-  background: #fff;
-  color: #222;
+  font-weight: 600;
+  /* Force visible typed text — transformed parents can break paint otherwise. */
+  background: #ffffff !important;
+  color: #1a1a1a !important;
+  -webkit-text-fill-color: #1a1a1a !important;
+  caret-color: #1a1a1a !important;
+  opacity: 1 !important;
+  /* Own layer so text paints while the sheet animates. */
+  transform: translateZ(0);
+  position: relative;
+  z-index: 2;
+}
+
+.chat-input::placeholder {
+  color: #6a6570 !important;
+  -webkit-text-fill-color: #6a6570 !important;
+  opacity: 1;
 }
 
 .chat-input:focus {
   outline: 2px solid var(--pogo-teal);
   outline-offset: 1px;
+  background: #ffffff !important;
+  color: #1a1a1a !important;
+  -webkit-text-fill-color: #1a1a1a !important;
+}
+
+.chat-input:-webkit-autofill,
+.chat-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #1a1a1a !important;
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+  transition: background-color 99999s ease-out;
 }
 
 .chat-emoji-btn {
@@ -3020,7 +3047,6 @@ body.menu-visible .game-over-splash {
     position: fixed;
     left: 0;
     right: 0;
-    bottom: 0;
     width: 100%;
     max-width: 100%;
     height: min(72vh, 520px);
@@ -3030,18 +3056,24 @@ body.menu-visible .game-over-splash {
     flex: none;
     border-radius: 18px 18px 0 0;
     border-bottom: none;
-    transform: translate3d(0, 110%, 0);
-    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    /*
+     * Slide with `bottom` instead of transform — transform on the panel
+     * often makes the chat input paint invisible typed text (mobile Safari/Chrome).
+     */
+    bottom: -110%;
+    transform: none;
+    transition: bottom 0.28s cubic-bezier(0.22, 1, 0.36, 1);
     z-index: 1;
     box-shadow: 0 -14px 40px rgba(0, 0, 0, 0.42);
     padding-bottom: env(safe-area-inset-bottom, 0);
-    will-change: transform;
+    will-change: bottom;
     visibility: hidden;
   }
 
   body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-panel {
     pointer-events: auto;
-    transform: translate3d(0, 0, 0);
+    bottom: 0;
+    transform: none;
     visibility: visible;
   }
 
@@ -3050,6 +3082,21 @@ body.menu-visible .game-over-splash {
   body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-input,
   body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-emoji-btn {
     pointer-events: auto;
+  }
+
+  body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-compose {
+    flex-shrink: 0;
+    background: #3a3a48;
+    position: relative;
+    z-index: 3;
+  }
+
+  body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-input {
+    background: #ffffff !important;
+    color: #1a1a1a !important;
+    -webkit-text-fill-color: #1a1a1a !important;
+    caret-color: #1a1a1a !important;
+    font-size: 16px;
   }
 
   body:not(.menu-visible):not(.game-exited) .chat-panel-close {
