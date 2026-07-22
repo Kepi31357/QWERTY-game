@@ -39,15 +39,17 @@ assert(gameSrc.indexOf('Height-only change on phone') >= 0, 'ignores height-only
 assert(gameSrc.indexOf('ctx.scale(pulseScale, pulseScale)') >= 0, 'place pulse uses transform scale');
 assert(gameSrc.indexOf('_lastPlacePulseAt') >= 0, 'placement pulse throttled');
 
-assert(htmlSrc.indexOf('id="message"') >= 0 && htmlSrc.indexOf('board-status-toast') >= 0, 'message toast present');
+assert(htmlSrc.indexOf('id="message"') >= 0 && htmlSrc.indexOf('board-status-bar') >= 0, 'status bar present');
 assert(
-  /board-center[\s\S]*?board-status-toast[\s\S]*?id="message"/.test(htmlSrc),
-  'status toast lives inside board-center'
+  /game-board-column[\s\S]*?board-status-bar[\s\S]*?id="message"/.test(htmlSrc),
+  'status bar under board in game-board-column'
 );
-assert(cssSrc.indexOf('.board-status-toast') >= 0, 'board status toast styles');
-assert(cssSrc.indexOf('transform: translateX(-50%)') >= 0, 'toast horizontally centered on board');
-assert(cssSrc.indexOf('border-radius: 999px') >= 0, 'toast pill shape');
-assert(cssSrc.indexOf('pointer-events: none') >= 0, 'toast does not block board taps');
+assert(htmlSrc.indexOf('board-status-toast') < 0, 'old floating toast removed');
+assert(cssSrc.indexOf('.board-status-bar') >= 0, 'board status bar styles');
+assert(cssSrc.indexOf('justify-content: center') >= 0, 'flex centers status bar');
+assert(cssSrc.indexOf('text-align: center !important') >= 0, 'text forced center');
+assert(cssSrc.indexOf('var(--qwerty-board-px') >= 0, 'max-width matches board');
+assert(cssSrc.indexOf('never overlaps') >= 0 || cssSrc.indexOf('no overlap') >= 0 || cssSrc.indexOf('above the rack') >= 0, 'in-flow above rack');
 assert(cssSrc.indexOf('contain: layout paint') >= 0, 'canvas layout containment');
 assert(
   gameSrc.indexOf('selected — tap Confirm Exchange when ready') >= 0,

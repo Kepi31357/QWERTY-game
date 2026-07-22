@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '291';
+  var QWERTY_BUILD = '292';
   var DEFAULT_ROOM_CODE = 'MAIN';
   var SAVE_KEY = 'qwerty-pogo-save';
   var DIFFICULTY_KEY = 'qwerty-ai-difficulty';

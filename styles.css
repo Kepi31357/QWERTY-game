@@ -660,6 +660,78 @@ body.game-exited .app {
   border-radius: 0 0 14px 14px;
 }
 
+/*
+ * Status under the board, above the rack/controls (in-flow — no overlap).
+ * Flex + text-align center; width capped to the board.
+ */
+.board-status-bar,
+#panel-message-row {
+  flex: 0 0 auto;
+  position: relative;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 100%;
+  margin: 6px auto 2px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.board-status-bar[hidden],
+#panel-message-row[hidden] {
+  display: none !important;
+}
+
+.game-layout .board-status-bar > .message-bar:not([hidden]),
+.board-status-bar > .message-bar,
+.game-layout #panel-message-row > .message-bar:not([hidden]),
+#panel-message-row > .message-bar,
+.game-layout #message:not([hidden]) {
+  display: block !important;
+  width: 100%;
+  max-width: min(100%, var(--qwerty-board-px, 800px));
+  margin: 0 auto !important;
+  padding: 8px 14px;
+  min-height: 0;
+  max-height: none;
+  height: auto;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.35;
+  white-space: normal !important;
+  text-align: center !important;
+  overflow: hidden;
+  box-sizing: border-box;
+  color: #fff;
+  background: rgba(26, 39, 68, 0.88);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: none;
+}
+
+.board-status-bar > .message-bar.success,
+#panel-message-row > .message-bar.success,
+#message.success {
+  color: var(--pogo-yellow);
+}
+
+.board-status-bar > .message-bar.error,
+#panel-message-row > .message-bar.error,
+#message.error {
+  color: #ffb4b4;
+  border-color: rgba(255, 180, 180, 0.45);
+}
+
+.board-status-bar > .message-bar[hidden],
+#panel-message-row > .message-bar[hidden],
+#message[hidden] {
+  display: none !important;
+}
+
 .board-grid-header {
   text-align: center;
 }
@@ -1141,80 +1213,6 @@ body.qwerty-guest-view .game-table {
   flex-shrink: 0;
   min-height: 0;
   overflow: visible;
-}
-
-/*
- * Status toast centered on the board (Render + local).
- * Container uses flex; message uses text-align + margin:auto + max-width.
- */
-.board-status-toast,
-#panel-message-row {
-  position: absolute;
-  left: 50%;
-  bottom: 10px;
-  transform: translateX(-50%);
-  z-index: 8;
-  display: flex !important;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  width: 100%;
-  max-width: min(100%, 800px);
-  margin: 0 auto;
-  padding: 0 10px;
-  pointer-events: none;
-  box-sizing: border-box;
-}
-
-.board-status-toast[hidden],
-#panel-message-row[hidden] {
-  display: none !important;
-}
-
-.game-layout .board-status-toast > .message-bar:not([hidden]),
-.board-status-toast > .message-bar,
-.game-layout #panel-message-row > .message-bar:not([hidden]),
-#panel-message-row > .message-bar,
-.game-layout #message:not([hidden]) {
-  display: block !important;
-  width: 100%;
-  max-width: min(100%, 800px);
-  margin: 0 auto !important;
-  padding: 8px 14px;
-  min-height: 0;
-  max-height: none;
-  height: auto;
-  font-size: 0.78rem;
-  font-weight: 700;
-  line-height: 1.35;
-  white-space: normal !important;
-  text-align: center !important;
-  overflow: hidden;
-  box-sizing: border-box;
-  color: #fff;
-  background: rgba(18, 28, 52, 0.92);
-  border-radius: 10px;
-  border: 1px solid rgba(255, 210, 63, 0.45);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
-}
-
-.board-status-toast > .message-bar.success,
-#panel-message-row > .message-bar.success,
-#message.success {
-  color: var(--pogo-yellow);
-}
-
-.board-status-toast > .message-bar.error,
-#panel-message-row > .message-bar.error,
-#message.error {
-  color: #ffb4b4;
-  border-color: rgba(255, 180, 180, 0.45);
-}
-
-.board-status-toast > .message-bar[hidden],
-#panel-message-row > .message-bar[hidden],
-#message[hidden] {
-  display: none !important;
 }
 
 .mobile-play-bar {
@@ -2845,36 +2843,42 @@ body.menu-visible .game-over-splash {
     position: relative;
   }
 
-  /* Compact: same centered board toast — never overlaps rack. */
-  body:not(.menu-visible):not(.game-exited) .board-status-toast,
+  /* Compact: in-flow under board, above rack — never overlaps controls. */
+  body:not(.menu-visible):not(.game-exited) .game-board-column {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .board-status-bar,
   body:not(.menu-visible):not(.game-exited) #panel-message-row {
-    position: absolute;
-    left: 50%;
-    bottom: 8px;
-    transform: translateX(-50%);
-    z-index: 8;
+    position: relative;
+    flex: 0 0 auto;
     display: flex !important;
     justify-content: center;
     align-items: center;
     text-align: center;
     width: 100%;
-    max-width: min(100%, 800px);
-    margin: 0 auto;
-    padding: 0 8px;
+    max-width: 100%;
+    margin: 4px auto 2px;
+    padding: 0 6px;
+    transform: none;
+    left: auto;
+    bottom: auto;
     pointer-events: none;
   }
 
-  body:not(.menu-visible):not(.game-exited) .board-status-toast[hidden],
+  body:not(.menu-visible):not(.game-exited) .board-status-bar[hidden],
   body:not(.menu-visible):not(.game-exited) #panel-message-row[hidden] {
     display: none !important;
   }
 
-  body:not(.menu-visible):not(.game-exited) .game-layout .board-status-toast > .message-bar:not([hidden]),
-  body:not(.menu-visible):not(.game-exited) .board-status-toast > .message-bar,
+  body:not(.menu-visible):not(.game-exited) .game-layout .board-status-bar > .message-bar:not([hidden]),
+  body:not(.menu-visible):not(.game-exited) .board-status-bar > .message-bar,
   body:not(.menu-visible):not(.game-exited) #message:not([hidden]) {
     display: block !important;
     width: 100%;
-    max-width: min(100%, 800px);
+    max-width: min(100%, var(--qwerty-board-px, 800px));
     margin: 0 auto !important;
     padding: 8px 12px;
     font-size: 0.7rem;
@@ -2885,7 +2889,7 @@ body.menu-visible .game-over-splash {
     border-radius: 10px;
   }
 
-  body:not(.menu-visible):not(.game-exited) .board-status-toast > .message-bar[hidden],
+  body:not(.menu-visible):not(.game-exited) .board-status-bar > .message-bar[hidden],
   body:not(.menu-visible):not(.game-exited) #message[hidden] {
     display: none !important;
   }
