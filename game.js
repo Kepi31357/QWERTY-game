@@ -12,7 +12,13 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '293';
+  var QWERTY_BUILD = '294';
+  var CHAT_EMOJI_LIST = [
+    '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
+    '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
+    '🎉', '🔥', '✅', '❌', '💯', '⭐', '✨', '🏆',
+    '🎯', '🎮', '🤝', '💀', '😮', '😢', '🤣', '😘',
+  ];
   var DEFAULT_ROOM_CODE = 'MAIN';
   var SAVE_KEY = 'qwerty-pogo-save';
   var DIFFICULTY_KEY = 'qwerty-ai-difficulty';
@@ -807,6 +813,9 @@ class Game {
       chatLog: document.getElementById('chat-log'),
       chatInput: document.getElementById('chat-input'),
       chatForm: document.getElementById('chat-form'),
+      btnChatSend: document.getElementById('btn-chat-send'),
+      btnChatEmoji: document.getElementById('btn-chat-emoji'),
+      chatEmojiPicker: document.getElementById('chat-emoji-picker'),
       btnMute: document.getElementById('btn-mute'),
       btnBlock: document.getElementById('btn-block'),
       chatOpponentRow: document.querySelector('.whos-here-opponent'),
@@ -7993,9 +8002,19 @@ class Game {
     if (this.ui.chatForm) {
       this.ui.chatForm.addEventListener('submit', function (e) {
         e.preventDefault();
+        self.hideChatEmojiPicker();
         self.sendPlayerChat();
       });
     }
+
+    if (this.ui.btnChatSend) {
+      this.ui.btnChatSend.addEventListener('click', function () {
+        self.hideChatEmojiPicker();
+        self.sendPlayerChat();
+      });
+    }
+
+    this.setupChatEmojiPicker();
 
     if (this.ui.btnMute) {
       this.ui.btnMute.addEventListener('click', function () {
@@ -8010,6 +8029,81 @@ class Game {
     }
 
     this.addChatSystem('Welcome to the table! Say hello in chat.');
+  }
+
+  setupChatEmojiPicker() {
+    var self = this;
+    var picker = this.ui.chatEmojiPicker;
+    var btn = this.ui.btnChatEmoji;
+    if (!picker || !btn) return;
+
+    picker.innerHTML = '';
+    CHAT_EMOJI_LIST.forEach(function (emoji) {
+      var opt = document.createElement('button');
+      opt.type = 'button';
+      opt.className = 'chat-emoji-option';
+      opt.setAttribute('role', 'option');
+      opt.setAttribute('aria-label', 'Insert ' + emoji);
+      opt.textContent = emoji;
+      opt.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        self.insertChatEmoji(emoji);
+      });
+      picker.appendChild(opt);
+    });
+
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      self.toggleChatEmojiPicker();
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!picker || picker.hidden) return;
+      var t = e.target;
+      if (picker.contains(t) || btn.contains(t)) return;
+      self.hideChatEmojiPicker();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') self.hideChatEmojiPicker();
+    });
+  }
+
+  toggleChatEmojiPicker() {
+    if (!this.ui.chatEmojiPicker) return;
+    if (this.ui.chatEmojiPicker.hidden) this.showChatEmojiPicker();
+    else this.hideChatEmojiPicker();
+  }
+
+  showChatEmojiPicker() {
+    if (!this.ui.chatEmojiPicker || !this.ui.btnChatEmoji) return;
+    this.ui.chatEmojiPicker.hidden = false;
+    this.ui.btnChatEmoji.setAttribute('aria-expanded', 'true');
+  }
+
+  hideChatEmojiPicker() {
+    if (!this.ui.chatEmojiPicker || !this.ui.btnChatEmoji) return;
+    this.ui.chatEmojiPicker.hidden = true;
+    this.ui.btnChatEmoji.setAttribute('aria-expanded', 'false');
+  }
+
+  insertChatEmoji(emoji) {
+    var input = this.ui.chatInput;
+    if (!input || !emoji) return;
+    var value = String(input.value || '');
+    var start = input.selectionStart != null ? input.selectionStart : value.length;
+    var end = input.selectionEnd != null ? input.selectionEnd : value.length;
+    var next = value.slice(0, start) + emoji + value.slice(end);
+    if (next.length > 200) next = next.slice(0, 200);
+    input.value = next;
+    var caret = Math.min(start + emoji.length, next.length);
+    try {
+      input.focus();
+      input.setSelectionRange(caret, caret);
+    } catch (_) {}
+    this.hideChatEmojiPicker();
   }
 
   resetChat(keepHistory) {

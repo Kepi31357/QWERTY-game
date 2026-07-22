@@ -1091,6 +1091,16 @@ body.game-exited .app {
   padding: 8px;
   background: #3a3a48;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.chat-compose-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  position: relative;
 }
 
 .chat-input {
@@ -1108,6 +1118,64 @@ body.game-exited .app {
 .chat-input:focus {
   outline: 2px solid var(--pogo-teal);
   outline-offset: 1px;
+}
+
+.chat-emoji-btn {
+  flex-shrink: 0;
+  width: 2.1rem;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 6px;
+  background: linear-gradient(180deg, #4a4a5a 0%, #353544 100%);
+  color: #fff;
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.chat-emoji-btn:hover,
+.chat-emoji-btn:focus-visible,
+.chat-emoji-btn[aria-expanded='true'] {
+  outline: none;
+  border-color: var(--pogo-yellow);
+  filter: brightness(1.08);
+}
+
+.chat-emoji-picker {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  z-index: 40;
+  display: grid;
+  grid-template-columns: repeat(8, 1.7rem);
+  gap: 2px;
+  padding: 8px;
+  border-radius: 10px;
+  background: #2a2a36;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+}
+
+.chat-emoji-picker[hidden] {
+  display: none !important;
+}
+
+.chat-emoji-option {
+  width: 1.7rem;
+  height: 1.7rem;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.chat-emoji-option:hover,
+.chat-emoji-option:focus-visible {
+  outline: none;
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .chat-send {
