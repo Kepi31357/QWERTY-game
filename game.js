@@ -3,13 +3,17 @@
 
   function bootError(msg) {
     var el = document.getElementById('message');
+    var row = document.getElementById('panel-message-row');
     if (el) {
       el.textContent = msg;
       el.className = 'message-bar error';
+      el.hidden = false;
     }
+    if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '283';
+  var QWERTY_BUILD = '291';
+  var DEFAULT_ROOM_CODE = 'MAIN';
   var SAVE_KEY = 'qwerty-pogo-save';
   var DIFFICULTY_KEY = 'qwerty-ai-difficulty';
   var SOUND_KEY = 'qwerty-sound-enabled';
@@ -862,6 +866,8 @@ class Game {
       btnCopyHostShareLink: document.getElementById('btn-copy-host-share-link'),
       btnCreateRoom: document.getElementById('btn-create-room'),
       btnJoinRoom: document.getElementById('btn-join-room'),
+      inGameRoomBadge: document.getElementById('in-game-room-badge'),
+      inGameRoomCode: document.getElementById('in-game-room-code'),
       legendStartYou: document.getElementById('legend-start-you'),
       legendStartOpponent: document.getElementById('legend-start-opponent'),
       legendSwatchYou: document.getElementById('legend-swatch-you'),
@@ -1092,13 +1098,11 @@ class Game {
     var appRect = app ? app.getBoundingClientRect() : { top: 0 };
     var appStyle = app ? window.getComputedStyle(app) : null;
     var padBottom = appStyle ? parseFloat(appStyle.paddingBottom) || 0 : 0;
-    var messageEl = this.ui.message;
     var legendRow = document.querySelector('.legend-row');
 
     reserved = padBottom;
-    if (messageEl && !messageEl.hidden) {
-      reserved += messageEl.offsetHeight + LAYOUT_GAP;
-    }
+    /* Message lives under the board inside .game-board-column (flex sibling of
+       .board-wrap), so wrap height already excludes it — do not double-count. */
     if (legendRow) {
       reserved += legendRow.offsetHeight + LAYOUT_GAP;
     }
@@ -1379,6 +1383,10 @@ class Game {
 
     const boardW = COLS * this.cellSize;
     const boardH = ROWS * this.cellSize;
+    /* Keep under-board status bar the same width as the grid, centered with margin:auto. */
+    try {
+      document.documentElement.style.setProperty('--qwerty-board-px', boardW + 'px');
+    } catch (_) {}
     var dimensionsUnchanged =
       prevCellSize === this.cellSize &&
       prevBoardW === boardW &&
@@ -1719,6 +1727,7 @@ class Game {
         }
         self.gameMode = 'ai';
         self.friendCode = '';
+        self.updateInGameRoomBadge('');
         self.hideMainMenu();
         self.newGame();
       });
@@ -2062,6 +2071,7 @@ class Game {
       self.hideExitScreen();
       self.ensureGameShell();
       self.syncPlayerNameLabels();
+      self.updateInGameRoomBadge(msg.code);
       var joinUrl = self.updateOnlineShareUI(self._hostInfo, msg.code);
       self.showOnlineHostWaiting(msg.code, 'Waiting for opponent to join…');
       self.openOnlineGameShell();
@@ -2093,6 +2103,7 @@ class Game {
       if (self.gameMode === 'online') {
         self.gameMode = 'ai';
       }
+      self.updateInGameRoomBadge('');
       self.hideOnlineHostWaiting();
       self.setOnlineStatus('Left room — ready to create or join another.');
     });
@@ -2122,6 +2133,7 @@ class Game {
       self.hideOnlineHostWaiting();
       self.ensureGameShell();
       self.openOnlineGameShell();
+      self.updateInGameRoomBadge(msg.code);
       self.setOnlineStatus('Joined room ' + msg.code);
       if (msg.state) {
         self.handleOnlineGameStart({
@@ -2233,6 +2245,7 @@ class Game {
       self.hideOnlineHostWaiting();
       self.ensureGameShell();
       self.openOnlineGameShell();
+      self.updateInGameRoomBadge(msg.code);
       self.setOnlineStatus('Reconnected to room ' + msg.code);
       if (msg.state) {
         self.handleOnlineGameStart({
@@ -2316,16 +2329,24 @@ class Game {
     return codeEl && codeEl.value ? codeEl.value.trim().toUpperCase() : '';
   }
 
+  updateInGameRoomBadge(code) {
+    var badge = this.ui.inGameRoomBadge;
+    var codeEl = this.ui.inGameRoomCode;
+    var show = !!(code && this.gameMode === 'online');
+    if (codeEl) codeEl.textContent = code || '';
+    if (badge) badge.hidden = !show;
+  }
+
   createOnlineRoom() {
     var self = this;
     var code = this.getMenuRoomCode();
     if (code && (code.length < 4 || code.length > 6)) {
-      this.setOnlineStatus('Room code must be 4–6 characters (or leave blank to auto-generate).', true);
+      this.setOnlineStatus('Room code must be 4–6 characters (or leave blank for MAIN).', true);
       return;
     }
     this.hideExitScreen();
     this.ensureGameShell();
-    this.setOnlineStatus(code ? 'Creating room ' + code + '…' : 'Creating room…');
+    this.setOnlineStatus(code ? 'Creating room ' + code + '…' : 'Creating default room MAIN…');
     QWERTYOnline.connect()
       .then(function () {
         if (QWERTYOnline.leaveRoom) QWERTYOnline.leaveRoom();
@@ -2343,9 +2364,9 @@ class Game {
 
   joinOnlineRoom() {
     var self = this;
-    var code = this.getMenuRoomCode();
-    if (!code || code.length < 4) {
-      this.setOnlineStatus('Enter a room code to join (4–6 characters).', true);
+    var code = this.getMenuRoomCode() || DEFAULT_ROOM_CODE;
+    if (code.length < 4 || code.length > 6) {
+      this.setOnlineStatus('Room code must be 4–6 characters (or leave blank for MAIN).', true);
       return;
     }
     this.setOnlineStatus('Joining room ' + code + '…');
@@ -2527,6 +2548,7 @@ class Game {
         return false;
       }
       this._onlineGameStarted = true;
+      this.updateInGameRoomBadge(this.friendCode);
       this.ensureAudioContext();
       this.preloadSfx();
       this.playSfx('introduction');
@@ -4262,6 +4284,7 @@ class Game {
     }
     this.gameMode = 'ai';
     this.friendCode = '';
+    this.updateInGameRoomBadge('');
     try { localStorage.removeItem(SAVE_KEY); } catch (_) {}
     this.stopTurnTimer();
     this.pendingPlacements.clear();
@@ -4444,6 +4467,8 @@ class Game {
 
   newGame() {
     this.gameMode = 'ai';
+    this.friendCode = '';
+    this.updateInGameRoomBadge('');
     this.cancelPostGameFlow();
     this.cancelPendingAI();
     this._exchangeNoticeDismiss = null;
@@ -5108,6 +5133,8 @@ class Game {
     this.ui.message.className = 'message-bar' + (type ? ' ' + type : '');
     this.ui.message.hidden = !msg;
     this.ui.message.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+    var row = document.getElementById('panel-message-row');
+    if (row) row.hidden = !msg;
   }
 
   withStableScroll(fn) {

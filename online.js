@@ -220,6 +220,8 @@
     ws.send(JSON.stringify(msg));
   }
 
+  var DEFAULT_ROOM_CODE = 'MAIN';
+
   function createRoom(nickname, code) {
     var msg = { type: 'create_room', nickname: nickname };
     if (code) msg.code = String(code).trim().toUpperCase();
@@ -227,7 +229,8 @@
   }
 
   function joinRoom(code, nickname, role) {
-    saveStoredSession(code, nickname || 'Player', role || 'guest');
+    var resolved = code && String(code).trim() ? String(code).trim().toUpperCase() : DEFAULT_ROOM_CODE;
+    saveStoredSession(resolved, nickname || 'Player', role || 'guest');
     var msg = {
       type: 'join_room',
       code: lastJoinCode,
@@ -304,5 +307,6 @@
     clearStoredSession: clearStoredSession,
     saveStoredSession: saveStoredSession,
     wsUrl: wsUrl,
+    DEFAULT_ROOM_CODE: DEFAULT_ROOM_CODE,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

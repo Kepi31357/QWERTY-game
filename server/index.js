@@ -13,6 +13,8 @@ const PUBLIC_DIR = path.join(ROOT, 'public');
 const PORT = Number(process.env.PORT) || 3001;
 const PUBLIC_BASE_URL = String(process.env.PUBLIC_BASE_URL || '').replace(/\/$/, '');
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+/** Shared default room when Create/Join leave the code blank. */
+const DEFAULT_ROOM_CODE = 'MAIN';
 const ROOM_TTL_MS = 60 * 60 * 1000;
 const RECONNECT_GRACE_MS = 2 * 60 * 1000;
 
@@ -58,10 +60,21 @@ function normalizeRoomCode(raw) {
     .toUpperCase()
     .replace(/[^A-Z0-9]/g, '');
   if (code.length < 4 || code.length > 6) return null;
+  /* MAIN is the default lobby; allow its I even though CODE_CHARS omits I/O/0/1. */
+  if (code === DEFAULT_ROOM_CODE) return code;
   for (let i = 0; i < code.length; i++) {
     if (CODE_CHARS.indexOf(code[i]) < 0) return null;
   }
   return code;
+}
+
+/** Blank input → MAIN; otherwise normalize. */
+function resolveRoomCode(raw, opts) {
+  const allowDefault = !opts || opts.allowDefault !== false;
+  if (raw == null || String(raw).trim() === '') {
+    return allowDefault ? DEFAULT_ROOM_CODE : null;
+  }
+  return normalizeRoomCode(raw);
 }
 
 function logRoomCount(action, code) {
@@ -500,12 +513,13 @@ function handleMessage(ws, raw) {
       return;
     }
     let code;
+    let usedDefault = false;
     if (data.code != null && String(data.code).trim() !== '') {
       code = normalizeRoomCode(data.code);
       if (!code) {
         send(ws, {
           type: 'error',
-          message: 'Invalid room code. Use 4–6 characters (A–Z, 2–9; no I/O/0/1).',
+          message: 'Invalid room code. Use 4–6 characters (A–Z, 2–9; no I/O/0/1), or leave blank for MAIN.',
         });
         return;
       }
@@ -516,7 +530,12 @@ function handleMessage(ws, raw) {
         });
         return;
       }
+    } else if (!rooms.has(DEFAULT_ROOM_CODE)) {
+      /* Blank create → shared MAIN room when free. */
+      code = DEFAULT_ROOM_CODE;
+      usedDefault = true;
     } else {
+      /* MAIN busy — mint a private code so another pair can still play. */
       do {
         code = makeRoomCode();
       } while (rooms.has(code));
@@ -536,6 +555,15 @@ function handleMessage(ws, raw) {
     rooms.set(code, room);
     ws.roomCode = code;
     logRoomCount('created', code);
+    var createMsg = buildRoomShareMessage(code);
+    if (usedDefault) {
+      createMsg = 'Default room MAIN — share this code, or leave blank when joining.';
+    } else if (!data.code || String(data.code).trim() === '') {
+      createMsg =
+        'MAIN was busy, so your private room is ' +
+        code +
+        '. Share this code with your friend.';
+    }
     send(ws, {
       type: 'room_created',
       code: code,
@@ -544,7 +572,8 @@ function handleMessage(ws, raw) {
       hostName: room.hostName,
       guestName: '',
       opponentName: '',
-      message: buildRoomShareMessage(code),
+      defaultRoom: usedDefault,
+      message: createMsg,
       hostInfo: getHostInfo(),
     });
     return;
@@ -555,11 +584,11 @@ function handleMessage(ws, raw) {
       send(ws, { type: 'error', message: 'Already in a room. Leave it first.' });
       return;
     }
-    const code = normalizeRoomCode(data.code);
+    const code = resolveRoomCode(data.code);
     if (!code) {
       send(ws, {
         type: 'error',
-        message: 'Enter a valid room code (4–6 characters, A–Z / 2–9).',
+        message: 'Enter a valid room code (4–6 characters), or leave blank for MAIN.',
       });
       return;
     }
