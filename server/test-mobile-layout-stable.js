@@ -28,7 +28,11 @@ var gameSrc = fs.readFileSync(path.join(root, 'game.js'), 'utf8');
 
 assert(htmlSrc.indexOf('viewport') >= 0 && htmlSrc.indexOf('maximum-scale=1') >= 0, 'viewport maximum-scale=1');
 assert(htmlSrc.indexOf('user-scalable=no') >= 0, 'viewport user-scalable=no');
-assert(htmlSrc.indexOf('interactive-widget=overlays-content') >= 0 || htmlSrc.indexOf('overlays-content') >= 0, 'viewport overlays-content');
+assert(
+  htmlSrc.indexOf('interactive-widget=resizes-visual') >= 0 ||
+    htmlSrc.indexOf('resizes-visual') >= 0,
+  'viewport resizes-visual (keyboard shrinks visual viewport)'
+);
 assert(htmlSrc.indexOf('viewport-fit=cover') >= 0, 'viewport-fit=cover');
 
 assert(gameSrc.indexOf('isLayoutFrozen') >= 0, 'layout freeze helper');
@@ -37,6 +41,8 @@ assert(gameSrc.indexOf('_compactLayoutLock') >= 0, 'compact cell-size lock');
 /* Board must not reflow on visualViewport scroll; chat keyboard avoidance may listen. */
 assert(gameSrc.indexOf('Height-only change on phone') >= 0, 'ignores height-only resize on compact');
 assert(gameSrc.indexOf('syncMobileChatToViewport') >= 0, 'chat lifts above soft keyboard');
+assert(gameSrc.indexOf('getVisualViewportBottomInset') >= 0, 'keyboard inset from visualViewport');
+assert(gameSrc.indexOf('startMobileChatKeyboardWatch') >= 0, 'watches keyboard animation while focused');
 assert(gameSrc.indexOf('ctx.scale(pulseScale, pulseScale)') >= 0, 'place pulse uses transform scale');
 assert(gameSrc.indexOf('_lastPlacePulseAt') >= 0, 'placement pulse throttled');
 

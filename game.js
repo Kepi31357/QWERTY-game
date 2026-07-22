@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '300';
+  var QWERTY_BUILD = '301';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -8192,13 +8192,20 @@ class Game {
 
   /**
    * Keep the mobile chat compose row above the soft keyboard.
-   * Viewport uses interactive-widget=overlays-content, so the keyboard does not
-   * resize layout — we lift the sheet using visualViewport metrics instead.
+   * Viewport uses interactive-widget=resizes-visual: layout stays put (board
+   * does not reflow), visual viewport shrinks — we pin the sheet to that.
    */
   setupMobileChatKeyboardAvoidance() {
     if (this._mobileChatKeyboardReady) return;
     this._mobileChatKeyboardReady = true;
     var self = this;
+
+    /* Chrome Android: expose env(keyboard-inset-height) when available. */
+    try {
+      if (navigator.virtualKeyboard && navigator.virtualKeyboard.overlaysContent != null) {
+        navigator.virtualKeyboard.overlaysContent = true;
+      }
+    } catch (_) {}
 
     var sync = function () {
       self.syncMobileChatToViewport();
@@ -8206,26 +8213,69 @@ class Game {
 
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', sync);
-      /* offsetTop shifts when the keyboard opens on iOS — not a board reflow. */
       window.visualViewport.addEventListener('scroll', sync);
     }
     window.addEventListener('resize', sync);
+    window.addEventListener('orientationchange', function () {
+      setTimeout(sync, 200);
+    });
 
     if (this.ui.chatInput) {
       this.ui.chatInput.addEventListener('focus', function () {
         self._chatInputFocused = true;
-        /* Keyboard animates in — sync a few times. */
-        sync();
-        setTimeout(sync, 50);
-        setTimeout(sync, 250);
-        setTimeout(sync, 450);
+        document.body.classList.add('chat-keyboard-open');
+        self.startMobileChatKeyboardWatch();
       });
       this.ui.chatInput.addEventListener('blur', function () {
         self._chatInputFocused = false;
+        document.body.classList.remove('chat-keyboard-open');
+        self.stopMobileChatKeyboardWatch();
         setTimeout(function () {
           if (!self._chatInputFocused) self.syncMobileChatToViewport();
-        }, 120);
+        }, 160);
       });
+    }
+  }
+
+  startMobileChatKeyboardWatch() {
+    var self = this;
+    this.stopMobileChatKeyboardWatch();
+    var frames = 0;
+    var tick = function () {
+      self.syncMobileChatToViewport();
+      frames += 1;
+      /* Watch through the keyboard animation (~0.5–0.8s). */
+      if (self._chatInputFocused && frames < 45) {
+        self._mobileChatKbRaf = requestAnimationFrame(tick);
+      } else {
+        self._mobileChatKbRaf = null;
+      }
+    };
+    this._mobileChatKbRaf = requestAnimationFrame(tick);
+    /* Also poll — some WebViews fire visualViewport late. */
+    this._mobileChatKbPoll = setInterval(function () {
+      if (!self._chatInputFocused) {
+        self.stopMobileChatKeyboardWatch();
+        return;
+      }
+      self.syncMobileChatToViewport();
+    }, 100);
+    setTimeout(function () {
+      if (self._mobileChatKbPoll) {
+        clearInterval(self._mobileChatKbPoll);
+        self._mobileChatKbPoll = null;
+      }
+    }, 1200);
+  }
+
+  stopMobileChatKeyboardWatch() {
+    if (this._mobileChatKbRaf) {
+      cancelAnimationFrame(this._mobileChatKbRaf);
+      this._mobileChatKbRaf = null;
+    }
+    if (this._mobileChatKbPoll) {
+      clearInterval(this._mobileChatKbPoll);
+      this._mobileChatKbPoll = null;
     }
   }
 
@@ -8233,10 +8283,27 @@ class Game {
     var panel = this.ui.chatPanel;
     if (!panel) return;
     panel.style.bottom = '';
+    panel.style.top = '';
     panel.style.height = '';
     panel.style.maxHeight = '';
     panel.classList.remove('chat-panel--keyboard');
     document.documentElement.style.removeProperty('--qwerty-kb-inset');
+    document.body.classList.remove('chat-keyboard-open');
+    this.stopMobileChatKeyboardWatch();
+  }
+
+  /** Keyboard / chrome inset below the visual viewport (px). */
+  getVisualViewportBottomInset() {
+    var vv = window.visualViewport;
+    var layoutH = window.innerHeight || document.documentElement.clientHeight || 0;
+    if (!vv || !Number.isFinite(vv.height) || layoutH <= 0) return 0;
+    /*
+     * Distance from the bottom of the layout viewport to the bottom of the
+     * visual viewport. That gap is the soft keyboard (and sometimes browser UI).
+     */
+    var inset = Math.round(layoutH - (vv.offsetTop + vv.height));
+    if (!Number.isFinite(inset) || inset < 0) inset = 0;
+    return inset;
   }
 
   syncMobileChatToViewport() {
@@ -8251,25 +8318,28 @@ class Game {
     var vv = window.visualViewport;
     var layoutH = window.innerHeight || document.documentElement.clientHeight || 0;
     var visibleH = layoutH;
-    var inset = 0;
+    var inset = this.getVisualViewportBottomInset();
 
     if (vv && Number.isFinite(vv.height)) {
-      visibleH = Math.max(120, Math.round(vv.height));
-      /*
-       * Space between the visual viewport bottom and the layout bottom ≈ keyboard.
-       * Ignore small chrome jitter (URL bar); real keyboards are much taller.
-       */
-      inset = Math.max(0, Math.round(layoutH - vv.height - (vv.offsetTop || 0)));
-      if (inset < 90) inset = 0;
+      visibleH = Math.max(160, Math.round(vv.height));
     }
 
-    document.documentElement.style.setProperty('--qwerty-kb-inset', inset + 'px');
-    panel.style.bottom = inset + 'px';
+    /*
+     * When focused, trust smaller insets too — some devices report the keyboard
+     * gradually. When not focused, ignore URL-bar jitter under ~48px.
+     */
+    if (!this._chatInputFocused && inset < 48) inset = 0;
 
-    var maxH = Math.max(200, Math.min(Math.round(visibleH * 0.7), 520));
+    /* CSS uses max(--qwerty-kb-inset, env(keyboard-inset-height)). */
+    document.documentElement.style.setProperty('--qwerty-kb-inset', inset + 'px');
+    panel.style.bottom = '';
+    panel.style.top = 'auto';
+
+    /* Fit the sheet inside the visible viewport so compose stays on-screen. */
+    var maxH = Math.max(180, Math.min(Math.round(visibleH * 0.88), 560));
     panel.style.maxHeight = maxH + 'px';
     panel.style.height = maxH + 'px';
-    panel.classList.toggle('chat-panel--keyboard', inset > 0);
+    panel.classList.toggle('chat-panel--keyboard', inset > 0 || !!this._chatInputFocused);
 
     if (this.ui.chatLog) {
       this.ui.chatLog.scrollTop = this.ui.chatLog.scrollHeight;

@@ -3072,16 +3072,21 @@ body.menu-visible .game-over-splash {
 
   body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-panel {
     pointer-events: auto;
-    /* JS sets bottom to the keyboard inset via visualViewport; fallback 0. */
-    bottom: var(--qwerty-kb-inset, 0px);
+    /*
+     * Lift above the keyboard:
+     * - --qwerty-kb-inset from visualViewport (JS)
+     * - env(keyboard-inset-height) from Virtual Keyboard API (Chrome Android)
+     */
+    bottom: max(var(--qwerty-kb-inset, 0px), env(keyboard-inset-height, 0px));
     transform: none;
     visibility: visible;
-    /* Prefer visible viewport height so the compose row stays on-screen. */
-    max-height: min(72vh, calc(100dvh - var(--qwerty-kb-inset, 0px) - 8px));
+    max-height: min(88dvh, calc(100dvh - max(var(--qwerty-kb-inset, 0px), env(keyboard-inset-height, 0px)) - 8px));
+    min-height: 0;
+    padding-bottom: 0;
   }
 
   body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-panel.chat-panel--keyboard {
-    transition: bottom 0.12s ease, height 0.12s ease, max-height 0.12s ease;
+    transition: bottom 0.1s linear, height 0.1s linear, max-height 0.1s linear;
   }
 
   body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-compose,
@@ -3093,9 +3098,16 @@ body.menu-visible .game-over-splash {
 
   body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-compose {
     flex-shrink: 0;
+    flex-grow: 0;
     background: #3a3a48;
     position: relative;
     z-index: 3;
+    padding-bottom: max(8px, env(safe-area-inset-bottom, 0px));
+  }
+
+  /* While typing, keep the compose row visually anchored above the keyboard. */
+  body.chat-keyboard-open:not(.menu-visible):not(.game-exited) .chat-compose {
+    box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.28);
   }
 
   body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-input {
