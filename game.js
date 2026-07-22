@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '301';
+  var QWERTY_BUILD = '302';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -1001,7 +1001,7 @@ class Game {
       oppH = this.opponentRackCanvas.offsetHeight;
     } else {
       var cs = cellSizeGuess != null ? cellSizeGuess : (this.cellSize || MIN_CELL_SIZE + 10);
-      var ts = Math.max(MIN_CELL_SIZE - 2, cs - 3);
+      var ts = Math.max(MIN_CELL_SIZE - 2, cs - 2);
       oppH = ts + 16;
     }
     var headerEl = document.querySelector('.board-top-header');
@@ -1397,9 +1397,29 @@ class Game {
       }
     }
 
+    /*
+     * If the board-center slot is shorter than a locked cell grid, shrink cells
+     * now — otherwise max-width/height CSS would scale the canvas and board
+     * tiles would look smaller than rack tiles.
+     */
+    if (boardCenter && boardCenter.clientHeight >= ROWS * MIN_CELL_SIZE) {
+      var maxByCenterH = Math.floor(boardCenter.clientHeight / ROWS);
+      if (nextCellSize > maxByCenterH) {
+        nextCellSize = Math.max(MIN_CELL_SIZE, maxByCenterH);
+        if (compact) {
+          this._compactLayoutLock = {
+            w: Math.round(centerW),
+            orient: (window.innerWidth || 0) >= (window.innerHeight || 0) ? 'l' : 'p',
+            cellSize: nextCellSize,
+          };
+        }
+      }
+    }
+
     this.cellSize = nextCellSize;
 
-    this.tileSize = Math.max(MIN_CELL_SIZE - 2, this.cellSize - 3);
+    /* Same on-screen tile size for board and rack (1px grid gap each side). */
+    this.tileSize = Math.max(MIN_CELL_SIZE - 2, this.cellSize - 2);
 
     const boardW = COLS * this.cellSize;
     const boardH = ROWS * this.cellSize;
@@ -6396,7 +6416,7 @@ class Game {
         const special = this.specials[idx];
         const cx = x + cellSize / 2;
         const cy = y + cellSize / 2;
-        const inset = gap + 0.5;
+        const inset = Math.max(0.5, (cellSize - tileSize) / 2);
         const sz = cellSize - inset * 2;
 
         var fill = (vr + vc) % 2 === 0 ? T.cellLight : T.cellDark;

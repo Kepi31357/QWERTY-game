@@ -45,6 +45,8 @@ assert(gameSrc.indexOf('getVisualViewportBottomInset') >= 0, 'keyboard inset fro
 assert(gameSrc.indexOf('startMobileChatKeyboardWatch') >= 0, 'watches keyboard animation while focused');
 assert(gameSrc.indexOf('ctx.scale(pulseScale, pulseScale)') >= 0, 'place pulse uses transform scale');
 assert(gameSrc.indexOf('_lastPlacePulseAt') >= 0, 'placement pulse throttled');
+assert(gameSrc.indexOf('this.cellSize - 2') >= 0, 'board tileSize matches rack (cellSize - 2)');
+assert(/#game-canvas\s*\{[^}]*max-height:\s*none/m.test(cssSrc), 'board canvas not CSS height-shrunk');
 
 assert(htmlSrc.indexOf('id="message"') >= 0 && htmlSrc.indexOf('board-status-bar') >= 0, 'status bar present');
 assert(
