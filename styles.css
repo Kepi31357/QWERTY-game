@@ -652,11 +652,12 @@ body.game-exited .app {
 }
 
 .game-board-column .board-wrap {
-  flex: 1 1 auto;
+  /* Size to the canvas — do not shrink the grid to make room for the status strip. */
+  flex: 0 0 auto;
   min-height: 0;
   width: 100%;
-  height: 100%;
-  max-height: 100%;
+  height: auto;
+  max-height: none;
   border-radius: 0 0 14px 14px;
 }
 
@@ -3218,25 +3219,27 @@ body.menu-visible .game-over-splash {
   }
 
   body:not(.menu-visible):not(.game-exited) .board-wrap {
-    flex: 1;
+    flex: 0 0 auto;
     min-height: 0;
+    height: auto;
+    max-height: none;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow: visible;
     grid-template-columns: none;
     grid-template-rows: none;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-center {
-    flex: 1;
+    flex: 0 0 auto;
     min-height: 0;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
   }
 

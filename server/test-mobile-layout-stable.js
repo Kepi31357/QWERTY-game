@@ -47,6 +47,9 @@ assert(gameSrc.indexOf('ctx.scale(pulseScale, pulseScale)') >= 0, 'place pulse u
 assert(gameSrc.indexOf('_lastPlacePulseAt') >= 0, 'placement pulse throttled');
 assert(gameSrc.indexOf('this.cellSize - 2') >= 0, 'board tileSize matches rack (cellSize - 2)');
 assert(/#game-canvas\s*\{[^}]*max-height:\s*none/m.test(cssSrc), 'board canvas not CSS height-shrunk');
+assert(/MAX_CELL_SIZE = 5[0-9]/.test(gameSrc), 'board max cell size restored larger');
+assert(gameSrc.indexOf('_boardSizeEnlarge303') >= 0, 'clears stale compact board lock');
+assert(cssSrc.indexOf('flex: 0 0 auto') >= 0 && cssSrc.indexOf('game-board-column .board-wrap') >= 0, 'board-wrap sizes to canvas');
 
 assert(htmlSrc.indexOf('id="message"') >= 0 && htmlSrc.indexOf('board-status-bar') >= 0, 'status bar present');
 assert(

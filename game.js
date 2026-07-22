@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '302';
+  var QWERTY_BUILD = '303';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -479,7 +479,7 @@
 const COLS = 15;
 const ROWS = 15;
 const RACK_SIZE = 8;
-const MAX_CELL_SIZE = 46;
+const MAX_CELL_SIZE = 52;
 const MIN_CELL_SIZE = 14;
 const LAYOUT_GAP = 8;
 const STAR_BONUS = 50;
@@ -1027,16 +1027,18 @@ class Game {
     if (mobileBar && mobileBar.offsetHeight > 20) {
       reserved += mobileBar.offsetHeight;
     } else {
-      reserved += 52;
+      reserved += 48;
     }
     var panel = document.getElementById('player-panel');
     if (panel && panel.offsetHeight > 20) {
-      reserved += panel.offsetHeight;
+      /* Cap so a tall controls stack does not crush the board. */
+      reserved += Math.min(panel.offsetHeight, 168);
     } else {
-      reserved += 120;
+      reserved += 132;
     }
-    /* Message bar is an overlay on compact — do not reserve space for it. */
-    this._compactChromeReserve = reserved + 12;
+    /* In-flow status strip under the board (~3 lines). */
+    reserved += 44;
+    this._compactChromeReserve = reserved + 8;
     return this._compactChromeReserve;
   }
 
@@ -1050,8 +1052,8 @@ class Game {
         : 0;
       var byWidth = Math.floor(Math.max(120, wrapW - wrapPadH) / COLS) * ROWS;
       /*
-       * Prefer width-derived size so address-bar / visualViewport height jitter
-       * cannot resize the board mid-placement. Height is only a soft ceiling.
+       * Prefer width-derived size (original larger board feel). Height is only a
+       * soft ceiling when the board would clearly overflow the viewport.
        */
       var viewportH = window.innerHeight || document.documentElement.clientHeight || 600;
       var reserved = document.body.classList.contains('menu-visible')
@@ -1059,7 +1061,8 @@ class Game {
         : this.getCompactPlayReservedHeight();
       var byHeight = Math.floor(Math.max(120, viewportH - reserved) / ROWS) * ROWS;
       var budget = byWidth;
-      if (byHeight > 0 && byHeight < byWidth) {
+      /* Only shrink when height is meaningfully tighter than width (not 1-cell noise). */
+      if (byHeight > 0 && byHeight < byWidth - ROWS * 2) {
         budget = byHeight;
       }
       return Math.max(ROWS * MIN_CELL_SIZE, budget);
@@ -1337,10 +1340,17 @@ class Game {
       (parseFloat(wrapStyle.paddingTop) || 0) + (parseFloat(wrapStyle.paddingBottom) || 0);
     const innerWrapH = boardWrap ? boardWrap.clientHeight - wrapPadV : (boardCenter || this.canvas.parentElement).clientHeight;
 
+    /* One-shot: drop stale compact locks from older (smaller) board sizing. */
+    if (!this._boardSizeEnlarge303) {
+      this._boardSizeEnlarge303 = true;
+      this._compactLayoutLock = null;
+      this._compactChromeReserve = null;
+    }
+
     var nextCellSize;
     if (compact) {
       /*
-       * Mobile: lock cell size to width (+ stable height ceiling). Ignore tiny
+       * Mobile: lock cell size to width (+ soft height ceiling). Ignore tiny
        * width noise and reuse the last locked size so placement never jumps.
        */
       var lockW = Math.round(centerW);
@@ -1357,10 +1367,14 @@ class Game {
         var canvasBudget = this.getCanvasHeightBudget(innerWrapH, wrapPadV, this.cellSize);
         var cellFromW = centerW / COLS;
         var cellFromH = canvasBudget / ROWS;
+        /* Width-first — restores the larger original board proportion. */
         nextCellSize = Math.max(
           MIN_CELL_SIZE,
-          Math.floor(Math.min(cellFromW, cellFromH, MAX_CELL_SIZE))
+          Math.floor(Math.min(cellFromW, MAX_CELL_SIZE))
         );
+        if (cellFromH >= MIN_CELL_SIZE && nextCellSize > cellFromH + 1) {
+          nextCellSize = Math.max(MIN_CELL_SIZE, Math.floor(cellFromH));
+        }
         if (boardWrap) {
           var maxCenterW = Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW);
           nextCellSize = Math.max(MIN_CELL_SIZE, Math.min(nextCellSize, Math.floor(maxCenterW / COLS)));
@@ -1375,8 +1389,11 @@ class Game {
       const cellFromH = canvasBudgetDesk / ROWS;
       nextCellSize = Math.max(
         MIN_CELL_SIZE,
-        Math.floor(Math.min(cellFromW, cellFromH, MAX_CELL_SIZE))
+        Math.floor(Math.min(cellFromW, MAX_CELL_SIZE))
       );
+      if (cellFromH >= MIN_CELL_SIZE && nextCellSize > cellFromH + 1) {
+        nextCellSize = Math.max(MIN_CELL_SIZE, Math.floor(cellFromH));
+      }
 
       if (boardWrap) {
         const maxCenterW = Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW);
@@ -1386,33 +1403,17 @@ class Game {
 
       canvasBudgetDesk = this.getCanvasHeightBudget(innerWrapH, wrapPadV, nextCellSize);
       var cellFromH2 = canvasBudgetDesk / ROWS;
+      if (cellFromH2 >= MIN_CELL_SIZE && nextCellSize > cellFromH2 + 1) {
+        nextCellSize = Math.max(MIN_CELL_SIZE, Math.floor(cellFromH2));
+      }
       nextCellSize = Math.max(
         MIN_CELL_SIZE,
-        Math.min(nextCellSize, Math.floor(cellFromH2), Math.floor(cellFromW), MAX_CELL_SIZE)
+        Math.min(nextCellSize, Math.floor(cellFromW), MAX_CELL_SIZE)
       );
 
       if (boardCenter && boardCenter.clientWidth >= 50) {
         const maxByCenterW = Math.floor(boardCenter.clientWidth / COLS);
         nextCellSize = Math.max(MIN_CELL_SIZE, Math.min(nextCellSize, maxByCenterW));
-      }
-    }
-
-    /*
-     * If the board-center slot is shorter than a locked cell grid, shrink cells
-     * now — otherwise max-width/height CSS would scale the canvas and board
-     * tiles would look smaller than rack tiles.
-     */
-    if (boardCenter && boardCenter.clientHeight >= ROWS * MIN_CELL_SIZE) {
-      var maxByCenterH = Math.floor(boardCenter.clientHeight / ROWS);
-      if (nextCellSize > maxByCenterH) {
-        nextCellSize = Math.max(MIN_CELL_SIZE, maxByCenterH);
-        if (compact) {
-          this._compactLayoutLock = {
-            w: Math.round(centerW),
-            orient: (window.innerWidth || 0) >= (window.innerHeight || 0) ? 'l' : 'p',
-            cellSize: nextCellSize,
-          };
-        }
       }
     }
 
