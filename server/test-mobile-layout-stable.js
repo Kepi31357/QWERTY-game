@@ -34,8 +34,9 @@ assert(htmlSrc.indexOf('viewport-fit=cover') >= 0, 'viewport-fit=cover');
 assert(gameSrc.indexOf('isLayoutFrozen') >= 0, 'layout freeze helper');
 assert(gameSrc.indexOf('freezeLayoutBriefly') >= 0, 'freeze on place');
 assert(gameSrc.indexOf('_compactLayoutLock') >= 0, 'compact cell-size lock');
-assert(gameSrc.indexOf("visualViewport.addEventListener('scroll'") < 0, 'no visualViewport scroll resize');
+/* Board must not reflow on visualViewport scroll; chat keyboard avoidance may listen. */
 assert(gameSrc.indexOf('Height-only change on phone') >= 0, 'ignores height-only resize on compact');
+assert(gameSrc.indexOf('syncMobileChatToViewport') >= 0, 'chat lifts above soft keyboard');
 assert(gameSrc.indexOf('ctx.scale(pulseScale, pulseScale)') >= 0, 'place pulse uses transform scale');
 assert(gameSrc.indexOf('_lastPlacePulseAt') >= 0, 'placement pulse throttled');
 

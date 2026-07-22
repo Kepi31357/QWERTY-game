@@ -3072,9 +3072,16 @@ body.menu-visible .game-over-splash {
 
   body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-panel {
     pointer-events: auto;
-    bottom: 0;
+    /* JS sets bottom to the keyboard inset via visualViewport; fallback 0. */
+    bottom: var(--qwerty-kb-inset, 0px);
     transform: none;
     visibility: visible;
+    /* Prefer visible viewport height so the compose row stays on-screen. */
+    max-height: min(72vh, calc(100dvh - var(--qwerty-kb-inset, 0px) - 8px));
+  }
+
+  body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-panel.chat-panel--keyboard {
+    transition: bottom 0.12s ease, height 0.12s ease, max-height 0.12s ease;
   }
 
   body.mobile-chat-open:not(.menu-visible):not(.game-exited) .chat-compose,

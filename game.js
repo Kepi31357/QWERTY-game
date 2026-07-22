@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '299';
+  var QWERTY_BUILD = '300';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -8186,10 +8186,99 @@ class Game {
       if (mq.addEventListener) mq.addEventListener('change', onChange);
       else if (mq.addListener) mq.addListener(onChange);
     } catch (_) {}
+
+    this.setupMobileChatKeyboardAvoidance();
+  }
+
+  /**
+   * Keep the mobile chat compose row above the soft keyboard.
+   * Viewport uses interactive-widget=overlays-content, so the keyboard does not
+   * resize layout — we lift the sheet using visualViewport metrics instead.
+   */
+  setupMobileChatKeyboardAvoidance() {
+    if (this._mobileChatKeyboardReady) return;
+    this._mobileChatKeyboardReady = true;
+    var self = this;
+
+    var sync = function () {
+      self.syncMobileChatToViewport();
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', sync);
+      /* offsetTop shifts when the keyboard opens on iOS — not a board reflow. */
+      window.visualViewport.addEventListener('scroll', sync);
+    }
+    window.addEventListener('resize', sync);
+
+    if (this.ui.chatInput) {
+      this.ui.chatInput.addEventListener('focus', function () {
+        self._chatInputFocused = true;
+        /* Keyboard animates in — sync a few times. */
+        sync();
+        setTimeout(sync, 50);
+        setTimeout(sync, 250);
+        setTimeout(sync, 450);
+      });
+      this.ui.chatInput.addEventListener('blur', function () {
+        self._chatInputFocused = false;
+        setTimeout(function () {
+          if (!self._chatInputFocused) self.syncMobileChatToViewport();
+        }, 120);
+      });
+    }
+  }
+
+  clearMobileChatViewportFit() {
+    var panel = this.ui.chatPanel;
+    if (!panel) return;
+    panel.style.bottom = '';
+    panel.style.height = '';
+    panel.style.maxHeight = '';
+    panel.classList.remove('chat-panel--keyboard');
+    document.documentElement.style.removeProperty('--qwerty-kb-inset');
+  }
+
+  syncMobileChatToViewport() {
+    var panel = this.ui.chatPanel;
+    if (!panel) return;
+
+    if (!this.mobileChatOpen || !this.isCompactChatLayout()) {
+      this.clearMobileChatViewportFit();
+      return;
+    }
+
+    var vv = window.visualViewport;
+    var layoutH = window.innerHeight || document.documentElement.clientHeight || 0;
+    var visibleH = layoutH;
+    var inset = 0;
+
+    if (vv && Number.isFinite(vv.height)) {
+      visibleH = Math.max(120, Math.round(vv.height));
+      /*
+       * Space between the visual viewport bottom and the layout bottom ≈ keyboard.
+       * Ignore small chrome jitter (URL bar); real keyboards are much taller.
+       */
+      inset = Math.max(0, Math.round(layoutH - vv.height - (vv.offsetTop || 0)));
+      if (inset < 90) inset = 0;
+    }
+
+    document.documentElement.style.setProperty('--qwerty-kb-inset', inset + 'px');
+    panel.style.bottom = inset + 'px';
+
+    var maxH = Math.max(200, Math.min(Math.round(visibleH * 0.7), 520));
+    panel.style.maxHeight = maxH + 'px';
+    panel.style.height = maxH + 'px';
+    panel.classList.toggle('chat-panel--keyboard', inset > 0);
+
+    if (this.ui.chatLog) {
+      this.ui.chatLog.scrollTop = this.ui.chatLog.scrollHeight;
+    }
   }
 
   openMobileChat() {
     if (!this.isCompactChatLayout()) return;
+    var self = this;
     this.mobileChatOpen = true;
     document.body.classList.add('mobile-chat-open');
     if (this.ui.btnMobileChat) {
@@ -8202,6 +8291,7 @@ class Game {
       this.ui.chatPanel.setAttribute('aria-modal', 'true');
     }
     this.clearMobileChatUnread();
+    this.syncMobileChatToViewport();
     if (this.ui.chatLog) {
       this.ui.chatLog.scrollTop = this.ui.chatLog.scrollHeight;
     }
@@ -8215,6 +8305,7 @@ class Game {
             input.focus();
           } catch (__) {}
         }
+        self.syncMobileChatToViewport();
       }, 280);
     }
   }
@@ -8226,6 +8317,7 @@ class Game {
     this.mobileChatOpen = false;
     document.body.classList.remove('mobile-chat-open');
     this.hideChatEmojiPicker();
+    this.clearMobileChatViewportFit();
     if (this.ui.btnMobileChat) {
       this.ui.btnMobileChat.setAttribute('aria-expanded', 'false');
     }
