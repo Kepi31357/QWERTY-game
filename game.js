@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '303';
+  var QWERTY_BUILD = '304';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -1022,23 +1022,25 @@ class Game {
       reserved += (parseFloat(appStyle.paddingTop) || 0) + (parseFloat(appStyle.paddingBottom) || 0);
       reserved += parseFloat(appStyle.gap) || 0;
     }
-    reserved += 8; /* table gap */
-    var mobileBar = document.querySelector('.mobile-play-bar');
-    if (mobileBar && mobileBar.offsetHeight > 20) {
-      reserved += mobileBar.offsetHeight;
+    reserved += 6; /* table gap */
+    /* Compact logo header above the grid. */
+    var headerEl = document.querySelector('.board-top-header');
+    if (headerEl && headerEl.offsetHeight > 10) {
+      reserved += headerEl.offsetHeight;
     } else {
-      reserved += 48;
+      reserved += 56;
     }
     var panel = document.getElementById('player-panel');
     if (panel && panel.offsetHeight > 20) {
-      /* Cap so a tall controls stack does not crush the board. */
-      reserved += Math.min(panel.offsetHeight, 168);
+      /* Full panel (scores + rack + buttons) — must stay clear of the last board row. */
+      reserved += panel.offsetHeight;
     } else {
-      reserved += 132;
+      reserved += 300;
     }
-    /* In-flow status strip under the board (~3 lines). */
-    reserved += 44;
-    this._compactChromeReserve = reserved + 8;
+    /* In-flow status strip under the board + gap so the last row is never covered. */
+    reserved += 40;
+    reserved += 14;
+    this._compactChromeReserve = reserved;
     return this._compactChromeReserve;
   }
 
@@ -1052,8 +1054,8 @@ class Game {
         : 0;
       var byWidth = Math.floor(Math.max(120, wrapW - wrapPadH) / COLS) * ROWS;
       /*
-       * Prefer width-derived size (original larger board feel). Height is only a
-       * soft ceiling when the board would clearly overflow the viewport.
+       * Fit the full 15×15 grid above the player panel. Width can fill the screen,
+       * but height must win whenever the board would cover the last row.
        */
       var viewportH = window.innerHeight || document.documentElement.clientHeight || 600;
       var reserved = document.body.classList.contains('menu-visible')
@@ -1061,8 +1063,7 @@ class Game {
         : this.getCompactPlayReservedHeight();
       var byHeight = Math.floor(Math.max(120, viewportH - reserved) / ROWS) * ROWS;
       var budget = byWidth;
-      /* Only shrink when height is meaningfully tighter than width (not 1-cell noise). */
-      if (byHeight > 0 && byHeight < byWidth - ROWS * 2) {
+      if (byHeight > 0 && byHeight < byWidth) {
         budget = byHeight;
       }
       return Math.max(ROWS * MIN_CELL_SIZE, budget);
@@ -1340,9 +1341,9 @@ class Game {
       (parseFloat(wrapStyle.paddingTop) || 0) + (parseFloat(wrapStyle.paddingBottom) || 0);
     const innerWrapH = boardWrap ? boardWrap.clientHeight - wrapPadV : (boardCenter || this.canvas.parentElement).clientHeight;
 
-    /* One-shot: drop stale compact locks from older (smaller) board sizing. */
-    if (!this._boardSizeEnlarge303) {
-      this._boardSizeEnlarge303 = true;
+    /* One-shot: drop stale compact locks that overflowed under the player panel. */
+    if (!this._boardFitAbovePanel304) {
+      this._boardFitAbovePanel304 = true;
       this._compactLayoutLock = null;
       this._compactChromeReserve = null;
     }
@@ -1350,8 +1351,8 @@ class Game {
     var nextCellSize;
     if (compact) {
       /*
-       * Mobile: lock cell size to width (+ soft height ceiling). Ignore tiny
-       * width noise and reuse the last locked size so placement never jumps.
+       * Mobile: size to width, then hard-cap so the full grid sits above the
+       * player panel (last row must never be covered).
        */
       var lockW = Math.round(centerW);
       var orient = (window.innerWidth || 0) >= (window.innerHeight || 0) ? 'l' : 'p';
@@ -1367,14 +1368,10 @@ class Game {
         var canvasBudget = this.getCanvasHeightBudget(innerWrapH, wrapPadV, this.cellSize);
         var cellFromW = centerW / COLS;
         var cellFromH = canvasBudget / ROWS;
-        /* Width-first — restores the larger original board proportion. */
         nextCellSize = Math.max(
           MIN_CELL_SIZE,
-          Math.floor(Math.min(cellFromW, MAX_CELL_SIZE))
+          Math.floor(Math.min(cellFromW, cellFromH, MAX_CELL_SIZE))
         );
-        if (cellFromH >= MIN_CELL_SIZE && nextCellSize > cellFromH + 1) {
-          nextCellSize = Math.max(MIN_CELL_SIZE, Math.floor(cellFromH));
-        }
         if (boardWrap) {
           var maxCenterW = Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW);
           nextCellSize = Math.max(MIN_CELL_SIZE, Math.min(nextCellSize, Math.floor(maxCenterW / COLS)));

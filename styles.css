@@ -3002,8 +3002,8 @@ body.menu-visible .game-over-splash {
   }
 
   body:not(.menu-visible):not(.game-exited) .board-top-header .qwerty-header-img {
-    width: min(100%, 340px);
-    max-height: 64px;
+    width: min(100%, 300px);
+    max-height: 48px;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-opponent-rack.board-grid-rack {
@@ -3226,8 +3226,8 @@ body.menu-visible .game-over-splash {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    overflow: visible;
+    justify-content: flex-start;
+    overflow: hidden;
     grid-template-columns: none;
     grid-template-rows: none;
   }
@@ -3239,20 +3239,24 @@ body.menu-visible .game-over-splash {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: visible;
+    overflow: hidden;
     position: relative;
   }
 
-  /* Compact: in-flow under board, above rack — never overlaps controls. */
+  /* Compact: board column sits above the player panel with a clear gap. */
   body:not(.menu-visible):not(.game-exited) .game-board-column {
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin-bottom: 10px;
+    padding-bottom: 2px;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-status-bar,
   body:not(.menu-visible):not(.game-exited) #panel-message-row {
-    --qwerty-status-h: 3.5em; /* 3 lines @ mobile font — fixed, no board jump */
+    --qwerty-status-h: 2.6em; /* compact so the last board row stays clear */
     position: relative;
     flex: 0 0 var(--qwerty-status-h);
     flex-grow: 0;
@@ -3418,6 +3422,9 @@ body.menu-visible .game-over-splash {
     gap: 4px;
     padding: 4px 6px;
     flex-shrink: 0;
+    position: relative;
+    z-index: 6;
+    margin-top: 0;
   }
 
   /* Guest: same rack-below-board layout as Deb (start appears bottom-left via 180° map). */
