@@ -662,11 +662,14 @@ body.game-exited .app {
 
 /*
  * Status under the board, above the rack/controls (in-flow — no overlap).
- * Reserved min-height avoids board jump when the message toggles.
+ * Fixed height (~3 lines) so short ↔ long messages never shift the board.
  */
 .board-status-bar,
 #panel-message-row {
-  flex: 0 0 auto;
+  --qwerty-status-h: 3.75em; /* 3 lines @ 0.82rem / 1.35 + padding */
+  flex: 0 0 var(--qwerty-status-h);
+  flex-grow: 0;
+  flex-shrink: 0;
   position: relative;
   display: flex !important;
   justify-content: center;
@@ -674,10 +677,13 @@ body.game-exited .app {
   text-align: center;
   width: 100%;
   max-width: 100%;
-  min-height: 1.7em;
+  height: var(--qwerty-status-h);
+  min-height: var(--qwerty-status-h);
+  max-height: var(--qwerty-status-h);
   margin: 4px auto 2px;
   padding: 0 8px;
   box-sizing: border-box;
+  overflow: hidden;
   pointer-events: none;
   z-index: 2;
 }
@@ -686,7 +692,10 @@ body.game-exited .app {
 #panel-message-row[hidden] {
   display: flex !important;
   visibility: hidden;
-  min-height: 1.7em;
+  height: var(--qwerty-status-h);
+  min-height: var(--qwerty-status-h);
+  max-height: var(--qwerty-status-h);
+  flex: 0 0 var(--qwerty-status-h);
   pointer-events: none;
 }
 
@@ -701,10 +710,10 @@ body.game-exited .app {
   width: 100%;
   max-width: min(100%, var(--qwerty-board-px, 800px));
   margin: 0 auto !important;
-  padding: 4px 10px;
-  min-height: 1.5em;
-  max-height: none;
-  height: auto;
+  padding: 2px 10px;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
   font-size: 0.82rem;
   font-weight: 800;
   line-height: 1.35;
@@ -2960,17 +2969,23 @@ body.menu-visible .game-over-splash {
 
   body:not(.menu-visible):not(.game-exited) .board-status-bar,
   body:not(.menu-visible):not(.game-exited) #panel-message-row {
+    --qwerty-status-h: 3.5em; /* 3 lines @ mobile font — fixed, no board jump */
     position: relative;
-    flex: 0 0 auto;
+    flex: 0 0 var(--qwerty-status-h);
+    flex-grow: 0;
+    flex-shrink: 0;
     display: flex !important;
     justify-content: center;
     align-items: center;
     text-align: center;
     width: 100%;
     max-width: 100%;
-    min-height: 1.55em;
+    height: var(--qwerty-status-h);
+    min-height: var(--qwerty-status-h);
+    max-height: var(--qwerty-status-h);
     margin: 2px auto 2px;
     padding: 0 6px;
+    overflow: hidden;
     transform: none;
     left: auto;
     bottom: auto;
@@ -2981,7 +2996,10 @@ body.menu-visible .game-over-splash {
   body:not(.menu-visible):not(.game-exited) #panel-message-row[hidden] {
     display: flex !important;
     visibility: hidden;
-    min-height: 1.55em;
+    height: var(--qwerty-status-h);
+    min-height: var(--qwerty-status-h);
+    max-height: var(--qwerty-status-h);
+    flex: 0 0 var(--qwerty-status-h);
   }
 
   body:not(.menu-visible):not(.game-exited) .game-layout .board-status-bar > .message-bar:not([hidden]),
@@ -2994,11 +3012,15 @@ body.menu-visible .game-over-splash {
     max-width: min(100%, var(--qwerty-board-px, 800px));
     margin: 0 auto !important;
     padding: 2px 8px;
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
     font-size: 0.72rem;
     font-weight: 800;
     line-height: 1.3;
     white-space: normal !important;
     text-align: center !important;
+    overflow: hidden;
     background: transparent !important;
     border: none !important;
     border-radius: 0;

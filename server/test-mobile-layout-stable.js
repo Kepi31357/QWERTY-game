@@ -50,7 +50,9 @@ assert(cssSrc.indexOf('justify-content: center') >= 0, 'flex centers status bar'
 assert(cssSrc.indexOf('text-align: center !important') >= 0, 'text forced center');
 assert(cssSrc.indexOf('var(--qwerty-board-px') >= 0, 'max-width matches board');
 assert(cssSrc.indexOf('never overlaps') >= 0 || cssSrc.indexOf('no overlap') >= 0 || cssSrc.indexOf('above the rack') >= 0, 'in-flow above rack');
-assert(cssSrc.indexOf('min-height: 1.7em') >= 0, 'status bar reserved height (no jump)');
+assert(cssSrc.indexOf('--qwerty-status-h') >= 0, 'status bar fixed height token');
+assert(cssSrc.indexOf('flex: 0 0 var(--qwerty-status-h)') >= 0, 'status bar fixed flex basis');
+assert(cssSrc.indexOf('max-height: var(--qwerty-status-h)') >= 0, 'status bar capped height (no jump)');
 assert(cssSrc.indexOf('contain: layout paint') >= 0, 'canvas layout containment');
 assert(cssSrc.indexOf('min-height: 42px') >= 0 || cssSrc.indexOf('min-height: 44px') >= 0, 'touch-friendly control height');
 assert(gameSrc.indexOf('RACK_SETTLE_MS') >= 0, 'recall settle animation');
