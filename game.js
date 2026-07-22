@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '294';
+  var QWERTY_BUILD = '295';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -495,7 +495,8 @@ const SUBMIT_WORD_HIGHLIGHT_MS = 5000;
 const OPPONENT_WORD_HIGHLIGHT_MS = SUBMIT_WORD_HIGHLIGHT_MS;
 const PLAY_SCORE_FX_MS = 3600;
 const BOARD_BANNER_MS = 2600;
-const PLACEMENT_PULSE_MS = 520;
+const PLACEMENT_PULSE_MS = 640;
+const RACK_SETTLE_MS = 420;
 const BONUS_CALLOUT_MS = 1400;
 const GAME_OVER_SPLASH_MS = 2400;
 const POST_GAME_DIALOG_DELAY_MS = 4000;
@@ -913,7 +914,8 @@ class Game {
     this.opponentHighlightTimerId = null;
     this.playWordHighlight = null; /* { cellSet, words, scoreResult, pulseAt } */
     this.scoreFx = null; /* floating breakdown after submit */
-    this.boardBannerFx = null; /* centered CONNECTION! / exchange banner */
+    this.boardBannerFx = null; /* upper-band CONNECTION! / bingo / exchange banner */
+    this.rackSettleFx = null; /* soft bounce when tiles return to rack */
     this._uiAnimId = null;
     this._previewUiEpoch = 0; /* bumped on every invalid/reset so stale anims die */
     this._pendingUiScoreResult = null;
@@ -5773,6 +5775,31 @@ class Game {
     this.ensureUiAnimLoop();
   }
 
+  /** Soft bounce on rack tiles after Recall All (does not clear celebrate banners). */
+  startRackSettle(tiles) {
+    var list = tiles || [];
+    if (!list.length) return;
+    var now = Date.now();
+    var byId = {};
+    var byLetter = {};
+    var i, t, id, L;
+    for (i = 0; i < list.length; i++) {
+      t = list[i];
+      if (!t) continue;
+      id = t.tileId || (t.id != null ? t.id : null);
+      if (id) byId[id] = true;
+      L = tileLetter(t);
+      if (L) byLetter[L] = (byLetter[L] || 0) + 1;
+    }
+    this.rackSettleFx = {
+      startedAt: now,
+      expiresAt: now + RACK_SETTLE_MS,
+      byId: byId,
+      byLetter: byLetter,
+    };
+    this.ensureUiAnimLoop();
+  }
+
   startScoreFx(scoreResult, mainLabel, opts) {
     if (!scoreResult || !scoreResult.valid) return;
     opts = opts || {};
@@ -6003,16 +6030,22 @@ class Game {
       return;
     }
     var alpha = t < 0.1 ? t / 0.1 : t > 0.72 ? Math.max(0, 1 - (t - 0.72) / 0.28) : 1;
-    var pop = t < 0.16 ? 1 - Math.pow(1 - t / 0.16, 3) : 1;
-    var scale = 0.82 + 0.18 * pop;
-    var bob = Math.sin(now / 180) * (this.cellSize * 0.04);
+    var pop = t < 0.18 ? 1 - Math.pow(1 - t / 0.18, 3) : 1;
+    var scale = 0.86 + 0.14 * pop;
+    var bob = Math.sin(now / 200) * (this.cellSize * 0.03);
 
     var ctx = this.ctx;
     var cellSize = this.cellSize;
     var boardW = COLS * cellSize;
     var boardH = ROWS * cellSize;
     var cx = boardW / 2;
-    var cy = boardH / 2 + bob;
+    /*
+     * Keep celebrate banners in the upper band so mid-board plays stay readable.
+     * Exchange notices sit a bit higher (less urgent / shorter copy).
+     */
+    var bandY =
+      fx.kind === 'exchange' ? boardH * 0.2 : boardH * 0.26;
+    var cy = bandY + bob;
     var isConnect = fx.kind === 'connection';
     var isBingo = fx.kind === 'bingo';
     var T = BOARD_THEME;
@@ -6107,6 +6140,13 @@ class Game {
           need = true;
         }
       }
+      if (self.rackSettleFx) {
+        if (now >= self.rackSettleFx.expiresAt) {
+          self.rackSettleFx = null;
+        } else {
+          need = true;
+        }
+      }
       if (self.opponentWordHighlight) {
         if (now >= self.opponentWordHighlight.expiresAt) {
           self.opponentWordHighlight = null;
@@ -6139,7 +6179,12 @@ class Game {
         if (self.pendingPlacements && self.pendingPlacements.size && self.playWordHighlight) {
           need = true;
         }
-      } else if (self.scoreFx || self.boardBannerFx || self.opponentWordHighlight) {
+      } else if (
+        self.scoreFx ||
+        self.boardBannerFx ||
+        self.rackSettleFx ||
+        self.opponentWordHighlight
+      ) {
         need = true;
         epochAtStart = self._previewUiEpoch;
       }
@@ -6400,8 +6445,9 @@ class Game {
                 0,
                 1 - (Date.now() - this.playWordHighlight.pulseAt) / PLACEMENT_PULSE_MS
               );
-              /* ease-out bounce for smoother drop */
-              tileOpts.placePulse = placeT * placeT * (3 - 2 * placeT);
+              /* Smoothstep then ease — softer settle on drop */
+              var smooth = placeT * placeT * (3 - 2 * placeT);
+              tileOpts.placePulse = smooth * smooth * (3 - 2 * smooth);
             }
             if (this.isPlayWordHighlighted(idx)) {
               tileOpts.playHighlight = true;
@@ -6836,7 +6882,29 @@ class Game {
       score += (1 - (bx + boxW / 2) / boardW) * 1.5;
       score += (1 - (by + boxH / 2) / boardH) * 1.2;
       if (overlapsPlay(bx, by)) score += 500;
+      /* Keep score toasts clear of celebrate banners (bingo / CONNECTION / exchange). */
+      if (
+        avoidBanner &&
+        !(
+          bx + boxW <= avoidBanner.x ||
+          bx >= avoidBanner.x + avoidBanner.w ||
+          by + boxH <= avoidBanner.y ||
+          by >= avoidBanner.y + avoidBanner.h
+        )
+      ) {
+        score += 280;
+      }
       return score;
+    }
+
+    var avoidBanner = null;
+    if (this.boardBannerFx && Date.now() < this.boardBannerFx.expiresAt) {
+      avoidBanner = {
+        x: boardW * 0.08,
+        y: boardH * 0.08,
+        w: boardW * 0.84,
+        h: boardH * 0.34,
+      };
     }
 
     var candidates = [];
@@ -7413,14 +7481,23 @@ class Game {
 
       if (!letter) continue;
       if (this.isRackSlotPending(i)) continue;
+      var rackOpts = { owner: PLAYER.HUMAN };
+      var settle = this.rackSettleFx;
+      if (settle && Date.now() < settle.expiresAt) {
+        var settleT = Math.max(
+          0,
+          1 - (Date.now() - settle.startedAt) / RACK_SETTLE_MS
+        );
+        rackOpts.rackSettle = settleT * settleT * (3 - 2 * settleT);
+      }
       if (this.drag && this.drag.fromRack === i) {
         rackCtx.save();
         rackCtx.globalAlpha = 0.35;
-        this.drawTile(rackCtx, cx - tileSize / 2, ty, tileSize, letter, { owner: PLAYER.HUMAN });
+        this.drawTile(rackCtx, cx - tileSize / 2, ty, tileSize, letter, rackOpts);
         rackCtx.restore();
         continue;
       }
-      this.drawTile(rackCtx, cx - tileSize / 2, ty, tileSize, letter, { owner: PLAYER.HUMAN });
+      this.drawTile(rackCtx, cx - tileSize / 2, ty, tileSize, letter, rackOpts);
     }
   }
 
@@ -7533,8 +7610,14 @@ class Game {
     var pulseLift = 0;
     if (opts.placePulse > 0) {
       var bounce = Math.sin(opts.placePulse * Math.PI);
-      pulseScale = 1 + 0.18 * bounce;
-      pulseLift = bounce * size * 0.12;
+      /* Slight overshoot then settle — less jumpy than the old bounce. */
+      pulseScale = 1 + 0.11 * bounce;
+      pulseLift = bounce * size * 0.07;
+    }
+    if (opts.rackSettle > 0) {
+      var settle = Math.sin(opts.rackSettle * Math.PI);
+      pulseScale = 1 + 0.09 * settle;
+      pulseLift = settle * size * 0.06;
     }
 
     ctx.save();
@@ -8970,7 +9053,7 @@ class Game {
     this.clearRackSelection();
     this.clearExchangeMode();
     this.resetPlayPreviewUi();
-    this.boardBannerFx = null;
+    /* Keep bingo/CONNECTION banners — recall only clears local preview UI. */
     this.opponentWordHighlight = null;
 
     if (!n) {
@@ -9030,6 +9113,7 @@ class Game {
       'Recalled ' + n + ' tile' + (n === 1 ? '' : 's') + ' to rack.',
       'success'
     );
+    this.startRackSettle(toRestore);
     if (!this.isOnlineMode()) this.save();
     this.updatePendingPreview();
     this.updateUI();

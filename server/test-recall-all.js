@@ -191,7 +191,7 @@ function createHarness(opts) {
       var n = toRestore.length;
       g.logs.push('Recalling ' + n + ' tiles from board to rack');
       g.resetPlayPreviewUi();
-      g.boardBannerFx = null;
+      /* Keep celebrate banners (bingo/CONNECTION) — recall only clears preview UI. */
       g.opponentWordHighlight = null;
       if (!n) {
         g.setMessage('No unsubmitted tiles to recall. Submitted words stay on the board.');
