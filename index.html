@@ -10,9 +10,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="site.css?v=2">
+  <link rel="preload" as="image" href="/images/qwerty-header.png">
+  <link rel="preload" as="image" href="/images/hero-board.jpg">
+  <link rel="stylesheet" href="site.css?v=3">
   <script>
-    /* Deep links (?guest / ?code=) still open the game, not the marketing page. */
     (function () {
       var q = location.search || '';
       if (/[?&](guest|code)=/i.test(q) || /(?:^|[?&])guest(?:&|$)/i.test(q)) {
@@ -23,99 +24,103 @@
 </head>
 <body>
   <header class="site-nav">
-    <a class="nav-brand" href="#top" aria-label="QWERTY home">
-      <img
-        src="/images/qwerty-header.png"
-        srcset="/images/qwerty-header.png 1x, /images/qwerty-header-2x.png 2x"
-        width="168"
-        height="37"
-        alt="QWERTY"
-      >
-    </a>
-    <nav aria-label="Page">
-      <ul class="nav-links">
-        <li><a href="#screens">Screens</a></li>
-        <li><a href="#rules">Rules</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#tournaments">Tournaments</a></li>
-        <li><a class="btn btn-primary nav-play" href="play.html">Play Now</a></li>
-      </ul>
-    </nav>
+    <div class="site-nav-inner">
+      <a class="nav-brand" href="#top" aria-label="QWERTY home">
+        <img
+          src="/images/qwerty-header.png"
+          srcset="/images/qwerty-header.png 1x, /images/qwerty-header-2x.png 2x"
+          width="150"
+          height="33"
+          alt="QWERTY"
+        >
+      </a>
+      <nav aria-label="Page">
+        <ul class="nav-links">
+          <li><a href="#screens">Screens</a></li>
+          <li><a href="#rules">Rules</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a class="btn btn-primary nav-play" href="play.html">Play Now</a></li>
+        </ul>
+      </nav>
+    </div>
   </header>
 
   <main id="top">
     <section class="hero" aria-label="QWERTY">
-      <div class="hero-media" aria-hidden="true">
-        <img
-          src="/images/hero-board.png"
-          alt=""
-          width="737"
-          height="407"
-          fetchpriority="high"
-        >
-        <div class="hero-shade"></div>
-      </div>
       <div class="hero-content">
         <h1 class="hero-brand">
           <img
             src="/images/qwerty-header.png"
             srcset="/images/qwerty-header.png 1x, /images/qwerty-header-2x.png 2x"
-            width="478"
-            height="105"
+            width="380"
+            height="84"
             alt="QWERTY"
           >
         </h1>
         <p class="hero-line">Build words from your corner.</p>
-        <p class="hero-sub">Race to 1000 against the computer or a friend — bright tiles, gold stars, live chat.</p>
+        <p class="hero-sub">A bright race to 1000 — solo vs computer or live with a friend.</p>
         <div class="hero-cta">
           <a class="btn btn-primary btn-play-lg" href="play.html">Play Now</a>
           <a class="btn btn-ghost" href="#rules">How it works</a>
         </div>
       </div>
+      <figure class="hero-preview">
+        <img
+          src="/images/hero-board.jpg"
+          width="720"
+          height="398"
+          alt="QWERTY game board with Computer and You beside the grid"
+          fetchpriority="high"
+          decoding="async"
+        >
+      </figure>
     </section>
 
     <section class="section section--band" id="screens" aria-labelledby="screens-title">
       <div class="section-inner">
-        <p class="section-kicker">Inside the game</p>
-        <h2 class="section-title" id="screens-title">See the board</h2>
+        <p class="section-kicker">Screenshots</p>
+        <h2 class="section-title" id="screens-title">See the game</h2>
         <p class="section-lead">Green corner for you, amber for your opponent, gold stars for bonus points.</p>
         <div class="shot-stage">
           <figure>
             <div class="shot-frame">
               <img
-                src="/images/shot-board.png"
-                alt="QWERTY board with Computer and You beside the 15 by 15 grid"
+                src="/images/shot-board.jpg"
+                alt="Full QWERTY board with difficulty and turn indicators"
                 width="758"
                 height="447"
                 loading="lazy"
+                decoding="async"
               >
             </div>
-            <figcaption class="shot-caption">The full board with difficulty, scores, and your turn at a glance.</figcaption>
+            <figcaption class="shot-caption">Board, scores, and your turn — ready to play.</figcaption>
           </figure>
           <div class="shot-side">
             <figure>
               <div class="shot-frame">
                 <img
-                  src="/images/shot-grid.png"
-                  alt="Close-up of the QWERTY letter grid with gold star bonus squares"
+                  src="/images/shot-grid.jpg"
+                  alt="Close-up of cream tiles and gold star bonuses"
                   width="430"
                   height="367"
                   loading="lazy"
+                  decoding="async"
                 >
               </div>
-              <figcaption class="shot-caption">Cream tiles, gold stars, and clear start corners.</figcaption>
+              <figcaption class="shot-caption">Cream tiles and gold star bonuses.</figcaption>
             </figure>
             <figure>
-              <div class="shot-frame shot-frame--rack">
+              <div class="shot-frame shot-frame--wide">
                 <img
-                  src="/images/shot-rack.png"
-                  alt="QWERTY tile rack and SUBMIT controls"
-                  width="1024"
-                  height="147"
+                  src="/images/shot-rack.jpg"
+                  alt="Tile rack and SUBMIT controls"
+                  width="900"
+                  height="129"
                   loading="lazy"
+                  decoding="async"
                 >
               </div>
-              <figcaption class="shot-caption">Rack, timer, and SUBMIT — ready when you are.</figcaption>
+              <figcaption class="shot-caption">Your rack, timer, and SUBMIT.</figcaption>
             </figure>
           </div>
         </div>
@@ -123,25 +128,25 @@
     </section>
 
     <section class="section" id="rules" aria-labelledby="rules-title">
-      <p class="section-kicker">How to play</p>
+      <p class="section-kicker">Rules</p>
       <h2 class="section-title" id="rules-title">Four rules to start</h2>
-      <p class="section-lead">Learn these in a minute. The full guide is in the game.</p>
+      <p class="section-lead">Learn these in a minute. Full rules are inside the game.</p>
       <ol class="rules-list">
         <li>
           <div>
             <strong>Start on green</strong>
-            <span>Your first word must cover the green YOU square. Opponents start on amber P2.</span>
+            <span>Your first word covers the green YOU square. Opponents start on amber P2.</span>
           </div>
         </li>
         <li>
           <div>
-            <strong>Connect your words</strong>
-            <span>Each new play shares a letter with the board — classic crossword rules.</span>
+            <strong>Connect every play</strong>
+            <span>New words share a letter with the board — crossword style.</span>
           </div>
         </li>
         <li>
           <div>
-            <strong>Hit gold stars</strong>
+            <strong>Chase gold stars</strong>
             <span>Land on a star for +50. First to 1000 points wins.</span>
           </div>
         </li>
@@ -152,16 +157,16 @@
           </div>
         </li>
       </ol>
-      <p class="rules-more"><a href="play.html">Open the game</a> for Game rules and the 2-letter word list.</p>
+      <p class="rules-more"><a href="play.html">Play Now</a> for the full rules and 2-letter word list.</p>
     </section>
 
     <section class="section section--band" id="about" aria-labelledby="about-title">
       <div class="section-inner">
-        <p class="section-kicker">About QWERTY</p>
-        <h2 class="section-title" id="about-title">Built for lively word nights</h2>
+        <p class="section-kicker">About</p>
+        <h2 class="section-title" id="about-title">Made for lively word nights</h2>
         <div class="about-copy">
-          <p>QWERTY is a colorful word game in the spirit of classic online tile battles — quick matches vs the computer, or longer games with someone you know.</p>
-          <p>Private rooms, live chat, and three difficulty levels keep every session fresh.</p>
+          <p>QWERTY is a colorful word game inspired by classic online tile battles — quick matches vs the computer, or longer games with someone you know.</p>
+          <p>Private rooms, live chat, and Easy / Medium / Hard keep every session fresh.</p>
         </div>
         <ul class="about-modes" aria-label="Ways to play">
           <li>Vs Computer</li>
@@ -179,20 +184,20 @@
         <div class="board-row">
           <span class="board-rank">1</span>
           <span>Deb</span>
-          <span class="board-score">—</span>
+          <span>—</span>
         </div>
         <div class="board-row">
           <span class="board-rank">2</span>
           <span>Blake</span>
-          <span class="board-score">—</span>
+          <span>—</span>
         </div>
         <div class="board-row">
           <span class="board-rank">3</span>
           <span>You</span>
-          <span class="board-score">—</span>
+          <span>—</span>
         </div>
       </div>
-      <p class="teaser-note">Public leaderboards are on the roadmap. Jump in now — your wins will have a place to shine.</p>
+      <p class="teaser-note">Public leaderboards are on the roadmap. Play now — your wins will have a place to shine.</p>
     </section>
   </main>
 
