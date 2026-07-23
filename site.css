@@ -80,7 +80,7 @@ a {
 }
 
 .nav-brand img {
-  width: clamp(112px, 26vw, 150px);
+  width: clamp(130px, 32vw, 180px);
   height: auto;
 }
 
@@ -195,9 +195,9 @@ a {
 }
 
 .hero-brand {
-  width: min(100%, 380px);
+  width: min(100%, 420px);
   margin: 0 auto 1rem;
-  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.35));
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.28));
 }
 
 .hero-brand img {
