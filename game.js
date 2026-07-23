@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '313';
+  var QWERTY_BUILD = '314';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -2013,7 +2013,7 @@ class Game {
     var shareUrl = this.pickShareUrl(hostInfo);
     if (!shareUrl || !code) return '';
     var base = shareUrl.replace(/\/+$/, '');
-    return base + '/?guest&code=' + encodeURIComponent(code);
+    return base + '/play.html?guest&code=' + encodeURIComponent(code);
   }
 
   updateOnlineShareUI(hostInfo, code) {
@@ -11319,7 +11319,7 @@ function roundRect(ctx, x, y, w, h, r) {
       try {
         document.body.dataset.qwertyBuild = QWERTY_BUILD;
         if (typeof console !== 'undefined' && console.info) {
-          console.info('QWERTY build ' + QWERTY_BUILD + ' — original board fill + under-board status');
+          console.info('QWERTY build ' + QWERTY_BUILD + ' — landing site + play.html');
         }
         new Game();
       } catch (err) {

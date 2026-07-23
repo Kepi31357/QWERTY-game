@@ -22,7 +22,7 @@ function assert(cond, msg) {
 }
 
 var root = path.join(__dirname, '..');
-var htmlSrc = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+var htmlSrc = fs.readFileSync(path.join(root, 'play.html'), 'utf8');
 var cssSrc = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 var gameSrc = fs.readFileSync(path.join(root, 'game.js'), 'utf8');
 

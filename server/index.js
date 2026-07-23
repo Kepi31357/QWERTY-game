@@ -788,8 +788,21 @@ function mimeFor(filePath, data) {
 
 function serveStatic(req, res) {
   let urlPath = req.url.split('?')[0];
+  var query = '';
+  var qAt = req.url.indexOf('?');
+  if (qAt >= 0) query = req.url.slice(qAt);
   if (serveApi(req, res, urlPath)) return;
+  /* Join / room deep links always open the game, not the marketing landing page. */
+  if (
+    urlPath === '/' &&
+    (/[?&]code=/i.test(query) || /(?:^|[?&])guest(?:&|$|=)/i.test(query))
+  ) {
+    res.writeHead(302, { Location: '/play.html' + query });
+    res.end();
+    return;
+  }
   if (urlPath === '/') urlPath = '/index.html';
+  if (urlPath === '/play' || urlPath === '/game') urlPath = '/play.html';
   if (urlPath === '/favicon.ico') urlPath = '/favicon.svg';
 
   const filePath = resolveStaticPath(urlPath);
@@ -987,7 +1000,7 @@ function buildRoomShareMessage(code) {
     return (
       'Send Blake: ' +
       base.replace(/\/+$/, '') +
-      '/?guest&code=' +
+      '/play.html?guest&code=' +
       code +
       where
     );
@@ -997,7 +1010,7 @@ function buildRoomShareMessage(code) {
     code +
     ' — Blake must open http://YOUR-WIFI-IP:' +
     PORT +
-    '/?guest&code=' +
+    '/play.html?guest&code=' +
     code +
     ' from the server window. NOT 127.0.0.1. Off Wi‑Fi? See NGROK.md.'
   );
