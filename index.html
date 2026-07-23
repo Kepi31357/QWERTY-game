@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="site.css?v=1">
+  <link rel="stylesheet" href="site.css?v=2">
   <script>
     /* Deep links (?guest / ?code=) still open the game, not the marketing page. */
     (function () {
@@ -23,7 +23,15 @@
 </head>
 <body>
   <header class="site-nav">
-    <a class="nav-mark" href="#top" aria-label="QWERTY home">QWERTY</a>
+    <a class="nav-brand" href="#top" aria-label="QWERTY home">
+      <img
+        src="/images/qwerty-header.png"
+        srcset="/images/qwerty-header.png 1x, /images/qwerty-header-2x.png 2x"
+        width="168"
+        height="37"
+        alt="QWERTY"
+      >
+    </a>
     <nav aria-label="Page">
       <ul class="nav-links">
         <li><a href="#screens">Screens</a></li>
@@ -39,10 +47,10 @@
     <section class="hero" aria-label="QWERTY">
       <div class="hero-media" aria-hidden="true">
         <img
-          src="/images/screenshot-desktop.png"
+          src="/images/hero-board.png"
           alt=""
-          width="1280"
-          height="800"
+          width="737"
+          height="407"
           fetchpriority="high"
         >
         <div class="hero-shade"></div>
@@ -50,7 +58,6 @@
       <div class="hero-content">
         <h1 class="hero-brand">
           <img
-            class="qwerty-header-img"
             src="/images/qwerty-header.png"
             srcset="/images/qwerty-header.png 1x, /images/qwerty-header-2x.png 2x"
             width="478"
@@ -59,83 +66,115 @@
           >
         </h1>
         <p class="hero-line">Build words from your corner.</p>
-        <p class="hero-sub">A bright Scrabble-style race to 1000 — solo vs computer or with a friend online.</p>
+        <p class="hero-sub">Race to 1000 against the computer or a friend — bright tiles, gold stars, live chat.</p>
         <div class="hero-cta">
-          <a class="btn btn-primary" href="play.html">Play Now</a>
+          <a class="btn btn-primary btn-play-lg" href="play.html">Play Now</a>
           <a class="btn btn-ghost" href="#rules">How it works</a>
         </div>
       </div>
     </section>
 
-    <section class="section section--cream" id="screens" aria-labelledby="screens-title">
+    <section class="section section--band" id="screens" aria-labelledby="screens-title">
       <div class="section-inner">
-        <p class="section-kicker">Look inside</p>
-        <h2 class="section-title" id="screens-title">The board at a glance</h2>
-        <p class="section-lead">Your green corner, their amber start, gold stars for bonus points — and a rack that feels like classic Pogo nights.</p>
+        <p class="section-kicker">Inside the game</p>
+        <h2 class="section-title" id="screens-title">See the board</h2>
+        <p class="section-lead">Green corner for you, amber for your opponent, gold stars for bonus points.</p>
         <div class="shot-stage">
           <figure>
-            <div class="shot-main">
-              <img src="/images/screenshot-desktop.png" alt="QWERTY game board with Computer and You profiles beside a 15 by 15 grid" width="1280" height="800" loading="lazy">
+            <div class="shot-frame">
+              <img
+                src="/images/shot-board.png"
+                alt="QWERTY board with Computer and You beside the 15 by 15 grid"
+                width="758"
+                height="447"
+                loading="lazy"
+              >
             </div>
-            <figcaption class="shot-caption">Desktop play with scores, chat, and the full board side by side.</figcaption>
+            <figcaption class="shot-caption">The full board with difficulty, scores, and your turn at a glance.</figcaption>
           </figure>
-          <figure class="shot-side">
-            <div class="shot-main">
-              <img src="/images/screenshot-play.png" alt="QWERTY mid-game screen with tile rack and SUBMIT ready" width="1280" height="800" loading="lazy">
-            </div>
-            <figcaption class="shot-caption">Place tiles, watch the score flash, then hit SUBMIT before the timer ends.</figcaption>
-          </figure>
+          <div class="shot-side">
+            <figure>
+              <div class="shot-frame">
+                <img
+                  src="/images/shot-grid.png"
+                  alt="Close-up of the QWERTY letter grid with gold star bonus squares"
+                  width="430"
+                  height="367"
+                  loading="lazy"
+                >
+              </div>
+              <figcaption class="shot-caption">Cream tiles, gold stars, and clear start corners.</figcaption>
+            </figure>
+            <figure>
+              <div class="shot-frame shot-frame--rack">
+                <img
+                  src="/images/shot-rack.png"
+                  alt="QWERTY tile rack and SUBMIT controls"
+                  width="1024"
+                  height="147"
+                  loading="lazy"
+                >
+              </div>
+              <figcaption class="shot-caption">Rack, timer, and SUBMIT — ready when you are.</figcaption>
+            </figure>
+          </div>
         </div>
       </div>
     </section>
 
     <section class="section" id="rules" aria-labelledby="rules-title">
-      <p class="section-kicker">Rules teaser</p>
-      <h2 class="section-title" id="rules-title">Simple to start. Sharp to master.</h2>
-      <p class="section-lead">Everything you need for the first game — the full rules live inside Play.</p>
-      <ol class="rules-grid">
+      <p class="section-kicker">How to play</p>
+      <h2 class="section-title" id="rules-title">Four rules to start</h2>
+      <p class="section-lead">Learn these in a minute. The full guide is in the game.</p>
+      <ol class="rules-list">
         <li>
           <div>
-            <strong>Start from your corner</strong>
+            <strong>Start on green</strong>
             <span>Your first word must cover the green YOU square. Opponents start on amber P2.</span>
           </div>
         </li>
         <li>
           <div>
-            <strong>Connect every play</strong>
-            <span>New words share a letter with what’s already on the board — crossword style.</span>
+            <strong>Connect your words</strong>
+            <span>Each new play shares a letter with the board — classic crossword rules.</span>
           </div>
         </li>
         <li>
           <div>
-            <strong>Chase gold stars</strong>
-            <span>Land on a star for a +50 bonus. Race to 1000 points to win the match.</span>
+            <strong>Hit gold stars</strong>
+            <span>Land on a star for +50. First to 1000 points wins.</span>
           </div>
         </li>
         <li>
           <div>
             <strong>Invite a friend</strong>
-            <span>Create a room code, share the link, and play live with chat on the side.</span>
+            <span>Create a room code, share the link, and chat while you play.</span>
           </div>
         </li>
       </ol>
+      <p class="rules-more"><a href="play.html">Open the game</a> for Game rules and the 2-letter word list.</p>
     </section>
 
-    <section class="section section--cream" id="about" aria-labelledby="about-title">
+    <section class="section section--band" id="about" aria-labelledby="about-title">
       <div class="section-inner">
-        <p class="section-kicker">About</p>
-        <h2 class="section-title" id="about-title">Made for lively word nights</h2>
+        <p class="section-kicker">About QWERTY</p>
+        <h2 class="section-title" id="about-title">Built for lively word nights</h2>
         <div class="about-copy">
-          <p>QWERTY is a colorful word game inspired by classic online tile battles — built for quick matches against the computer or longer sessions with someone you know.</p>
-          <p>Pick Easy, Medium, or Hard, keep a private room for friends, and leave the dictionary arguments to the game.</p>
+          <p>QWERTY is a colorful word game in the spirit of classic online tile battles — quick matches vs the computer, or longer games with someone you know.</p>
+          <p>Private rooms, live chat, and three difficulty levels keep every session fresh.</p>
         </div>
+        <ul class="about-modes" aria-label="Ways to play">
+          <li>Vs Computer</li>
+          <li>Play with a Friend</li>
+          <li>Easy · Medium · Hard</li>
+        </ul>
       </div>
     </section>
 
     <section class="section" id="tournaments" aria-labelledby="tourneys-title">
       <p class="section-kicker">Tournaments</p>
       <h2 class="section-title" id="tourneys-title">Leaderboard coming soon</h2>
-      <p class="section-lead">Season ranks, weekly boards, and bragging rights — without changing how you play today.</p>
+      <p class="section-lead">Season ranks and weekly boards — without changing how you play today.</p>
       <div class="board-teaser" aria-hidden="true">
         <div class="board-row">
           <span class="board-rank">1</span>
@@ -153,13 +192,17 @@
           <span class="board-score">—</span>
         </div>
       </div>
-      <p class="teaser-note">Tournament scoring and public leaderboards are on the roadmap. Play now — your wins will have a place to shine.</p>
+      <p class="teaser-note">Public leaderboards are on the roadmap. Jump in now — your wins will have a place to shine.</p>
     </section>
   </main>
 
   <footer class="site-footer">
-    <a class="btn btn-primary" href="play.html">Play Now</a>
+    <a class="btn btn-primary btn-play-lg" href="play.html">Play Now</a>
     <p class="footer-copy">© QWERTY Word Game</p>
   </footer>
+
+  <div class="mobile-play-bar">
+    <a class="btn btn-primary btn-play-lg" href="play.html">Play Now</a>
+  </div>
 </body>
 </html>
