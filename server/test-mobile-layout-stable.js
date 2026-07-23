@@ -50,7 +50,7 @@ assert(/#game-canvas\s*\{[^}]*max-height:\s*none/m.test(cssSrc), 'board canvas n
 assert(/MAX_CELL_SIZE = 5[0-9]/.test(gameSrc), 'board max cell size restored larger');
 assert(gameSrc.indexOf('_boardFitAbovePanel304') >= 0, 'clears stale compact board lock');
 assert(gameSrc.indexOf('must stay clear of the last board row') >= 0, 'reserves full player panel height');
-assert(cssSrc.indexOf('flex: 0 0 auto') >= 0 && cssSrc.indexOf('game-board-column .board-wrap') >= 0, 'board-wrap sizes to canvas');
+assert(cssSrc.indexOf('flex: 1 1 auto') >= 0 && cssSrc.indexOf('game-board-column .board-wrap') >= 0, 'board-wrap fills column (original layout)');
 
 assert(htmlSrc.indexOf('id="message"') >= 0 && htmlSrc.indexOf('board-status-bar') >= 0, 'status bar present');
 assert(

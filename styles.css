@@ -652,12 +652,13 @@ body.game-exited .app {
 }
 
 .game-board-column .board-wrap {
-  /* Size to the canvas — do not shrink the grid to make room for the status strip. */
-  flex: 0 0 auto;
+  /* Fill the column so the board sits in the original tall navy panel;
+     status stays as a sibling just under it (above the rack). */
+  flex: 1 1 auto;
   min-height: 0;
   width: 100%;
-  height: auto;
-  max-height: none;
+  height: 100%;
+  max-height: 100%;
   border-radius: 0 0 14px 14px;
 }
 
@@ -3230,21 +3231,19 @@ body.menu-visible .game-over-splash {
   }
 
   body:not(.menu-visible):not(.game-exited) .board-wrap {
-    flex: 0 0 auto;
+    flex: 1;
     min-height: 0;
-    height: auto;
-    max-height: none;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     overflow: hidden;
     grid-template-columns: none;
     grid-template-rows: none;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-center {
-    flex: 0 0 auto;
+    flex: 1;
     min-height: 0;
     width: 100%;
     display: flex;
@@ -3254,20 +3253,18 @@ body.menu-visible .game-over-splash {
     position: relative;
   }
 
-  /* Compact: board column sits above the player panel with a clear gap. */
+  /* Compact: in-flow under board, above rack — never overlaps controls. */
   body:not(.menu-visible):not(.game-exited) .game-board-column {
     display: flex;
     flex-direction: column;
     align-items: stretch;
     flex: 1 1 auto;
     min-height: 0;
-    margin-bottom: 10px;
-    padding-bottom: 2px;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-status-bar,
   body:not(.menu-visible):not(.game-exited) #panel-message-row {
-    --qwerty-status-h: 2.6em; /* compact so the last board row stays clear */
+    --qwerty-status-h: 3.5em; /* 3 lines @ mobile font — fixed, no board jump */
     position: relative;
     flex: 0 0 var(--qwerty-status-h);
     flex-grow: 0;
