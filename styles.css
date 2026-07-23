@@ -687,6 +687,10 @@ body.game-exited .app {
   overflow: hidden;
   pointer-events: none;
   z-index: 2;
+  /* Slot sits on the app gradient — never paint a banner behind status text. */
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .board-status-bar[hidden],
@@ -2523,8 +2527,15 @@ body.menu-visible .game-over-splash {
 }
 
 .message-bar.error:not([hidden]) {
-  display: block !important;
+  /* Keep flex centering — block was fighting under-board status alignment. */
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   color: #ffb4b4;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .message-bar.success {
@@ -3277,6 +3288,9 @@ body.menu-visible .game-over-splash {
     left: auto;
     bottom: auto;
     pointer-events: none;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-status-bar[hidden],
@@ -3291,6 +3305,8 @@ body.menu-visible .game-over-splash {
 
   body:not(.menu-visible):not(.game-exited) .game-layout .board-status-bar > .message-bar:not([hidden]),
   body:not(.menu-visible):not(.game-exited) .board-status-bar > .message-bar:not([hidden]),
+  body:not(.menu-visible):not(.game-exited) .game-layout #panel-message-row > .message-bar:not([hidden]),
+  body:not(.menu-visible):not(.game-exited) #panel-message-row > .message-bar:not([hidden]),
   body:not(.menu-visible):not(.game-exited) #message:not([hidden]) {
     display: flex !important;
     justify-content: center;
