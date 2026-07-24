@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '320';
+  var QWERTY_BUILD = '321';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -4340,10 +4340,7 @@ class Game {
     this.stopTurnTimer();
     this.pendingPlacements.clear();
     this.clearOpponentWordHighlight();
-    var self = this;
-    setTimeout(function () {
-      self.showExitScreen();
-    }, 0);
+    location.href = '/';
   }
 
   cancelPendingAI() {
