@@ -303,6 +303,13 @@ ul {
   background: #1a2744;
 }
 
+.hero-downloads {
+  width: min(100%, 560px);
+  margin: 1.35rem auto 0;
+  padding: 0 var(--page-pad);
+  text-align: center;
+}
+
 /* ── Sections ── */
 .section {
   width: min(100%, var(--max));
