@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '319';
+  var QWERTY_BUILD = '320';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -1797,12 +1797,8 @@ class Game {
     var el = this.ui.onlineNickname;
     var name = el && el.value ? el.value.trim() : '';
     if (!name) name = loadStoredNickname();
-    if (!name) {
-      if (role === 'guest') name = DEFAULT_GUEST_NAME;
-      else if (role === 'host') name = DEFAULT_HOST_NAME;
-      else name = 'Player';
-    }
-    if (el && !String(el.value || '').trim() && name && name !== 'Player') {
+    if (!name) return '';
+    if (el && !String(el.value || '').trim()) {
       el.value = name;
     }
     saveStoredNickname(name);
@@ -1940,8 +1936,8 @@ class Game {
       this.ui.onlineNickname.value = parsed.name.slice(0, 20);
       saveStoredNickname(parsed.name);
     } else if (parsed.guest && this.ui.onlineNickname && !String(this.ui.onlineNickname.value || '').trim()) {
-      var guestDefault = loadStoredNickname() || DEFAULT_GUEST_NAME;
-      this.ui.onlineNickname.value = guestDefault.slice(0, 20);
+      var guestDefault = loadStoredNickname();
+      if (guestDefault) this.ui.onlineNickname.value = guestDefault.slice(0, 20);
     }
     if (parsed.code && this.ui.onlineJoinCode) {
       this.ui.onlineJoinCode.value = parsed.code.slice(0, 6);
@@ -1961,6 +1957,7 @@ class Game {
     var code = parsed.code || (stored && stored.code);
     if (!code) return;
     var nick = parsed.name || (stored && stored.nickname) || this.getOnlineNickname(parsed.guest || parsed.code ? 'guest' : 'host');
+    if (!nick) return;
     if (parsed.name && this.ui.onlineNickname) {
       this.ui.onlineNickname.value = parsed.name.slice(0, 20);
     }
@@ -2379,6 +2376,12 @@ class Game {
 
   createOnlineRoom() {
     var self = this;
+    var nick = this.getOnlineNickname('host');
+    if (!nick) {
+      this.setOnlineStatus('Enter your nickname first.', true);
+      if (this.ui.onlineNickname) this.ui.onlineNickname.focus();
+      return;
+    }
     var code = this.getMenuRoomCode();
     if (code && (code.length < 4 || code.length > 6)) {
       this.setOnlineStatus('Room code must be 4–6 characters (or leave blank for MAIN).', true);
@@ -2395,7 +2398,7 @@ class Game {
         });
       })
       .then(function () {
-        QWERTYOnline.createRoom(self.getOnlineNickname('host'), code || undefined);
+        QWERTYOnline.createRoom(nick, code || undefined);
       })
       .catch(function (err) {
         self.setOnlineStatus(err.message || 'Could not connect.', true);
@@ -2404,6 +2407,12 @@ class Game {
 
   joinOnlineRoom() {
     var self = this;
+    var nick = this.getOnlineNickname('guest');
+    if (!nick) {
+      this.setOnlineStatus('Enter your nickname first.', true);
+      if (this.ui.onlineNickname) this.ui.onlineNickname.focus();
+      return;
+    }
     var code = this.getMenuRoomCode() || DEFAULT_ROOM_CODE;
     if (code.length < 4 || code.length > 6) {
       this.setOnlineStatus('Room code must be 4–6 characters (or leave blank for MAIN).', true);
@@ -2418,7 +2427,7 @@ class Game {
         });
       })
       .then(function () {
-        QWERTYOnline.joinRoom(code, self.getOnlineNickname('guest'), 'guest');
+        QWERTYOnline.joinRoom(code, nick, 'guest');
       })
       .catch(function (err) {
         self.setOnlineStatus(err.message || 'Could not connect.', true);
@@ -11319,7 +11328,7 @@ function roundRect(ctx, x, y, w, h, r) {
       try {
         document.body.dataset.qwertyBuild = QWERTY_BUILD;
         if (typeof console !== 'undefined' && console.info) {
-          console.info('QWERTY build ' + QWERTY_BUILD + ' — transparent QWERTY header');
+          console.info('QWERTY build ' + QWERTY_BUILD + ' — open nickname field on start screen');
         }
         new Game();
       } catch (err) {
