@@ -80,7 +80,7 @@ a {
 }
 
 .nav-brand img {
-  width: clamp(130px, 32vw, 180px);
+  width: clamp(140px, 34vw, 190px);
   height: auto;
 }
 
