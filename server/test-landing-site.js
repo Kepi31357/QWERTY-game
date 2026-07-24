@@ -31,7 +31,7 @@ assert(landing.indexOf('shot-board.jpg') >= 0, 'gallery uses jpeg');
 assert(landing.indexOf('id="rules"') >= 0, 'rules section');
 assert(landing.indexOf('id="screens"') >= 0, 'screenshots section');
 assert(landing.indexOf('id="about"') >= 0, 'about section');
-assert(landing.indexOf('site.css?v=3') >= 0, 'cache-busted stylesheet');
+assert(/site\.css\?v=\d+/.test(landing), 'cache-busted stylesheet');
 assert(landing.indexOf('preload') >= 0, 'image preload for fast load');
 assert(landing.indexOf('mobile-play-bar') >= 0, 'mobile sticky Play Now');
 assert(css.indexOf('.hero-preview') >= 0, 'hero preview styles');
