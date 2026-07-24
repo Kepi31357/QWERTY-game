@@ -72,13 +72,18 @@ ul {
 }
 
 .site-nav-inner {
-  width: min(100%, var(--max));
-  margin: 0 auto;
-  padding: 0 var(--page-pad);
+  width: 100%;
+  margin: 0;
+  padding: 0 clamp(0.65rem, 2vw, 1.25rem) 0 0.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.nav-brand {
+  flex-shrink: 0;
+  margin-left: 0;
 }
 
 .nav-brand img {
@@ -160,13 +165,6 @@ ul {
 .btn-ghost:hover,
 .btn-ghost:focus-visible {
   background: rgba(255, 248, 231, 0.2);
-}
-
-.nav-play {
-  min-height: 2.45rem;
-  padding: 0.45rem 1rem;
-  font-size: 0.88rem;
-  border-radius: 12px;
 }
 
 /* Store badges */
