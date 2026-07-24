@@ -337,6 +337,12 @@ ul {
   max-width: 22ch;
 }
 
+#features-title {
+  max-width: none;
+  white-space: nowrap;
+  font-size: clamp(1.15rem, 3.4vw, 2rem);
+}
+
 .section-lead {
   font-size: 1.05rem;
   color: var(--ink-muted);
