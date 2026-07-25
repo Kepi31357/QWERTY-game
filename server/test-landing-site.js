@@ -28,6 +28,8 @@ assert(landing.indexOf('btn-play-lg') >= 0, 'large Play Now button');
 assert(landing.indexOf('hero-preview') >= 0, 'smaller hero board preview');
 assert(landing.indexOf('hero-board.jpg') >= 0, 'compressed hero jpeg');
 assert(landing.indexOf('shot-board.jpg') >= 0, 'gallery uses jpeg');
+assert(landing.indexOf('shot-mobile.png') >= 0, 'mobile app screenshot in gallery');
+assert(fs.existsSync(path.join(root, 'public/images/shot-mobile.png')), 'shot-mobile.png on disk');
 assert(landing.indexOf('id="features"') >= 0, 'features / how to play section');
 assert(landing.indexOf('id="screens"') >= 0, 'screenshots section');
 assert(landing.indexOf('id="about"') >= 0, 'about section');
