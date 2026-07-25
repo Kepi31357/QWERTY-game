@@ -41,7 +41,11 @@ assert(/site\.css\?v=\d+/.test(landing), 'cache-busted stylesheet');
 assert(landing.indexOf('preload') >= 0, 'image preload for fast load');
 assert(landing.indexOf('mobile-play-bar') >= 0, 'mobile sticky Play Now');
 assert(css.indexOf('.hero-preview') >= 0, 'hero preview styles');
-assert(css.indexOf('max-width: 480px') >= 0 || css.indexOf('width: min(100%, 480px)') >= 0, 'board preview size capped');
+assert(
+  css.indexOf('hero-preview') >= 0 &&
+    (css.indexOf('1120px') >= 0 || css.indexOf('100dvh') >= 0),
+  'board preview scales with viewport'
+);
 assert(css.indexOf('.btn-play-lg') >= 0, 'large play button styles');
 assert(css.indexOf('.store-badge') >= 0, 'store badge styles');
 assert(css.indexOf('--pogo-purple') >= 0, 'brand colors');
