@@ -220,9 +220,10 @@ ul {
 }
 
 .store-badge-text strong {
-  font-family: var(--font-display);
-  font-size: 0.98rem;
-  font-weight: 800;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
 .store-note {
@@ -626,10 +627,6 @@ ul {
   font-size: 0.86rem;
 }
 
-.mobile-play-bar {
-  display: none;
-}
-
 @keyframes rise-in {
   from {
     opacity: 0;
@@ -705,12 +702,13 @@ ul {
 }
 
 @media (max-width: 779px) {
-  .nav-links a:not(.btn) {
+  /* Center logo is enough on phones — hide top nav chrome */
+  .site-nav {
     display: none;
   }
 
   .hero {
-    min-height: calc(100dvh - var(--nav-h));
+    min-height: 100dvh;
     padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
   }
 
@@ -723,7 +721,7 @@ ul {
   }
 
   .hero-preview {
-    width: min(94vw, calc((100dvh - var(--nav-h) - 16.5rem) * 1.81), 640px);
+    width: min(94vw, calc((100dvh - 16.5rem) * 1.81), 640px);
   }
 
   .hero .btn-play-lg {
@@ -732,29 +730,5 @@ ul {
 
   .btn-play-lg {
     width: min(100%, 300px);
-  }
-
-  body {
-    padding-bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
-  }
-
-  .mobile-play-bar {
-    display: block;
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 50;
-    padding: 0.7rem var(--page-pad) calc(0.7rem + env(safe-area-inset-bottom, 0px));
-    background: linear-gradient(180deg, transparent, rgba(45, 27, 78, 0.9) 40%);
-    pointer-events: none;
-  }
-
-  .mobile-play-bar .btn {
-    width: 100%;
-    max-width: 420px;
-    margin: 0 auto;
-    display: flex;
-    pointer-events: auto;
   }
 }

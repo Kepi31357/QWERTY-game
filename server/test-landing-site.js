@@ -39,7 +39,9 @@ assert(landing.indexOf('App Store') >= 0 && landing.indexOf('Google Play') >= 0,
 assert(landing.indexOf('site-footer') >= 0, 'footer');
 assert(/site\.css\?v=\d+/.test(landing), 'cache-busted stylesheet');
 assert(landing.indexOf('preload') >= 0, 'image preload for fast load');
-assert(landing.indexOf('mobile-play-bar') >= 0, 'mobile sticky Play Now');
+assert(landing.indexOf('mobile-play-bar') < 0, 'no sticky mobile Play Now bar');
+assert(css.indexOf('.site-nav') >= 0 && /@media \(max-width: 779px\)[\s\S]*\.site-nav\s*\{\s*display:\s*none/.test(css), 'hide top nav on mobile');
+assert(css.indexOf('.store-badge-text strong') >= 0 && css.indexOf('var(--font-body)') >= 0, 'store badge uses readable body font');
 assert(css.indexOf('.hero-preview') >= 0, 'hero preview styles');
 assert(
   css.indexOf('hero-preview') >= 0 &&
