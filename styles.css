@@ -172,6 +172,8 @@ body.game-exited .app {
   width: min(100%, 520px);
   max-height: 200px;
   object-fit: contain;
+  object-position: center;
+  background: transparent;
 }
 
 .main-menu-section {
@@ -1531,6 +1533,8 @@ body.game-exited .app {
   height: auto;
   margin: 0 auto;
   object-fit: contain;
+  object-position: center;
+  background: transparent;
   user-select: none;
   -webkit-user-drag: none;
 }
@@ -1539,6 +1543,8 @@ body.game-exited .app {
   width: min(100%, 360px);
   max-height: 88px;
   object-fit: contain;
+  object-position: center;
+  background: transparent;
 }
 
 .tagline {

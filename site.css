@@ -95,6 +95,7 @@ ul {
   max-height: calc(var(--nav-h) - 0.85rem);
   object-fit: contain;
   object-position: left center;
+  background: transparent;
 }
 
 .nav-links {
@@ -285,6 +286,7 @@ ul {
   margin: 0 auto;
   object-fit: contain;
   object-position: center;
+  background: transparent;
 }
 
 .hero-line {
@@ -636,6 +638,9 @@ ul {
 .footer-brand {
   width: min(100%, 240px);
   margin: 0 auto 1.1rem;
+  background: transparent;
+  object-fit: contain;
+  object-position: center;
 }
 
 .footer-links {
