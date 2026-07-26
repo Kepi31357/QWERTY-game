@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '323';
+  var QWERTY_BUILD = '324';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -1173,7 +1173,26 @@ class Game {
     if (this.isCompactLayout()) {
       return { gutterW: 0, sidebarW: 0, edgePad: 16 };
     }
-    return { gutterW: 236, sidebarW: 260, edgePad: 48 };
+    /* Measure side profiles so the grid can grow and stay centered in the navy panel. */
+    var left = document.getElementById('board-gutter-left');
+    var right = document.getElementById('board-gutter-right');
+    var wrap = this.getBoardWrapEl();
+    var gap = 12;
+    if (wrap) {
+      var cs = window.getComputedStyle(wrap);
+      gap = parseFloat(cs.columnGap || cs.gap) || 12;
+    }
+    var guttersVisible =
+      left &&
+      right &&
+      left.offsetParent !== null &&
+      right.offsetParent !== null &&
+      left.offsetWidth > 0 &&
+      right.offsetWidth > 0;
+    var gutterW = guttersVisible
+      ? left.offsetWidth + right.offsetWidth + gap * 2
+      : 224; /* 100 + 100 + 12 + 12 */
+    return { gutterW: gutterW, sidebarW: 260, edgePad: 48 };
   }
 
   getBoardCenterEl() {
@@ -11390,7 +11409,7 @@ function roundRect(ctx, x, y, w, h, r) {
       try {
         document.body.dataset.qwertyBuild = QWERTY_BUILD;
         if (typeof console !== 'undefined' && console.info) {
-          console.info('QWERTY build ' + QWERTY_BUILD + ' — avatar picker + board centering');
+          console.info('QWERTY build ' + QWERTY_BUILD + ' — centered board in navy panel');
         }
         new Game();
       } catch (err) {
