@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '322';
+  var QWERTY_BUILD = '323';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -26,6 +26,20 @@
   var NICKNAME_KEY = 'qwerty-nickname';
   var DEFAULT_HOST_NAME = 'Deb';
   var DEFAULT_GUEST_NAME = 'Blake';
+
+  function getSelectedAvatarId() {
+    if (typeof QWERTYAvatars !== 'undefined' && QWERTYAvatars.loadStoredAvatarId) {
+      return QWERTYAvatars.loadStoredAvatarId();
+    }
+    return 'maya';
+  }
+
+  function getComputerAvatarId() {
+    if (typeof QWERTYAvatars !== 'undefined' && QWERTYAvatars.COMPUTER_ID) {
+      return QWERTYAvatars.COMPUTER_ID;
+    }
+    return 'computer';
+  }
   var SFX_BASE = '/sounds/';
   /* Logical kind → filename under public/sounds/ */
   var SFX_FILES = {
@@ -847,6 +861,9 @@ class Game {
       aiName: document.getElementById('ai-name'),
       playerName: document.getElementById('player-name'),
       chatSelfName: document.getElementById('chat-self-name'),
+      chatSelfAvatar: document.getElementById('chat-self-avatar'),
+      chatOpponentAvatar: document.getElementById('chat-opponent-avatar'),
+      avatarPicker: document.getElementById('avatar-picker'),
       chatOpponentName: document.getElementById('chat-opponent-name'),
       playAgainOverlay: document.getElementById('play-again-overlay'),
       playAgainTitle: document.getElementById('play-again-title'),
@@ -970,6 +987,8 @@ class Game {
     this.warnIfFileProtocol();
     this.setupSoundToggle();
     this.setupMainMenu();
+    this.setupAvatarPicker();
+    this.applyPlayerAvatars();
     this.setupOnline();
     this.applyOnlineUrlParams();
     this.setupBoardDifficultyPicker();
@@ -1906,6 +1925,52 @@ class Game {
       var aiAvatar = this.ui.boardAvatarAi.querySelector('.avatar');
       if (aiAvatar) aiAvatar.setAttribute('aria-label', oppLabel);
     }
+    this.applyPlayerAvatars();
+  }
+
+  setupAvatarPicker() {
+    var picker = this.ui.avatarPicker;
+    if (!picker || typeof QWERTYAvatars === 'undefined') return;
+    var self = this;
+    var selected = getSelectedAvatarId();
+    picker.innerHTML = '';
+    QWERTYAvatars.listSelectable().forEach(function (entry) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'avatar-picker-option' + (entry.id === selected ? ' selected' : '');
+      btn.setAttribute('role', 'option');
+      btn.setAttribute('aria-selected', entry.id === selected ? 'true' : 'false');
+      btn.setAttribute('data-avatar-id', entry.id);
+      btn.title = entry.label + (entry.age ? ' · ' + entry.age : '');
+      btn.innerHTML =
+        '<span class="avatar avatar-human" aria-hidden="true"></span>' +
+        '<span class="avatar-picker-name"></span>';
+      var nameEl = btn.querySelector('.avatar-picker-name');
+      if (nameEl) nameEl.textContent = entry.label;
+      QWERTYAvatars.paint(btn, entry.id);
+      btn.addEventListener('click', function () {
+        QWERTYAvatars.saveStoredAvatarId(entry.id);
+        var options = picker.querySelectorAll('.avatar-picker-option');
+        for (var i = 0; i < options.length; i++) {
+          var on = options[i].getAttribute('data-avatar-id') === entry.id;
+          options[i].classList.toggle('selected', on);
+          options[i].setAttribute('aria-selected', on ? 'true' : 'false');
+        }
+        self.applyPlayerAvatars();
+      });
+      picker.appendChild(btn);
+    });
+  }
+
+  applyPlayerAvatars() {
+    if (typeof QWERTYAvatars === 'undefined') return;
+    var selfId = getSelectedAvatarId();
+    /* Opponent avatar is local-only (no network sync — UI display). */
+    var oppId = this.isOnlineMode() ? 'jordan' : getComputerAvatarId();
+    QWERTYAvatars.paint(this.ui.boardAvatarHuman, selfId);
+    QWERTYAvatars.paint(this.ui.boardAvatarAi, oppId);
+    QWERTYAvatars.paint(this.ui.chatSelfAvatar, selfId);
+    QWERTYAvatars.paint(this.ui.chatOpponentAvatar, oppId);
   }
 
   parseOnlineUrlParams() {
@@ -11325,7 +11390,7 @@ function roundRect(ctx, x, y, w, h, r) {
       try {
         document.body.dataset.qwertyBuild = QWERTY_BUILD;
         if (typeof console !== 'undefined' && console.info) {
-          console.info('QWERTY build ' + QWERTY_BUILD + ' — tighter board layout and avatars');
+          console.info('QWERTY build ' + QWERTY_BUILD + ' — avatar picker + board centering');
         }
         new Game();
       } catch (err) {

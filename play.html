@@ -9,7 +9,7 @@
   <meta http-equiv="Expires" content="0">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <title>QWERTY Word Game</title>
-  <link rel="stylesheet" href="styles.css?v=322">
+  <link rel="stylesheet" href="styles.css?v=323">
   <script>
     window.QWERTY_WS_PORT = 3001;
     if (location.protocol === 'file:') {
@@ -29,13 +29,15 @@
   <div class="main-menu-overlay" id="main-menu" aria-hidden="false">
     <div class="main-menu-dialog" role="dialog" aria-labelledby="main-menu-title">
             <h1 class="main-menu-title" id="main-menu-title">
-        <img class="qwerty-header-img" src="/images/qwerty-header.png?v=322" srcset="/images/qwerty-header.png?v=322 1x, /images/qwerty-header-2x.png?v=322 2x" width="520" height="129" alt="QWERTY — A fun word game for everyone!">
+        <img class="qwerty-header-img" src="/images/qwerty-header.png?v=323" srcset="/images/qwerty-header.png?v=323 1x, /images/qwerty-header-2x.png?v=323 2x" width="520" height="129" alt="QWERTY — A fun word game for everyone!">
       </h1>
       <div class="main-menu-section main-menu-section--online">
         <h2 class="main-menu-heading">Play with a Friend</h2>
         <p class="main-menu-online-hint">Each room is a private game — multiple pairs can play at once. Leave the code blank for the default room <strong>MAIN</strong>, or enter a 4–6 character code (e.g. TESTA).</p>
         <label class="online-nickname-label" for="online-nickname">Your nickname</label>
         <input type="text" class="online-nickname-input" id="online-nickname" maxlength="20" autocomplete="nickname" placeholder="Enter your name">
+        <label class="online-nickname-label" id="avatar-picker-label">Your avatar</label>
+        <div class="avatar-picker" id="avatar-picker" role="listbox" aria-labelledby="avatar-picker-label"></div>
         <label class="online-nickname-label" for="online-join-code">Room code</label>
         <div class="online-join-row">
           <input type="text" class="online-code-input" id="online-join-code" maxlength="6" autocomplete="off" placeholder="Blank = MAIN" aria-label="Room code">
@@ -151,7 +153,7 @@
       <div class="board-top-header">
                 <header class="header opponent-grid-header board-grid-header">
       <h1 class="header-logo">
-        <img class="qwerty-header-img" src="/images/qwerty-header.png?v=322" srcset="/images/qwerty-header.png?v=322 1x, /images/qwerty-header-2x.png?v=322 2x" width="520" height="129" alt="QWERTY — A fun word game for everyone!">
+        <img class="qwerty-header-img" src="/images/qwerty-header.png?v=323" srcset="/images/qwerty-header.png?v=323 1x, /images/qwerty-header-2x.png?v=323 2x" width="520" height="129" alt="QWERTY — A fun word game for everyone!">
       </h1>
       <p class="in-game-room-badge" id="in-game-room-badge" hidden aria-live="polite">Room <span id="in-game-room-code"></span></p>
     </header>
@@ -168,25 +170,7 @@
             <div class="board-profile board-profile-ai">
               <div class="board-avatar-slot" id="board-avatar-ai">
                 <div class="turn-ribbon" id="ai-turn-ribbon" aria-hidden="true">Thinking...</div>
-                <div class="avatar avatar-ai" role="img" aria-label="Computer opponent">
-                  <svg class="avatar-art" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <defs>
-                      <linearGradient id="avatar-ai-bg" x1="20" y1="8" x2="60" y2="72" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#e8f4ff"/>
-                        <stop offset="1" stop-color="#b9d9f5"/>
-                      </linearGradient>
-                    </defs>
-                    <circle cx="40" cy="40" r="38" fill="url(#avatar-ai-bg)"/>
-                    <circle cx="40" cy="33" r="15" fill="#f7d2a8"/>
-                    <path d="M25 30c1-12 7-18 15-18s14 6 15 18" fill="#3d2a22"/>
-                    <path d="M22 28h7M51 28h7" stroke="#3d2a22" stroke-width="3.2" stroke-linecap="round"/>
-                    <circle cx="34" cy="33" r="2.2" fill="#1f1633"/>
-                    <circle cx="46" cy="33" r="2.2" fill="#1f1633"/>
-                    <path d="M34 40c2.2 2.8 9.8 2.8 12 0" fill="none" stroke="#1f1633" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M22 58c3-10 10-15 18-15s15 5 18 15v8H22z" fill="#4f9fd6"/>
-                    <rect x="30" y="56" width="20" height="5" rx="2.5" fill="#dceeff" opacity="0.9"/>
-                  </svg>
-                </div>
+                <div class="avatar avatar-ai" role="img" aria-label="Computer opponent" data-avatar-id="computer"></div>
               </div>
               <div class="board-gutter-score board-gutter-score-ai">
                 <div class="board-gutter-name" id="ai-name">Computer</div>
@@ -210,25 +194,7 @@
             <div class="board-profile board-profile-human">
               <div class="board-avatar-slot" id="board-avatar-human">
                 <div class="turn-ribbon" id="player-turn-ribbon" aria-hidden="true">Your Turn</div>
-                <div class="avatar avatar-human" role="img" aria-label="You">
-                  <svg class="avatar-art" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <defs>
-                      <linearGradient id="avatar-you-bg" x1="18" y1="10" x2="62" y2="74" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#fff1d6"/>
-                        <stop offset="1" stop-color="#f5c98a"/>
-                      </linearGradient>
-                    </defs>
-                    <circle cx="40" cy="40" r="38" fill="url(#avatar-you-bg)"/>
-                    <circle cx="40" cy="33" r="15" fill="#f0c090"/>
-                    <path d="M25 29c1-12 7-19 15-19s14 7 15 19" fill="#4a3728"/>
-                    <circle cx="40" cy="16" r="3.5" fill="#4a3728"/>
-                    <circle cx="34" cy="33" r="2.2" fill="#1f1633"/>
-                    <circle cx="46" cy="33" r="2.2" fill="#1f1633"/>
-                    <path d="M33 40c2.4 3.2 11.6 3.2 14 0" fill="none" stroke="#1f1633" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M22 58c3-10 10-15 18-15s15 5 18 15v8H22z" fill="#e8893a"/>
-                    <path d="M30 56h20" stroke="#fff3e0" stroke-width="3" stroke-linecap="round" opacity="0.55"/>
-                  </svg>
-                </div>
+                <div class="avatar avatar-human" role="img" aria-label="You" data-avatar-id="maya"></div>
               </div>
               <div class="board-gutter-score board-gutter-score-human">
                 <div class="board-gutter-name" id="player-name">You</div>
@@ -285,9 +251,11 @@
 
         <ul class="whos-here" id="whos-here">
           <li class="whos-here-row whos-here-you">
+            <span class="whos-here-avatar avatar avatar-human" id="chat-self-avatar" role="img" aria-label="Your avatar"></span>
             <span class="whos-here-name" id="chat-self-name">You</span>
           </li>
           <li class="whos-here-row whos-here-opponent">
+            <span class="whos-here-avatar avatar avatar-ai" id="chat-opponent-avatar" role="img" aria-label="Opponent avatar"></span>
             <span class="whos-here-name" id="chat-opponent-name">Computer</span>
             <div class="chat-mod-buttons">
               <button type="button" class="btn-chat-mod" id="btn-mute" title="Mute opponent chat">Mute</button>
@@ -442,12 +410,13 @@
       return false;
     };
   </script>
-  <script src="dictionary.js?v=322" onerror="qwertyBootError('Failed to load dictionary.js — make sure it is in the game folder.')"></script>
-  <script src="board-view.js?v=322"></script>
-  <script src="getAllWordsFormed.js?v=322"></script>
-  <script src="validateAndScorePlacement.js?v=322"></script>
-  <script src="game-engine.js?v=322"></script>
-  <script src="online.js?v=322"></script>
-  <script src="game.js?v=322" onerror="qwertyBootError('Failed to load game.js — use OPEN ONLINE GAME.bat to launch.')"></script>
+  <script src="dictionary.js?v=323" onerror="qwertyBootError('Failed to load dictionary.js — make sure it is in the game folder.')"></script>
+  <script src="avatars.js?v=323"></script>
+  <script src="board-view.js?v=323"></script>
+  <script src="getAllWordsFormed.js?v=323"></script>
+  <script src="validateAndScorePlacement.js?v=323"></script>
+  <script src="game-engine.js?v=323"></script>
+  <script src="online.js?v=323"></script>
+  <script src="game.js?v=323" onerror="qwertyBootError('Failed to load game.js — use OPEN ONLINE GAME.bat to launch.')"></script>
 </body>
 </html>

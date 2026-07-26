@@ -230,6 +230,64 @@ body.game-exited .app {
   margin-bottom: 10px;
 }
 
+.avatar-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  border-radius: 12px;
+  border: 2px solid rgba(92, 45, 145, 0.16);
+  background: rgba(255, 248, 231, 0.55);
+}
+
+.avatar-picker-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 4px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  color: var(--pogo-purple-dark, #3d1d63);
+  font: inherit;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.avatar-picker-option:hover,
+.avatar-picker-option:focus-visible {
+  border-color: rgba(92, 45, 145, 0.45);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.avatar-picker-option.selected {
+  border-color: var(--pogo-yellow, #ffd23f);
+  box-shadow: 0 0 0 2px rgba(92, 45, 145, 0.25);
+  background: #fff;
+}
+
+.avatar-picker-option .avatar {
+  width: 52px;
+  height: 52px;
+  border-width: 2px;
+}
+
+.avatar-picker-name {
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .online-menu-actions {
   margin-bottom: 10px;
 }
@@ -1070,9 +1128,21 @@ body.game-exited .app {
 .whos-here-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  padding: 4px 2px;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 6px 2px;
+}
+
+.whos-here-avatar {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-width: 2px;
+}
+
+.whos-here-name {
+  flex: 1;
+  min-width: 0;
 }
 
 .whos-here-you .whos-here-name {
@@ -1102,6 +1172,7 @@ body.game-exited .app {
   display: flex;
   gap: 4px;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .btn-chat-mod {
@@ -1834,12 +1905,12 @@ body.qwerty-guest-view .game-table {
     0 12px 32px rgba(26, 39, 68, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   display: grid;
-  /* Content-sized side profiles + centered board — less empty navy */
-  grid-template-columns: minmax(92px, 112px) minmax(0, auto) minmax(92px, 112px);
+  /* Fixed profile columns + flexible centered board (fills dark blue panel) */
+  grid-template-columns: 120px minmax(0, 1fr) 120px;
   grid-template-rows: minmax(0, 1fr);
   align-items: center;
   justify-content: center;
-  column-gap: 10px;
+  column-gap: 8px;
   row-gap: 0;
   width: 100%;
   max-width: 100%;
@@ -2212,7 +2283,7 @@ body.menu-visible .game-over-splash {
   justify-content: center;
   width: 100%;
   min-width: 0;
-  max-width: 112px;
+  max-width: 120px;
   padding: 0 2px;
   box-sizing: border-box;
   align-self: center;
@@ -2227,8 +2298,8 @@ body.menu-visible .game-over-splash {
   align-items: center;
   justify-content: center;
   align-self: center;
-  justify-self: center;
-  width: fit-content;
+  justify-self: stretch;
+  width: 100%;
   max-width: 100%;
   min-width: 0;
   min-height: 0;
@@ -2266,7 +2337,7 @@ body.menu-visible .game-over-splash {
   align-items: center;
   gap: 8px;
   width: 100%;
-  max-width: 108px;
+  max-width: 116px;
   position: relative;
 }
 
@@ -2327,7 +2398,7 @@ body.menu-visible .game-over-splash {
   align-items: stretch;
   gap: 5px;
   width: 100%;
-  max-width: 108px;
+  max-width: 116px;
   margin-top: 0;
 }
 
@@ -2384,12 +2455,12 @@ body.menu-visible .game-over-splash {
 }
 
 .board-avatar-slot .avatar {
-  width: 62px;
-  height: 62px;
-  border-width: 2.5px;
+  width: 78px;
+  height: 78px;
+  border-width: 3px;
   box-shadow:
-    0 0 0 2px rgba(255, 255, 255, 0.12),
-    0 4px 12px rgba(0, 0, 0, 0.28),
+    0 0 0 2px rgba(255, 255, 255, 0.14),
+    0 5px 14px rgba(0, 0, 0, 0.3),
     inset 0 0 0 1px rgba(0, 0, 0, 0.06);
 }
 
@@ -3629,8 +3700,13 @@ body.menu-visible .game-over-splash {
   }
 
   .board-avatar-slot .avatar {
-    width: 48px;
-    height: 48px;
+    width: 56px;
+    height: 56px;
+  }
+
+  .avatar-picker {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    max-height: 180px;
   }
 
   .board-gutter-score {
