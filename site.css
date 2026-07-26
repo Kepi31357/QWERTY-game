@@ -277,6 +277,7 @@ ul {
   margin: 0;
   filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.3));
   line-height: 0;
+  background: transparent;
 }
 
 .hero-brand img {
@@ -287,6 +288,7 @@ ul {
   object-fit: contain;
   object-position: center;
   background: transparent;
+  mix-blend-mode: normal;
 }
 
 .hero-line {
