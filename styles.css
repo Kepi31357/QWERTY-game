@@ -2296,6 +2296,7 @@ body.menu-visible .game-over-splash {
   justify-content: center;
   flex: 0 1 auto;
   align-self: center;
+  order: 1;
   width: auto;
   max-width: calc(100% - 224px); /* two 100px gutters + gaps */
   min-width: 0;
@@ -2319,10 +2320,6 @@ body.menu-visible .game-over-splash {
 .board-gutter-right {
   order: 2;
   justify-content: center;
-}
-
-.board-center {
-  order: 1;
 }
 
 .board-gutter-stack-human,

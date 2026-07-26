@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -29,11 +29,11 @@
   <div class="main-menu-overlay" id="main-menu" aria-hidden="false">
     <div class="main-menu-dialog" role="dialog" aria-labelledby="main-menu-title">
             <h1 class="main-menu-title" id="main-menu-title">
-        <img class="qwerty-header-img" src="/images/qwerty-header.png?v=324" srcset="/images/qwerty-header.png?v=324 1x, /images/qwerty-header-2x.png?v=324 2x" width="520" height="129" alt="QWERTY â€” A fun word game for everyone!">
+        <img class="qwerty-header-img" src="/images/qwerty-header.png?v=324" srcset="/images/qwerty-header.png?v=324 1x, /images/qwerty-header-2x.png?v=324 2x" width="520" height="129" alt="QWERTY — A fun word game for everyone!">
       </h1>
       <div class="main-menu-section main-menu-section--online">
         <h2 class="main-menu-heading">Play with a Friend</h2>
-        <p class="main-menu-online-hint">Each room is a private game â€” multiple pairs can play at once. Leave the code blank for the default room <strong>MAIN</strong>, or enter a 4â€“6 character code (e.g. TESTA).</p>
+        <p class="main-menu-online-hint">Each room is a private game — multiple pairs can play at once. Leave the code blank for the default room <strong>MAIN</strong>, or enter a 4–6 character code (e.g. TESTA).</p>
         <label class="online-nickname-label" for="online-nickname">Your nickname</label>
         <input type="text" class="online-nickname-input" id="online-nickname" maxlength="20" autocomplete="nickname" placeholder="Enter your name">
         <label class="online-nickname-label" id="avatar-picker-label">Your avatar</label>
@@ -58,7 +58,7 @@
       </div>
       <div class="main-menu-section">
         <h2 class="main-menu-heading">Play vs Computer</h2>
-        <p class="main-menu-online-hint">No room needed â€” single-player on this device.</p>
+        <p class="main-menu-online-hint">No room needed — single-player on this device.</p>
         <h3 class="main-menu-subheading">Computer Difficulty</h3>
         <div class="difficulty-picker" id="difficulty-picker" role="group" aria-label="Computer difficulty">
           <button type="button" class="difficulty-btn" data-difficulty="easy">Easy</button>
@@ -153,7 +153,7 @@
       <div class="board-top-header">
                 <header class="header opponent-grid-header board-grid-header">
       <h1 class="header-logo">
-        <img class="qwerty-header-img" src="/images/qwerty-header.png?v=324" srcset="/images/qwerty-header.png?v=324 1x, /images/qwerty-header-2x.png?v=324 2x" width="520" height="129" alt="QWERTY â€” A fun word game for everyone!">
+        <img class="qwerty-header-img" src="/images/qwerty-header.png?v=324" srcset="/images/qwerty-header.png?v=324 1x, /images/qwerty-header-2x.png?v=324 2x" width="520" height="129" alt="QWERTY — A fun word game for everyone!">
       </h1>
       <p class="in-game-room-badge" id="in-game-room-badge" hidden aria-live="polite">Room <span id="in-game-room-code"></span></p>
     </header>
@@ -207,7 +207,7 @@
         </div>
       </div>
       <div class="board-status-bar" id="panel-message-row" hidden>
-        <p class="message-bar" id="message" aria-live="off" hidden>Loading gameâ€¦</p>
+        <p class="message-bar" id="message" aria-live="off" hidden>Loading game…</p>
       </div>
       </div>
 
@@ -244,7 +244,7 @@
         <div class="chat-panel-header">
           <div class="chat-panel-header-row">
             <h2 class="chat-panel-title">Who's Here <span class="chat-count">(2)</span></h2>
-            <button type="button" class="chat-panel-close" id="btn-chat-close" aria-label="Close chat">Ã—</button>
+            <button type="button" class="chat-panel-close" id="btn-chat-close" aria-label="Close chat">×</button>
           </div>
           <p class="chat-room-code" id="chat-room-code" hidden>Room <span id="chat-room-code-value"></span></p>
         </div>
@@ -270,7 +270,7 @@
           <label class="sr-only" for="chat-input">Chat message</label>
           <div class="chat-compose-main">
             <input type="text" class="chat-input" id="chat-input" maxlength="200" autocomplete="off" placeholder="Say something...">
-            <button type="button" class="chat-emoji-btn" id="btn-chat-emoji" title="Add emoji" aria-label="Add emoji" aria-expanded="false" aria-controls="chat-emoji-picker">ðŸ˜Š</button>
+            <button type="button" class="chat-emoji-btn" id="btn-chat-emoji" title="Add emoji" aria-label="Add emoji" aria-expanded="false" aria-controls="chat-emoji-picker">😊</button>
             <div class="chat-emoji-picker" id="chat-emoji-picker" hidden role="listbox" aria-label="Emoji picker"></div>
           </div>
           <button type="button" class="btn chat-send" id="btn-chat-send">Send</button>
@@ -342,7 +342,7 @@
     </div>
 
     <button type="button" class="mobile-chat-fab" id="btn-mobile-chat" aria-label="Open chat" aria-controls="chat-panel" aria-expanded="false" title="Chat">
-      <span class="mobile-chat-fab-icon" aria-hidden="true">ðŸ’¬</span>
+      <span class="mobile-chat-fab-icon" aria-hidden="true">💬</span>
       <span class="mobile-chat-fab-badge" id="mobile-chat-badge" hidden>0</span>
     </button>
     <div class="mobile-chat-backdrop" id="mobile-chat-backdrop" aria-hidden="true"></div>
@@ -410,14 +410,13 @@
       return false;
     };
   </script>
-  <script src="dictionary.js?v=324" onerror="qwertyBootError('Failed to load dictionary.js â€” make sure it is in the game folder.')"></script>
+  <script src="dictionary.js?v=324" onerror="qwertyBootError('Failed to load dictionary.js — make sure it is in the game folder.')"></script>
   <script src="avatars.js?v=324"></script>
   <script src="board-view.js?v=324"></script>
   <script src="getAllWordsFormed.js?v=324"></script>
   <script src="validateAndScorePlacement.js?v=324"></script>
   <script src="game-engine.js?v=324"></script>
   <script src="online.js?v=324"></script>
-  <script src="game.js?v=324" onerror="qwertyBootError('Failed to load game.js â€” use OPEN ONLINE GAME.bat to launch.')"></script>
+  <script src="game.js?v=324" onerror="qwertyBootError('Failed to load game.js — use OPEN ONLINE GAME.bat to launch.')"></script>
 </body>
 </html>
-
