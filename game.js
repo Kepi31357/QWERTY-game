@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '324';
+  var QWERTY_BUILD = '325';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -1661,58 +1661,19 @@ class Game {
       this._applyLayoutStyle(legendRow, 'marginLeft', '');
     }
 
-    var humanSlot = this.ui.boardAvatarHuman;
-    var wrapStyle = window.getComputedStyle(boardWrap);
-    var wrapPadL = parseFloat(wrapStyle.paddingLeft) || 0;
-    var wrapPadR = parseFloat(wrapStyle.paddingRight) || 0;
-    var boardInnerLeft = wrapRect.left + wrapPadL;
-    var boardInnerRight = wrapRect.right - wrapPadR;
-    var sidebarCol = document.querySelector('.sidebar-column');
-    var chatLeft = sidebarCol ? sidebarCol.getBoundingClientRect().left : boardInnerRight;
-    var computerCenterX = (boardInnerLeft + canvasRect.left) / 2;
-    var youCenterX = (canvasRect.right + chatLeft) / 2;
-
-    var aiSlot = this.ui.boardAvatarAi;
-    var aiAvatar = aiSlot ? aiSlot.querySelector('.avatar') : null;
-    var humanAvatar = humanSlot ? humanSlot.querySelector('.avatar') : null;
-    this._refreshGutterMetrics(stackAi, stackHuman, aiAvatar, humanAvatar);
-    var metrics = this._gutterMetrics || {};
-
-    if (stackAi && leftGutter) {
-      var leftGutterRect = leftGutter.getBoundingClientRect();
-      var leftGutterMid = leftGutterRect.left + leftGutterRect.width / 2;
-      var txAi = Math.round(computerCenterX - leftGutterMid);
-      var tyAi = 0;
-      if (aiAvatar) {
-        this._applyLayoutStyle(stackAi, 'transform', 'translateX(' + txAi + 'px)');
-        tyAi = Math.round(canvasRect.top - aiAvatar.getBoundingClientRect().top);
-      }
-      this._applyLayoutStyle(stackAi, 'transform', 'translate(' + txAi + 'px,' + tyAi + 'px)');
-    } else if (stackAi) {
-      this._applyLayoutStyle(stackAi, 'transform', '');
-    }
-
-    if (stackHuman && rightGutter) {
-      var rightGutterRectForX = rightGutter.getBoundingClientRect();
-      var rightGutterMid = rightGutterRectForX.left + rightGutterRectForX.width / 2;
-      var txHuman = Math.round(youCenterX - rightGutterMid);
-      var tyHuman = 0;
-      if (humanAvatar) {
-        this._applyLayoutStyle(stackHuman, 'transform', 'translateX(' + txHuman + 'px)');
-        tyHuman = Math.round(canvasRect.bottom - humanAvatar.getBoundingClientRect().bottom);
-      }
-      this._applyLayoutStyle(stackHuman, 'transform', 'translate(' + txHuman + 'px,' + tyHuman + 'px)');
-    } else if (stackHuman) {
-      this._applyLayoutStyle(stackHuman, 'transform', '');
-    }
-
+    /*
+     * Keep Computer / You panels in equal CSS columns inside .board-wrap.
+     * Do not translate them toward the chat sidebar — that broke symmetry.
+     */
+    if (stackAi) this._applyLayoutStyle(stackAi, 'transform', '');
+    if (stackHuman) this._applyLayoutStyle(stackHuman, 'transform', '');
     if (leftGutter) {
-      this._applyLayoutStyle(leftGutter, 'paddingTop', '0');
-      this._applyLayoutStyle(leftGutter, 'paddingBottom', '0');
+      this._applyLayoutStyle(leftGutter, 'paddingTop', '');
+      this._applyLayoutStyle(leftGutter, 'paddingBottom', '');
     }
     if (rightGutter) {
-      this._applyLayoutStyle(rightGutter, 'paddingTop', '0');
-      this._applyLayoutStyle(rightGutter, 'paddingBottom', '0');
+      this._applyLayoutStyle(rightGutter, 'paddingTop', '');
+      this._applyLayoutStyle(rightGutter, 'paddingBottom', '');
     }
     this.syncSidebarToBoardGrid();
   }
@@ -11409,7 +11370,7 @@ function roundRect(ctx, x, y, w, h, r) {
       try {
         document.body.dataset.qwertyBuild = QWERTY_BUILD;
         if (typeof console !== 'undefined' && console.info) {
-          console.info('QWERTY build ' + QWERTY_BUILD + ' — centered board in navy panel');
+          console.info('QWERTY build ' + QWERTY_BUILD + ' — symmetric panels inside navy panel');
         }
         new Game();
       } catch (err) {
