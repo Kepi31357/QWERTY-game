@@ -1894,10 +1894,12 @@ body.qwerty-guest-view .game-table {
 
 /* Canvas wrapper — grid only (opponent rack sits in board-play-row above) */
 .board-wrap {
+  --board-side-w: 108px;
+  --board-side-gap: 12px;
   position: relative;
   background: linear-gradient(145deg, #1a2744 0%, #243656 100%);
   border-radius: 0 0 14px 14px;
-  padding: 10px 12px;
+  padding: 12px 16px;
   min-height: 0;
   max-height: 100%;
   overflow: hidden;
@@ -1905,15 +1907,16 @@ body.qwerty-guest-view .game-table {
     0 12px 32px rgba(26, 39, 68, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   /*
-   * Equal side columns keep Computer / You the same distance from the navy
-   * edges; the board sits dead-center between them.
+   * Mandatory internal layout:
+   *   [Computer panel] [Gameboard] [You panel]
+   * Equal fixed side widths, equal gaps, whole trio centered in the navy panel.
    */
-  display: grid;
-  grid-template-columns: minmax(88px, 1fr) auto minmax(88px, 1fr);
-  grid-template-rows: minmax(0, 1fr);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
-  justify-items: center;
-  column-gap: 10px;
+  justify-content: center;
+  gap: var(--board-side-gap);
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -2283,31 +2286,32 @@ body.menu-visible .game-over-splash {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  max-width: 110px;
-  min-width: 0;
-  padding: 0 4px;
+  flex: 0 0 var(--board-side-w);
+  width: var(--board-side-w);
+  min-width: var(--board-side-w);
+  max-width: var(--board-side-w);
+  padding: 0;
+  margin: 0;
   box-sizing: border-box;
   align-self: center;
-  justify-self: center;
   position: relative;
   z-index: 2;
 }
 
 .board-center {
-  grid-column: 2;
-  grid-row: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  align-self: center;
-  justify-self: center;
+  flex: 0 0 auto;
   width: auto;
-  max-width: 100%;
+  max-width: calc(100% - (var(--board-side-w) * 2) - (var(--board-side-gap) * 2));
   min-width: 0;
   min-height: 0;
+  margin: 0;
+  padding: 0;
   overflow: visible;
   position: relative;
+  order: 0;
 }
 
 .board-center > #game-canvas {
@@ -2318,14 +2322,12 @@ body.menu-visible .game-over-splash {
 }
 
 .board-gutter-left {
-  grid-column: 1;
-  grid-row: 1;
+  order: -1;
   justify-content: center;
 }
 
 .board-gutter-right {
-  grid-column: 3;
-  grid-row: 1;
+  order: 1;
   justify-content: center;
 }
 
@@ -2333,12 +2335,7 @@ body.menu-visible .game-over-splash {
 .board-gutter-stack,
 .board-gutter-stack-human {
   transform: none !important;
-}
-
-.board-gutter-stack-human,
-.board-gutter-left .board-gutter-stack {
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
 }
 
 .board-gutter-stack {
@@ -2347,7 +2344,7 @@ body.menu-visible .game-over-splash {
   align-items: center;
   gap: 8px;
   width: 100%;
-  max-width: 100px;
+  max-width: 100%;
   position: relative;
 }
 
@@ -2408,7 +2405,7 @@ body.menu-visible .game-over-splash {
   align-items: stretch;
   gap: 5px;
   width: 100%;
-  max-width: 116px;
+  max-width: 100%;
   margin-top: 0;
 }
 

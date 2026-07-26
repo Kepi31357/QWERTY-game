@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '326';
+  var QWERTY_BUILD = '327';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -1173,25 +1173,18 @@ class Game {
     if (this.isCompactLayout()) {
       return { gutterW: 0, sidebarW: 0, edgePad: 16 };
     }
-    /*
-     * Side columns are equal 1fr for symmetry — do NOT measure those stretched
-     * columns. Reserve only the profile content width so the board can grow.
-     */
+    /* Match .board-wrap --board-side-w / --board-side-gap (equal fixed side panels). */
+    var sideW = 108;
+    var gap = 12;
     var wrap = this.getBoardWrapEl();
-    var gap = 10;
     if (wrap) {
       var cs = window.getComputedStyle(wrap);
-      gap = parseFloat(cs.columnGap || cs.gap) || 10;
+      var sw = parseFloat(cs.getPropertyValue('--board-side-w'));
+      var sg = parseFloat(cs.getPropertyValue('--board-side-gap'));
+      if (sw > 0) sideW = sw;
+      if (sg > 0) gap = sg;
     }
-    var aiStack = document.getElementById('board-stack-ai');
-    var humanStack = document.getElementById('board-stack-human');
-    var profileW = Math.max(
-      aiStack && aiStack.offsetWidth ? aiStack.offsetWidth : 0,
-      humanStack && humanStack.offsetWidth ? humanStack.offsetWidth : 0,
-      96
-    );
-    profileW = Math.min(profileW, 110);
-    return { gutterW: profileW * 2 + gap * 2, sidebarW: 260, edgePad: 48 };
+    return { gutterW: sideW * 2 + gap * 2, sidebarW: 260, edgePad: 48 };
   }
 
   getBoardCenterEl() {
@@ -11369,7 +11362,7 @@ function roundRect(ctx, x, y, w, h, r) {
       try {
         document.body.dataset.qwertyBuild = QWERTY_BUILD;
         if (typeof console !== 'undefined' && console.info) {
-          console.info('QWERTY build ' + QWERTY_BUILD + ' — symmetric panels inside navy panel');
+          console.info('QWERTY build ' + QWERTY_BUILD + ' — flex trio: Computer | Board | You');
         }
         new Game();
       } catch (err) {
