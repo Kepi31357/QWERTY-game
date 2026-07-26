@@ -664,10 +664,16 @@ body.game-exited .app {
  * Sidebar shares the grid row only — Scores top == grid top.
  * Header/racks sit in column 1 so they share one horizontal center.
  */
+/*
+ * Desktop play row:
+ *   [ header ]
+ *   [ dark board (rack+wrap) | Scores + chat ]  ← same top & bottom
+ *   [ status under board only ]
+ */
 .board-play-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 260px;
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
   column-gap: 6px;
   row-gap: 0;
   align-items: stretch;
@@ -675,18 +681,6 @@ body.game-exited .app {
   min-height: 0;
   min-width: 0;
   overflow: hidden;
-}
-
-.game-board-column {
-  grid-column: 1;
-  grid-row: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-  height: 100%;
 }
 
 .board-top-header {
@@ -709,14 +703,25 @@ body.game-exited .app {
   margin: 0 auto;
 }
 
+.game-board-column {
+  grid-column: 1;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  height: auto;
+  align-self: stretch;
+}
+
 .game-board-column .board-wrap {
-  /* Fill the column so the board sits in the original tall navy panel;
-     status stays as a sibling just under it (above the rack). */
   flex: 1 1 auto;
   min-height: 0;
   width: 100%;
-  height: 100%;
-  max-height: 100%;
+  height: auto;
+  max-height: none;
   border-radius: 0 0 14px 14px;
 }
 
@@ -726,6 +731,8 @@ body.game-exited .app {
  */
 .board-status-bar,
 #panel-message-row {
+  grid-column: 1;
+  grid-row: 3;
   --qwerty-status-h: 3.75em; /* 3 lines @ 0.82rem / 1.35 + padding */
   flex: 0 0 var(--qwerty-status-h);
   flex-grow: 0;
@@ -819,14 +826,12 @@ body.game-exited .app {
 }
 
 .board-opponent-rack.board-grid-rack {
-  grid-column: 1;
-  grid-row: 2;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   min-width: 0;
-  justify-self: stretch;
+  flex: 0 0 auto;
   background: linear-gradient(145deg, #1a2744 0%, #243656 100%);
   border-radius: 14px 14px 0 0;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -879,7 +884,7 @@ body.game-exited .app {
 
 .game-layout .sidebar-column {
   grid-column: 2;
-  grid-row: 3;
+  grid-row: 2; /* same row as dark board (rack + wrap) */
   width: 260px;
   min-width: 260px;
   max-width: 260px;
@@ -887,16 +892,17 @@ body.game-exited .app {
   flex-direction: column;
   gap: 8px;
   min-height: 0;
-  height: 100%;
+  height: auto;
   align-self: stretch;
   overflow: hidden;
   box-sizing: border-box;
-  /* Match .board-wrap padding so Scores top lines up with the grid canvas */
-  padding-top: 6px;
+  padding: 0;
+  pointer-events: auto;
 }
 
 /* Score sidebar — purple panel above chat */
 .score-sidebar {
+  flex: 0 0 auto;
   flex-shrink: 0;
 }
 
@@ -1034,7 +1040,7 @@ body.game-exited .app {
 /* Chat sidebar — classic Pogo style */
 .chat-panel {
   width: 100%;
-  flex: 1;
+  flex: 1 1 0;
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -1043,6 +1049,91 @@ body.game-exited .app {
   border: 2px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   overflow: hidden;
+  pointer-events: auto;
+}
+
+/* Desktop: pin Who's Here + compose; log scrolls; emoji picker can overflow up */
+@media (min-width: 901px) {
+  .score-sidebar-inner {
+    padding: 8px 10px 10px;
+  }
+
+  .score-sidebar-heading {
+    margin-bottom: 8px;
+  }
+
+  .score-last-word-body {
+    min-height: 2.6em;
+    height: 2.6em;
+  }
+
+  .game-layout .sidebar-column {
+    overflow: visible; /* allow emoji picker to paint */
+  }
+
+  .chat-panel {
+    overflow: visible; /* emoji picker above compose */
+  }
+
+  .chat-panel-header,
+  .chat-panel .whos-here {
+    flex: 0 0 auto;
+  }
+
+  .chat-panel .chat-log {
+    flex: 1 1 auto;
+    min-height: 48px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .chat-panel .chat-compose {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: stretch;
+    gap: 6px;
+    overflow: visible;
+    z-index: 5;
+    pointer-events: auto;
+  }
+
+  .chat-panel .chat-compose-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+    position: relative;
+    overflow: visible;
+  }
+
+  .chat-panel .chat-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    pointer-events: auto;
+  }
+
+  .chat-panel .chat-emoji-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 2.1rem;
+    width: 2.1rem;
+    min-width: 2.1rem;
+    pointer-events: auto;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .chat-panel .chat-send {
+    flex: 0 0 auto;
+    pointer-events: auto;
+  }
+
+  .chat-panel .chat-emoji-picker {
+    z-index: 60;
+    max-width: min(240px, 100%);
+  }
 }
 
 .chat-panel-header {
@@ -1123,6 +1214,7 @@ body.game-exited .app {
   border-bottom: 1px solid #c8c0b0;
   padding: 6px 8px;
   font-size: 0.78rem;
+  flex-shrink: 0;
 }
 
 .whos-here-row {
@@ -1201,9 +1293,10 @@ body.game-exited .app {
 }
 
 .chat-log {
-  flex: 1;
-  min-height: 120px;
+  flex: 1 1 auto;
+  min-height: 0; /* allow shrink so compose/header stay visible */
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 8px 10px;
   background: #fafafa;
   font-size: 0.78rem;
@@ -1238,6 +1331,7 @@ body.game-exited .app {
   background: #3a3a48;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
+  flex-shrink: 0;
 }
 
 .chat-compose-main {
@@ -1687,29 +1781,36 @@ body.qwerty-guest-view .game-table {
 .turn-timer {
   display: block;
   visibility: hidden;
-  font-family: 'Consolas', 'Courier New', monospace;
-  font-size: 1.15rem;
-  font-weight: 800;
+  font-family: 'Segoe UI', 'Arial Black', 'Helvetica Neue', system-ui, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 900;
   font-variant-numeric: tabular-nums;
-  color: var(--text-dark);
-  letter-spacing: 0.02em;
+  color: #ff1744;
+  letter-spacing: 0.03em;
   min-width: 3.2ch;
   min-height: 1.6em;
   line-height: 1.6em;
+  text-shadow:
+    0 0 1px rgba(0, 0, 0, 0.35),
+    0 0 10px rgba(255, 23, 68, 0.45);
 }
 
 .board-gutter-stack .turn-timer,
 .board-gutter-timer {
-  font-size: 1.38rem;
-  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #ff1744;
   text-align: center;
   width: 100%;
   min-width: 0;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.55),
+    0 0 12px rgba(255, 23, 68, 0.55);
 }
 
 .board-gutter-stack .turn-timer.warn,
 .board-gutter-timer.warn {
-  color: #ff8a80;
+  color: #ff5252;
 }
 
 .turn-timer.visible {
@@ -1717,7 +1818,8 @@ body.qwerty-guest-view .game-table {
 }
 
 .turn-timer.waiting {
-  opacity: 0.9;
+  opacity: 1;
+  color: #ff1744;
 }
 
 .board-gutter-stack .turn-timer.visible,
@@ -1726,7 +1828,7 @@ body.qwerty-guest-view .game-table {
 }
 
 .turn-timer.warn {
-  color: #c62828;
+  color: #ff1744;
   animation: timer-pulse 1s ease-in-out infinite;
 }
 
@@ -1738,27 +1840,30 @@ body.qwerty-guest-view .game-table {
 /* Human panel timer — must follow .turn-timer so size/weight win in cascade */
 .turn-timer.human-panel-timer {
   font-family: 'Segoe UI', 'Arial Black', 'Helvetica Neue', system-ui, sans-serif;
-  font-size: 30pt;
+  font-size: 32pt;
   font-weight: 900;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
   text-align: center;
   width: 100%;
-  color: var(--text-dark);
+  color: #ff1744;
   line-height: 1.1;
   min-height: auto;
   -webkit-font-smoothing: antialiased;
   text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.85),
-    0 2px 4px rgba(26, 39, 68, 0.12);
+    0 1px 0 rgba(255, 255, 255, 0.55),
+    0 0 1px rgba(0, 0, 0, 0.25),
+    0 0 12px rgba(255, 23, 68, 0.4);
 }
 
-.turn-timer.human-panel-timer.warn {
-  color: #c62828;
+.turn-timer.human-panel-timer.warn,
+.turn-timer.human-panel-timer.critical {
+  color: #ff0a3c;
   animation: none;
   text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.6),
-    0 0 8px rgba(198, 40, 40, 0.25);
+    0 1px 0 rgba(255, 255, 255, 0.5),
+    0 0 2px rgba(0, 0, 0, 0.3),
+    0 0 14px rgba(255, 10, 60, 0.55);
 }
 
 .turn-timer.human-panel-timer.critical {
@@ -1766,7 +1871,7 @@ body.qwerty-guest-view .game-table {
 }
 
 @keyframes timer-pulse {
-  50% { opacity: 0.65; }
+  50% { opacity: 0.72; }
 }
 
 .player-panel.active .panel-name {
@@ -1894,7 +1999,7 @@ body.qwerty-guest-view .game-table {
 
 /* Dark game container — three-column flex (Computer | Board | You) */
 .board-wrap {
-  --board-side-w: 112px;
+  --board-side-w: 90px;
   --board-col-gap: 16px;
   position: relative;
   background: linear-gradient(145deg, #1a2744 0%, #243656 100%);
@@ -1906,16 +2011,16 @@ body.qwerty-guest-view .game-table {
     0 12px 32px rgba(26, 39, 68, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   /*
-   * Center the whole trio so outer navy margins match.
-   * Equal fixed gutters + equal gap keeps Computer / Board / You symmetrical.
+   * Equal outer padding (24px) + space-between pins gutters to the padded
+   * edges; center column grows and centers the canvas between them.
    */
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: var(--board-col-gap);
-  padding: 16px 18px;
+  gap: 16px;
+  padding: 16px 24px;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -2280,35 +2385,40 @@ body.menu-visible .game-over-splash {
   background: #fff !important;
 }
 
-/* Left / right panels — identical fixed width (no stretch) */
+/*
+ * Side panels: grow equally into the navy flanking the board so
+ * align-items:center places avatars in the true horizontal center
+ * of each dark side area (not only a fixed 90px strip at the edge).
+ */
 .board-gutter,
 .board-gutter-left,
 .board-gutter-right {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 var(--board-side-w);
-  width: var(--board-side-w);
+  align-items: center; /* centers children horizontally in the side area */
+  flex: 1 1 0;
+  width: auto;
   min-width: var(--board-side-w);
-  max-width: var(--board-side-w);
+  max-width: none;
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  align-self: center;
+  align-self: stretch;
   position: relative;
   z-index: 2;
 }
 
 .board-gutter-left {
   order: 0;
+  justify-content: flex-start; /* Computer near top of board */
 }
 
 .board-gutter-right {
   order: 2;
+  justify-content: flex-end; /* You near bottom of board */
 }
 
-/* Center column — hug the canvas; parent centers the trio */
+/* Hug the canvas — leftover width goes into the equal side gutters */
 .board-center {
   display: flex;
   align-items: center;
@@ -2316,7 +2426,6 @@ body.menu-visible .game-over-splash {
   flex: 0 1 auto;
   order: 1;
   width: auto;
-  max-width: calc(100% - (var(--board-side-w) * 2) - (var(--board-col-gap) * 2));
   min-width: 0;
   min-height: 0;
   margin: 0;
@@ -2336,25 +2445,27 @@ body.menu-visible .game-over-splash {
 .board-gutter-stack,
 .board-gutter-stack-human {
   transform: none !important;
-  margin: 0 auto;
+  margin: 0;
+  align-self: stretch; /* fill gutter width so avatar centers in full side area */
 }
 
-.board-gutter-stack {
+.board-gutter-stack,
+.board-profile {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
   width: 100%;
+  box-sizing: border-box;
+}
+
+.board-gutter-stack {
+  gap: 8px;
   max-width: 100%;
   position: relative;
 }
 
 .board-profile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   gap: 6px;
-  width: 100%;
 }
 
 .board-gutter-score {
@@ -2406,8 +2517,9 @@ body.menu-visible .game-over-splash {
   align-items: stretch;
   gap: 5px;
   width: 100%;
-  max-width: 100%;
+  max-width: var(--board-side-w);
   margin-top: 0;
+  align-self: center; /* keep buttons centered under avatar */
 }
 
 .board-difficulty-btn {
@@ -2443,8 +2555,18 @@ body.menu-visible .game-over-splash {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   gap: 5px;
   width: 100%;
+  box-sizing: border-box;
+}
+
+.board-gutter-left .avatar,
+.board-gutter-right .avatar {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  align-self: center;
 }
 
 .board-gutter-stack .turn-ribbon {
@@ -2452,20 +2574,29 @@ body.menu-visible .game-over-splash {
   visibility: hidden;
   height: 20px;
   line-height: 20px;
-  margin-bottom: 0;
-  padding: 0 8px;
+  margin: 0 auto;
+  padding: 0 6px;
   font-size: 0.58rem;
   box-sizing: border-box;
+  max-width: 100%;
+  text-align: center;
+  align-self: center;
 }
 
 .board-gutter-stack .turn-ribbon.visible {
   visibility: visible;
 }
 
+/* Equal left/right inset inside each 90px gutter */
 .board-avatar-slot .avatar {
-  width: 72px;
-  height: 72px;
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin-left: auto;
+  margin-right: auto;
+  flex: 0 0 auto;
   border-width: 3px;
+  box-sizing: border-box;
   box-shadow:
     0 0 0 2px rgba(255, 255, 255, 0.14),
     0 5px 14px rgba(0, 0, 0, 0.3),
@@ -3105,9 +3236,18 @@ body.menu-visible .game-over-splash {
   body:not(.menu-visible):not(.game-exited) .game-board-column {
     grid-column: auto;
     grid-row: auto;
+    order: 2;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .board-status-bar,
+  body:not(.menu-visible):not(.game-exited) #panel-message-row {
+    order: 3;
+    grid-column: auto;
+    grid-row: auto;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-top-header {
+    order: 1;
     display: flex;
     flex-shrink: 0;
     justify-content: center;
@@ -3179,11 +3319,13 @@ body.menu-visible .game-over-splash {
     right: 0;
     width: 100%;
     max-width: 100%;
-    height: min(72vh, 520px);
-    max-height: min(72vh, 520px);
-    min-height: 260px;
+    height: min(78dvh, 560px);
+    max-height: min(78dvh, 560px);
+    min-height: 280px;
     margin: 0;
     flex: none;
+    display: flex;
+    flex-direction: column;
     border-radius: 18px 18px 0 0;
     border-bottom: none;
     /*
@@ -3482,24 +3624,27 @@ body.menu-visible .game-over-splash {
     flex: 0 0 auto;
     visibility: visible !important;
     font-family: 'Segoe UI', 'Arial Black', 'Helvetica Neue', system-ui, sans-serif;
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-weight: 900;
     font-variant-numeric: tabular-nums;
-    letter-spacing: 0.03em;
-    color: #fff;
+    letter-spacing: 0.04em;
+    color: #ff1744;
     line-height: 1;
     min-width: 2.8ch;
     text-align: center;
-    text-shadow: 0 1px 2px rgba(26, 39, 68, 0.35);
+    text-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.65),
+      0 0 10px rgba(255, 23, 68, 0.55);
   }
 
   body:not(.menu-visible):not(.game-exited) .mobile-play-timer.waiting {
-    opacity: 0.95;
-    color: rgba(255, 255, 255, 0.92);
+    opacity: 1;
+    color: #ff1744;
   }
 
-  body:not(.menu-visible):not(.game-exited) .mobile-play-timer.warn {
-    color: #ff8a80;
+  body:not(.menu-visible):not(.game-exited) .mobile-play-timer.warn,
+  body:not(.menu-visible):not(.game-exited) .mobile-play-timer.critical {
+    color: #ff5252;
   }
 
   body:not(.menu-visible):not(.game-exited) .mobile-play-timer.critical {

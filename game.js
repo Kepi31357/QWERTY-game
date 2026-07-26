@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '329';
+  var QWERTY_BUILD = '338';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -493,7 +493,7 @@
 const COLS = 15;
 const ROWS = 15;
 const RACK_SIZE = 8;
-const MAX_CELL_SIZE = 52;
+const MAX_CELL_SIZE = 56;
 const MIN_CELL_SIZE = 14;
 const LAYOUT_GAP = 8;
 const STAR_BONUS = 50;
@@ -1144,8 +1144,8 @@ class Game {
     var legendRow = document.querySelector('.legend-row');
 
     reserved = padBottom;
-    /* Message lives under the board inside .game-board-column (flex sibling of
-       .board-wrap), so wrap height already excludes it — do not double-count. */
+    /* Message lives under the dark board column (sibling of .game-board-column),
+       so wrap height already excludes it — do not double-count. */
     if (legendRow) {
       reserved += legendRow.offsetHeight + LAYOUT_GAP;
     }
@@ -1173,20 +1173,16 @@ class Game {
     if (this.isCompactLayout()) {
       return { gutterW: 0, sidebarW: 0, edgePad: 16 };
     }
-    /* Match .board-wrap: equal fixed gutters + column gap (desktop trio). */
-    var sideW = 112;
+    /* Match .board-wrap: 90px gutters + 16px gap (desktop trio). */
+    var sideW = 90;
     var gap = 16;
     var wrap = this.getBoardWrapEl();
     if (wrap) {
       var cs = window.getComputedStyle(wrap);
       var sw = parseFloat(cs.getPropertyValue('--board-side-w'));
-      var cg = parseFloat(cs.getPropertyValue('--board-col-gap'));
       if (sw > 0) sideW = sw;
-      if (cg > 0) gap = cg;
-      else {
-        var g = parseFloat(cs.columnGap || cs.gap);
-        if (g > 0) gap = g;
-      }
+      var g = parseFloat(cs.columnGap || cs.gap);
+      if (g > 0) gap = g;
     }
     return { gutterW: sideW * 2 + gap * 2, sidebarW: 260, edgePad: 48 };
   }
@@ -1359,18 +1355,12 @@ class Game {
       : 0;
     const gutterW = insets.gutterW;
     const sidebarW = insets.sidebarW;
-    let centerW = 0;
-    if (compact) {
-      /* Mobile: measure the center column / wrap as before. */
-      centerW = boardCenter && boardCenter.clientWidth >= 50 ? boardCenter.clientWidth : 0;
-      if (!centerW && boardWrap) {
-        centerW = Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW);
-      }
-    } else if (boardWrap) {
-      /*
-       * Desktop trio: gutters are fixed; size the board from remaining wrap
-       * width so .board-center can hug the canvas without locking small.
-       */
+    let centerW = boardCenter && boardCenter.clientWidth >= 50 ? boardCenter.clientWidth : 0;
+    if (!centerW && boardWrap) {
+      centerW = Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW);
+    }
+    if (!compact && boardWrap) {
+      /* Desktop: prefer remaining width between equal fixed gutters. */
       centerW = Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW);
     }
     if (centerW < 100) {
@@ -11372,7 +11362,7 @@ function roundRect(ctx, x, y, w, h, r) {
       try {
         document.body.dataset.qwertyBuild = QWERTY_BUILD;
         if (typeof console !== 'undefined' && console.info) {
-          console.info('QWERTY build ' + QWERTY_BUILD + ' — space-between three-column board');
+          console.info('QWERTY build ' + QWERTY_BUILD + ' — gutters fill side areas, avatars centered');
         }
         new Game();
       } catch (err) {

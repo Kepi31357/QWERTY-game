@@ -26,7 +26,10 @@ assert(landing.indexOf('Play Now') >= 0, 'landing has Play Now CTA');
 assert(landing.indexOf('href="play.html"') >= 0, 'Play Now links to play.html');
 assert(landing.indexOf('btn-play-lg') >= 0, 'large Play Now button');
 assert(landing.indexOf('hero-preview') >= 0, 'smaller hero board preview');
-assert(landing.indexOf('hero-board.jpg') >= 0, 'compressed hero jpeg');
+assert(
+  landing.indexOf('hero-board-live.jpg') >= 0 || landing.indexOf('hero-board.jpg') >= 0,
+  'compressed hero jpeg'
+);
 assert(landing.indexOf('shot-board.jpg') >= 0, 'gallery uses jpeg');
 assert(landing.indexOf('shot-mobile.png') >= 0, 'mobile app screenshot in gallery');
 assert(fs.existsSync(path.join(root, 'public/images/shot-mobile.png')), 'shot-mobile.png on disk');
