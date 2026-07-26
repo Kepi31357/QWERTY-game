@@ -1044,9 +1044,11 @@ body.game-exited .app {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(180deg, #3a3a48 0%, #2a2a36 100%);
+  background: #1a2744;
   border-radius: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.12);
+  /* Match board navy so no light rim shows on bottom/sides */
+  border: 2px solid #1a2744;
+  outline: none;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   overflow: hidden;
   pointer-events: auto;
@@ -1328,10 +1330,19 @@ body.game-exited .app {
   display: flex;
   gap: 6px;
   padding: 8px;
-  background: #3a3a48;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: #1a2744;
+  border: none;
+  border-top: none;
+  outline: 2px solid #1a2744;
+  outline-offset: 0;
+  border-radius: 0 0 10px 10px;
   position: relative;
   flex-shrink: 0;
+  /* Cover any leftover light fringe along the compose edges */
+  box-shadow:
+    -2px 0 0 #1a2744,
+    2px 0 0 #1a2744,
+    0 2px 0 #1a2744;
 }
 
 .chat-compose-main {
@@ -1346,7 +1357,8 @@ body.game-exited .app {
 .chat-input {
   flex: 1;
   min-width: 0;
-  border: 2px solid #9a9080;
+  border: none;
+  outline: none;
   border-radius: 6px;
   padding: 8px 10px;
   min-height: 40px;
@@ -1373,8 +1385,8 @@ body.game-exited .app {
 }
 
 .chat-input:focus {
-  outline: 2px solid var(--pogo-teal);
-  outline-offset: 1px;
+  outline: none;
+  box-shadow: none;
   background: #ffffff !important;
   color: #1a1a1a !important;
   -webkit-text-fill-color: #1a1a1a !important;
@@ -1391,7 +1403,7 @@ body.game-exited .app {
   flex-shrink: 0;
   width: 2.1rem;
   padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  border: none;
   border-radius: 6px;
   background: linear-gradient(180deg, #4a4a5a 0%, #353544 100%);
   color: #fff;
@@ -2447,6 +2459,14 @@ body.menu-visible .game-over-splash {
   transform: none !important;
   margin: 0;
   align-self: stretch; /* fill gutter width so avatar centers in full side area */
+}
+
+/* Desktop: lift YOU so the score sits on the board's bottom edge */
+@media (min-width: 901px) {
+  #board-stack-human.board-gutter-stack-human,
+  .board-gutter-right .board-gutter-stack-human {
+    transform: translateY(-25px) !important;
+  }
 }
 
 .board-gutter-stack,
