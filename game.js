@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '325';
+  var QWERTY_BUILD = '326';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -1173,26 +1173,25 @@ class Game {
     if (this.isCompactLayout()) {
       return { gutterW: 0, sidebarW: 0, edgePad: 16 };
     }
-    /* Measure side profiles so the grid can grow and stay centered in the navy panel. */
-    var left = document.getElementById('board-gutter-left');
-    var right = document.getElementById('board-gutter-right');
+    /*
+     * Side columns are equal 1fr for symmetry — do NOT measure those stretched
+     * columns. Reserve only the profile content width so the board can grow.
+     */
     var wrap = this.getBoardWrapEl();
-    var gap = 12;
+    var gap = 10;
     if (wrap) {
       var cs = window.getComputedStyle(wrap);
-      gap = parseFloat(cs.columnGap || cs.gap) || 12;
+      gap = parseFloat(cs.columnGap || cs.gap) || 10;
     }
-    var guttersVisible =
-      left &&
-      right &&
-      left.offsetParent !== null &&
-      right.offsetParent !== null &&
-      left.offsetWidth > 0 &&
-      right.offsetWidth > 0;
-    var gutterW = guttersVisible
-      ? left.offsetWidth + right.offsetWidth + gap * 2
-      : 224; /* 100 + 100 + 12 + 12 */
-    return { gutterW: gutterW, sidebarW: 260, edgePad: 48 };
+    var aiStack = document.getElementById('board-stack-ai');
+    var humanStack = document.getElementById('board-stack-human');
+    var profileW = Math.max(
+      aiStack && aiStack.offsetWidth ? aiStack.offsetWidth : 0,
+      humanStack && humanStack.offsetWidth ? humanStack.offsetWidth : 0,
+      96
+    );
+    profileW = Math.min(profileW, 110);
+    return { gutterW: profileW * 2 + gap * 2, sidebarW: 260, edgePad: 48 };
   }
 
   getBoardCenterEl() {
