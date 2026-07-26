@@ -1567,11 +1567,13 @@ body.qwerty-guest-view .game-table {
 }
 
 .avatar-ai {
-  border-color: #b8d9f0;
+  border-color: #9ec9ea;
+  background: #e8f4ff;
 }
 
 .avatar-human {
-  border-color: #f5c89a;
+  border-color: #f0b86a;
+  background: #fff1d6;
 }
 
 .avatar-art {
@@ -1824,7 +1826,7 @@ body.qwerty-guest-view .game-table {
   position: relative;
   background: linear-gradient(145deg, #1a2744 0%, #243656 100%);
   border-radius: 0 0 14px 14px;
-  padding: 6px;
+  padding: 8px 10px;
   min-height: 0;
   max-height: 100%;
   overflow: hidden;
@@ -1832,10 +1834,13 @@ body.qwerty-guest-view .game-table {
     0 12px 32px rgba(26, 39, 68, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   display: grid;
-  grid-template-columns: minmax(118px, 1fr) auto minmax(118px, 1fr);
+  /* Content-sized side profiles + centered board — less empty navy */
+  grid-template-columns: minmax(92px, 112px) minmax(0, auto) minmax(92px, 112px);
   grid-template-rows: minmax(0, 1fr);
-  align-items: stretch;
-  gap: 0;
+  align-items: center;
+  justify-content: center;
+  column-gap: 10px;
+  row-gap: 0;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -2204,14 +2209,13 @@ body.menu-visible .game-over-splash {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   width: 100%;
   min-width: 0;
-  max-width: none;
-  padding-left: 4px;
-  padding-right: 4px;
+  max-width: 112px;
+  padding: 0 2px;
   box-sizing: border-box;
-  align-self: stretch;
+  align-self: center;
   position: relative;
   z-index: 2;
 }
@@ -2220,9 +2224,10 @@ body.menu-visible .game-over-splash {
   grid-column: 2;
   grid-row: 1;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  align-self: start;
+  align-self: center;
+  justify-self: center;
   width: fit-content;
   max-width: 100%;
   min-width: 0;
@@ -2240,13 +2245,13 @@ body.menu-visible .game-over-splash {
 .board-gutter-left {
   grid-column: 1;
   grid-row: 1;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .board-gutter-right {
   grid-column: 3;
   grid-row: 1;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .board-gutter-stack-human,
@@ -2259,10 +2264,18 @@ body.menu-visible .game-over-splash {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
-  max-width: 128px;
+  max-width: 108px;
   position: relative;
+}
+
+.board-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
 }
 
 .board-gutter-score {
@@ -2277,11 +2290,16 @@ body.menu-visible .game-over-splash {
 }
 
 .board-gutter-name {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   color: #dbeafe;
+  line-height: 1.15;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .board-gutter-score-human .board-gutter-name {
@@ -2289,10 +2307,11 @@ body.menu-visible .game-over-splash {
 }
 
 .board-gutter-score-value {
-  font-size: 1.3rem;
+  font-size: 1.22rem;
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.05;
   color: #fff;
+  font-variant-numeric: tabular-nums;
 }
 
 .board-gutter-score .score-unit {
@@ -2306,10 +2325,10 @@ body.menu-visible .game-over-splash {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 6px;
+  gap: 5px;
   width: 100%;
-  max-width: 128px;
-  margin-top: 2px;
+  max-width: 108px;
+  margin-top: 0;
 }
 
 .board-difficulty-btn {
@@ -2345,16 +2364,18 @@ body.menu-visible .game-over-splash {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   width: 100%;
 }
 
 .board-gutter-stack .turn-ribbon {
   display: block;
   visibility: hidden;
-  height: 22px;
-  line-height: 22px;
+  height: 20px;
+  line-height: 20px;
   margin-bottom: 0;
+  padding: 0 8px;
+  font-size: 0.58rem;
   box-sizing: border-box;
 }
 
@@ -2363,8 +2384,20 @@ body.menu-visible .game-over-splash {
 }
 
 .board-avatar-slot .avatar {
-  width: 68px;
-  height: 68px;
+  width: 62px;
+  height: 62px;
+  border-width: 2.5px;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.28),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+.board-avatar-slot.active .avatar {
+  box-shadow:
+    0 0 0 3px var(--pogo-yellow),
+    0 6px 14px rgba(0, 0, 0, 0.32),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.06);
 }
 
 .board-avatar-slot .turn-ribbon {
@@ -3240,6 +3273,8 @@ body.menu-visible .game-over-splash {
     overflow: hidden;
     grid-template-columns: none;
     grid-template-rows: none;
+    padding: 4px 4px 2px;
+    column-gap: 0;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-center {
@@ -3578,7 +3613,7 @@ body.menu-visible .game-over-splash {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
 
   .board-gutter-left .board-gutter-stack,
@@ -3587,9 +3622,29 @@ body.menu-visible .game-over-splash {
     align-items: center;
   }
 
+  .board-profile {
+    flex-direction: row;
+    width: auto;
+    gap: 8px;
+  }
+
+  .board-avatar-slot .avatar {
+    width: 48px;
+    height: 48px;
+  }
+
   .board-gutter-score {
     width: auto;
-    min-width: 72px;
+    min-width: 64px;
+    text-align: left;
+  }
+
+  .board-gutter-score-ai {
+    text-align: left;
+  }
+
+  .board-gutter-score-human {
+    text-align: left;
   }
 
 
