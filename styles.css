@@ -1892,9 +1892,10 @@ body.qwerty-guest-view .game-table {
   filter: none;
 }
 
-/* Dark game container — forced three-column flex */
+/* Dark game container — three-column flex (Computer | Board | You) */
 .board-wrap {
-  --board-side-w: 120px;
+  --board-side-w: 112px;
+  --board-col-gap: 16px;
   position: relative;
   background: linear-gradient(145deg, #1a2744 0%, #243656 100%);
   border-radius: 0 0 14px 14px;
@@ -1904,12 +1905,17 @@ body.qwerty-guest-view .game-table {
   box-shadow:
     0 12px 32px rgba(26, 39, 68, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  /* Exact layout requested: space-between + equal fixed side panels */
+  /*
+   * Center the whole trio so outer navy margins match.
+   * Equal fixed gutters + equal gap keeps Computer / Board / You symmetrical.
+   */
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
   align-items: center;
-  gap: 20px;
-  padding: 20px;
+  gap: var(--board-col-gap);
+  padding: 16px 18px;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -2274,8 +2280,10 @@ body.menu-visible .game-over-splash {
   background: #fff !important;
 }
 
-/* Left / right panels — identical fixed width */
-.board-gutter {
+/* Left / right panels — identical fixed width (no stretch) */
+.board-gutter,
+.board-gutter-left,
+.board-gutter-right {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2292,13 +2300,23 @@ body.menu-visible .game-over-splash {
   z-index: 2;
 }
 
-/* Center column — grows, board centered inside */
+.board-gutter-left {
+  order: 0;
+}
+
+.board-gutter-right {
+  order: 2;
+}
+
+/* Center column — hug the canvas; parent centers the trio */
 .board-center {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
+  order: 1;
   width: auto;
+  max-width: calc(100% - (var(--board-side-w) * 2) - (var(--board-col-gap) * 2));
   min-width: 0;
   min-height: 0;
   margin: 0;
@@ -2312,20 +2330,6 @@ body.menu-visible .game-over-splash {
   margin: 0 auto;
   position: relative;
   z-index: 1;
-}
-
-.board-gutter-left {
-  order: 0;
-  justify-content: center;
-}
-
-.board-gutter-right {
-  order: 2;
-  justify-content: center;
-}
-
-.board-center {
-  order: 1;
 }
 
 /* Keep profile stacks in-flow — no JS translate offsets */

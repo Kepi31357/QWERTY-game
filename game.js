@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '328';
+  var QWERTY_BUILD = '329';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -1173,20 +1173,20 @@ class Game {
     if (this.isCompactLayout()) {
       return { gutterW: 0, sidebarW: 0, edgePad: 16 };
     }
-    /* Match .board-wrap: fixed equal side panels + gap 20px + padding 20px each side. */
-    var sideW = 120;
-    var gap = 20;
-    var padH = 40;
+    /* Match .board-wrap: equal fixed gutters + column gap (desktop trio). */
+    var sideW = 112;
+    var gap = 16;
     var wrap = this.getBoardWrapEl();
     if (wrap) {
       var cs = window.getComputedStyle(wrap);
       var sw = parseFloat(cs.getPropertyValue('--board-side-w'));
+      var cg = parseFloat(cs.getPropertyValue('--board-col-gap'));
       if (sw > 0) sideW = sw;
-      var g = parseFloat(cs.columnGap || cs.gap);
-      if (g > 0) gap = g;
-      padH =
-        (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0) ||
-        padH;
+      if (cg > 0) gap = cg;
+      else {
+        var g = parseFloat(cs.columnGap || cs.gap);
+        if (g > 0) gap = g;
+      }
     }
     return { gutterW: sideW * 2 + gap * 2, sidebarW: 260, edgePad: 48 };
   }
@@ -1359,8 +1359,18 @@ class Game {
       : 0;
     const gutterW = insets.gutterW;
     const sidebarW = insets.sidebarW;
-    let centerW = boardCenter && boardCenter.clientWidth >= 50 ? boardCenter.clientWidth : 0;
-    if (!centerW && boardWrap) {
+    let centerW = 0;
+    if (compact) {
+      /* Mobile: measure the center column / wrap as before. */
+      centerW = boardCenter && boardCenter.clientWidth >= 50 ? boardCenter.clientWidth : 0;
+      if (!centerW && boardWrap) {
+        centerW = Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW);
+      }
+    } else if (boardWrap) {
+      /*
+       * Desktop trio: gutters are fixed; size the board from remaining wrap
+       * width so .board-center can hug the canvas without locking small.
+       */
       centerW = Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW);
     }
     if (centerW < 100) {
@@ -1441,11 +1451,7 @@ class Game {
         MIN_CELL_SIZE,
         Math.min(nextCellSize, Math.floor(cellFromW), MAX_CELL_SIZE)
       );
-
-      if (boardCenter && boardCenter.clientWidth >= 50) {
-        const maxByCenterW = Math.floor(boardCenter.clientWidth / COLS);
-        nextCellSize = Math.max(MIN_CELL_SIZE, Math.min(nextCellSize, maxByCenterW));
-      }
+      /* Do not cap by .board-center clientWidth — it hugs the canvas on desktop. */
     }
 
     this.cellSize = nextCellSize;
@@ -11366,7 +11372,7 @@ function roundRect(ctx, x, y, w, h, r) {
       try {
         document.body.dataset.qwertyBuild = QWERTY_BUILD;
         if (typeof console !== 'undefined' && console.info) {
-          console.info('QWERTY build ' + QWERTY_BUILD + ' — flex trio: Computer | Board | You');
+          console.info('QWERTY build ' + QWERTY_BUILD + ' — space-between three-column board');
         }
         new Game();
       } catch (err) {
