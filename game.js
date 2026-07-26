@@ -1562,7 +1562,10 @@ class Game {
       }
       if (this.rackCanvas) {
         var rackMain = this.rackCanvas.closest('.rack-main');
-        if (rackMain) this._applyLayoutStyle(rackMain, 'marginLeft', '');
+        if (rackMain) {
+          this._applyLayoutStyle(rackMain, 'marginLeft', '');
+          this._applyLayoutStyle(rackMain, 'transform', '');
+        }
       }
       var controlsRow = document.querySelector('.controls-row');
       if (controlsRow) {
@@ -1603,14 +1606,8 @@ class Game {
       this._applyLayoutStyle(oppHeaderRow, 'marginLeft', '');
     }
 
-    /* Shared horizontal center for QWERTY header + both letter racks. */
+    /* Center header + both letter racks on the gameboard grid axis. */
     var rackAxisCenter = boardCenter;
-    if (this.rackCanvas) {
-      var humanRackRect = this.rackCanvas.getBoundingClientRect();
-      if (humanRackRect.width > 0) {
-        rackAxisCenter = humanRackRect.left + humanRackRect.width / 2;
-      }
-    }
 
     var headerMark = document.querySelector('.board-top-header .board-grid-header');
     if (headerMark) {
@@ -1630,25 +1627,31 @@ class Game {
       var oppRackSlot = this.opponentRackCanvas.closest('.board-grid-rack');
       var oppWrapper = this.opponentRackCanvas.closest('.rack-slot');
       if (oppRackSlot) {
-        /* Full board-column width; tiles centered in CSS like Deb's rack. */
         this._applyLayoutStyle(oppRackSlot, 'width', '');
         this._applyLayoutStyle(oppRackSlot, 'marginLeft', '');
       }
       if (oppWrapper) {
         this._applyLayoutStyle(oppWrapper, 'marginLeft', '');
         this._applyLayoutStyle(oppWrapper, 'transform', '');
-        var rackCanvasRect = this.opponentRackCanvas.getBoundingClientRect();
-        var oppCenter = rackCanvasRect.left + rackCanvasRect.width / 2;
-        var shiftX = Math.round(rackAxisCenter - oppCenter);
-        if (shiftX) {
-          this._applyLayoutStyle(oppWrapper, 'transform', 'translateX(' + shiftX + 'px)');
+        var oppRect = this.opponentRackCanvas.getBoundingClientRect();
+        var oppShift = Math.round(rackAxisCenter - (oppRect.left + oppRect.width / 2));
+        if (oppShift) {
+          this._applyLayoutStyle(oppWrapper, 'transform', 'translateX(' + oppShift + 'px)');
         }
       }
     }
 
     if (this.rackCanvas) {
       var rackMain = this.rackCanvas.closest('.rack-main');
-      if (rackMain) this._applyLayoutStyle(rackMain, 'marginLeft', '0');
+      if (rackMain) {
+        this._applyLayoutStyle(rackMain, 'marginLeft', '');
+        this._applyLayoutStyle(rackMain, 'transform', '');
+        var humanRect = this.rackCanvas.getBoundingClientRect();
+        var humanShift = Math.round(rackAxisCenter - (humanRect.left + humanRect.width / 2));
+        if (humanShift) {
+          this._applyLayoutStyle(rackMain, 'transform', 'translateX(' + humanShift + 'px)');
+        }
+      }
     }
 
     var controlsRow = document.querySelector('.controls-row');
