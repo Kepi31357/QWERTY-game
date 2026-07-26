@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '327';
+  var QWERTY_BUILD = '328';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -1173,16 +1173,20 @@ class Game {
     if (this.isCompactLayout()) {
       return { gutterW: 0, sidebarW: 0, edgePad: 16 };
     }
-    /* Match .board-wrap --board-side-w / --board-side-gap (equal fixed side panels). */
-    var sideW = 108;
-    var gap = 12;
+    /* Match .board-wrap: fixed equal side panels + gap 20px + padding 20px each side. */
+    var sideW = 120;
+    var gap = 20;
+    var padH = 40;
     var wrap = this.getBoardWrapEl();
     if (wrap) {
       var cs = window.getComputedStyle(wrap);
       var sw = parseFloat(cs.getPropertyValue('--board-side-w'));
-      var sg = parseFloat(cs.getPropertyValue('--board-side-gap'));
       if (sw > 0) sideW = sw;
-      if (sg > 0) gap = sg;
+      var g = parseFloat(cs.columnGap || cs.gap);
+      if (g > 0) gap = g;
+      padH =
+        (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0) ||
+        padH;
     }
     return { gutterW: sideW * 2 + gap * 2, sidebarW: 260, edgePad: 48 };
   }

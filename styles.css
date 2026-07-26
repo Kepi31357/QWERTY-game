@@ -1892,31 +1892,24 @@ body.qwerty-guest-view .game-table {
   filter: none;
 }
 
-/* Canvas wrapper — grid only (opponent rack sits in board-play-row above) */
+/* Dark game container — forced three-column flex */
 .board-wrap {
-  --board-side-w: 108px;
-  --board-side-gap: 12px;
+  --board-side-w: 120px;
   position: relative;
   background: linear-gradient(145deg, #1a2744 0%, #243656 100%);
   border-radius: 0 0 14px 14px;
-  padding: 12px 16px;
   min-height: 0;
   max-height: 100%;
   overflow: hidden;
   box-shadow:
     0 12px 32px rgba(26, 39, 68, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  /*
-   * Mandatory internal layout:
-   *   [Computer panel] [Gameboard] [You panel]
-   * Equal fixed side widths, equal gaps, whole trio centered in the navy panel.
-   */
+  /* Exact layout requested: space-between + equal fixed side panels */
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  gap: var(--board-side-gap);
+  gap: 20px;
+  padding: 20px;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -2281,6 +2274,7 @@ body.menu-visible .game-over-splash {
   background: #fff !important;
 }
 
+/* Left / right panels — identical fixed width */
 .board-gutter {
   display: flex;
   flex-direction: column;
@@ -2298,20 +2292,19 @@ body.menu-visible .game-over-splash {
   z-index: 2;
 }
 
+/* Center column — grows, board centered inside */
 .board-center {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   width: auto;
-  max-width: calc(100% - (var(--board-side-w) * 2) - (var(--board-side-gap) * 2));
   min-width: 0;
   min-height: 0;
   margin: 0;
   padding: 0;
   overflow: visible;
   position: relative;
-  order: 0;
 }
 
 .board-center > #game-canvas {
@@ -2322,13 +2315,17 @@ body.menu-visible .game-over-splash {
 }
 
 .board-gutter-left {
-  order: -1;
+  order: 0;
   justify-content: center;
 }
 
 .board-gutter-right {
-  order: 1;
+  order: 2;
   justify-content: center;
+}
+
+.board-center {
+  order: 1;
 }
 
 /* Keep profile stacks in-flow — no JS translate offsets */
