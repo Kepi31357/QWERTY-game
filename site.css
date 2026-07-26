@@ -281,7 +281,7 @@ ul {
 .hero-brand img {
   width: 100%;
   height: auto;
-  max-height: clamp(76px, 11vh, 108px);
+  max-height: clamp(140px, 24vh, 220px);
   margin: 0 auto;
   object-fit: contain;
   object-position: center;

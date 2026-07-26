@@ -170,6 +170,8 @@ body.game-exited .app {
 
 .main-menu-title .qwerty-header-img {
   width: min(100%, 520px);
+  max-height: 200px;
+  object-fit: contain;
 }
 
 .main-menu-section {
@@ -1534,7 +1536,9 @@ body.game-exited .app {
 }
 
 .board-top-header .qwerty-header-img {
-  width: min(100%, 440px);
+  width: min(100%, 360px);
+  max-height: 88px;
+  object-fit: contain;
 }
 
 .tagline {
@@ -3311,8 +3315,8 @@ body.menu-visible .game-over-splash {
   }
 
   body:not(.menu-visible):not(.game-exited) .board-top-header .qwerty-header-img {
-    width: min(100%, 300px);
-    max-height: 48px;
+    width: min(100%, 260px);
+    max-height: 64px;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-opponent-rack.board-grid-rack {
