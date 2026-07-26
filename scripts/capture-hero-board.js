@@ -27,14 +27,28 @@ const MIME = {
   '.ico': 'image/x-icon',
 };
 
+function resolveFile(urlPath) {
+  var rel = String(urlPath || '/').replace(/^\/+/, '').replace(/\//g, path.sep);
+  if (!rel || rel === path.sep) rel = 'index.html';
+  var fromPublic = path.normalize(path.join(ROOT, 'public', rel));
+  if (fromPublic.startsWith(path.join(ROOT, 'public')) && fs.existsSync(fromPublic) && fs.statSync(fromPublic).isFile()) {
+    return fromPublic;
+  }
+  var fromRoot = path.normalize(path.join(ROOT, rel));
+  if (fromRoot.startsWith(ROOT) && fs.existsSync(fromRoot) && fs.statSync(fromRoot).isFile()) {
+    return fromRoot;
+  }
+  return null;
+}
+
 function startServer() {
   return new Promise(function (resolve, reject) {
     const server = http.createServer(function (req, res) {
       try {
         var urlPath = decodeURIComponent((req.url || '/').split('?')[0]);
         if (urlPath === '/') urlPath = '/index.html';
-        var filePath = path.join(ROOT, urlPath.replace(/^\//, '').replace(/\//g, path.sep));
-        if (!filePath.startsWith(ROOT) || !fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+        var filePath = resolveFile(urlPath);
+        if (!filePath) {
           res.writeHead(404);
           res.end('Not found');
           return;
@@ -107,11 +121,15 @@ async function main() {
       msg.hidden = true;
       msg.textContent = '';
     }
+    /* Hide in-game logo strip — landing page already has its own brand banner */
+    var topHeader = document.querySelector('.board-top-header');
+    if (topHeader) topHeader.style.display = 'none';
     document.body.classList.remove('mobile-chat-open', 'chat-keyboard-open');
+    window.dispatchEvent(new Event('resize'));
   });
-  await page.waitForTimeout(400);
+  await page.waitForTimeout(600);
 
-  // Capture the full play chrome (logo + dark board + scores/chat)
+  // Capture dark board + scores/chat (logo strip hidden above)
   var target = page.locator('.board-play-row');
   if (!(await target.count())) {
     target = page.locator('.app');
