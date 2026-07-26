@@ -331,26 +331,23 @@ ul {
   margin: 0;
   overflow: hidden;
   border-radius: clamp(14px, 1.4vw, 22px);
-  background: linear-gradient(145deg, #1a2744 0%, #243656 100%);
+  /* Solid navy — must match screenshot board chrome (no gradient seam) */
+  background: #1a2744;
   box-shadow: 0 18px 40px rgba(20, 10, 40, 0.38);
   border: 2px solid rgba(255, 248, 231, 0.28);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  padding: clamp(12px, 1.6vw, 18px) clamp(14px, 2vw, 22px);
+  display: block;
+  padding: clamp(10px, 1.4vw, 16px);
   box-sizing: border-box;
   position: relative;
   z-index: 1;
   animation: rise-in 0.85s var(--ease) 0.1s both;
+  overflow: hidden;
 }
 
 .hero-preview img {
   width: 100%;
   height: auto;
   display: block;
-  flex: 1 1 auto;
-  min-width: 0;
   margin: 0 auto;
   border-radius: 10px;
   background: #1a2744;
@@ -500,12 +497,9 @@ ul {
   border-radius: 18px;
   border: 2px solid rgba(92, 45, 145, 0.12);
   box-shadow: 0 14px 30px rgba(45, 27, 78, 0.12);
-  background: linear-gradient(145deg, #1a2744 0%, #243656 100%);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 24px;
+  background: #1a2744;
+  display: block;
+  padding: 14px 16px;
   box-sizing: border-box;
 }
 

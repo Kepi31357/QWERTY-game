@@ -125,18 +125,67 @@ async function main() {
     var topHeader = document.querySelector('.board-top-header');
     if (topHeader) topHeader.style.display = 'none';
     document.body.classList.remove('mobile-chat-open', 'chat-keyboard-open');
+
+    /*
+     * Marketing polish: solid navy across rack + wrap so gradient seams /
+     * upper-right color mismatches and hairline artifacts disappear.
+     */
+    var style = document.createElement('style');
+    style.setAttribute('data-qwerty-capture', '1');
+    style.textContent = [
+      'html, body { background: #1a2744 !important; }',
+      '.app, .game-layout, .game-main, .game-play-area, .game-play-stack, .game-table, .game-board-row, .board-play-row {',
+      '  background: #1a2744 !important;',
+      '  box-shadow: none !important;',
+      '}',
+      '.game-board-column,',
+      '.board-opponent-rack.board-grid-rack,',
+      '.board-wrap,',
+      '.board-gutter,',
+      '.board-gutter-left,',
+      '.board-gutter-right,',
+      '.board-center,',
+      '#game-canvas {',
+      '  background: #1a2744 !important;',
+      '  background-image: none !important;',
+      '  box-shadow: none !important;',
+      '}',
+      '.board-opponent-rack.board-grid-rack {',
+      '  border-radius: 14px 14px 0 0 !important;',
+      '  border: none !important;',
+      '  outline: none !important;',
+      '}',
+      '.board-wrap {',
+      '  border-radius: 0 0 14px 14px !important;',
+      '  border: none !important;',
+      '  outline: none !important;',
+      '}',
+      '.board-wrap::before, .board-wrap::after { display: none !important; }',
+    ].join('\n');
+    document.head.appendChild(style);
+
     window.dispatchEvent(new Event('resize'));
   });
-  await page.waitForTimeout(600);
+  await page.waitForTimeout(700);
 
-  // Capture dark board + scores/chat (logo strip hidden above)
-  var target = page.locator('.board-play-row');
-  if (!(await target.count())) {
-    target = page.locator('.app');
+  // Tight clip around board column + sidebar (no purple page fringe / hairlines)
+  var boardBox = await page.locator('.game-board-column').boundingBox();
+  var sideBox = await page.locator('.sidebar-column').boundingBox();
+  if (!boardBox || !sideBox) {
+    throw new Error('Could not measure board/sidebar for capture clip');
   }
+  var pad = 2;
+  var clip = {
+    x: Math.max(0, Math.floor(Math.min(boardBox.x, sideBox.x) - pad)),
+    y: Math.max(0, Math.floor(Math.min(boardBox.y, sideBox.y) - pad)),
+    width: 0,
+    height: 0,
+  };
+  clip.width = Math.ceil(Math.max(boardBox.x + boardBox.width, sideBox.x + sideBox.width) - clip.x + pad);
+  clip.height = Math.ceil(Math.max(boardBox.y + boardBox.height, sideBox.y + sideBox.height) - clip.y + pad);
 
-  await target.screenshot({ path: OUT_PNG, type: 'png' });
-  await target.screenshot({ path: OUT_HERO, type: 'jpeg', quality: 92 });
+  await page.screenshot({ path: OUT_PNG, type: 'png', clip: clip });
+  await page.screenshot({ path: OUT_HERO, type: 'jpeg', quality: 92, clip: clip });
   fs.copyFileSync(OUT_HERO, OUT_HERO_LIVE);
   fs.copyFileSync(OUT_HERO, OUT_SHOT);
   fs.copyFileSync(OUT_PNG, OUT_HERO_PNG);
