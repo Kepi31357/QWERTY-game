@@ -1012,20 +1012,36 @@ class Game {
 
   getBoardVerticalChrome(wrapPadV, cellSizeGuess) {
     var padV = wrapPadV || 0;
-    var oppSlot = document.querySelector('.board-grid-rack');
+    var cs = cellSizeGuess != null ? cellSizeGuess : (this.cellSize || MIN_CELL_SIZE + 10);
+    var ts = Math.max(MIN_CELL_SIZE - 2, cs - 2);
+    var rackFallback = ts + 16;
+    var oppSlot = document.querySelector('.board-opponent-rack.board-grid-rack');
     var oppH = 0;
     if (oppSlot && oppSlot.offsetHeight > 0) {
       oppH = oppSlot.offsetHeight;
     } else if (this.opponentRackCanvas && this.opponentRackCanvas.offsetHeight > 0) {
       oppH = this.opponentRackCanvas.offsetHeight;
     } else {
-      var cs = cellSizeGuess != null ? cellSizeGuess : (this.cellSize || MIN_CELL_SIZE + 10);
-      var ts = Math.max(MIN_CELL_SIZE - 2, cs - 2);
-      oppH = ts + 16;
+      oppH = rackFallback;
+    }
+    var humanSlot = document.querySelector('.board-human-rack.board-grid-rack');
+    var humanH = 0;
+    if (humanSlot && humanSlot.offsetHeight > 0) {
+      humanH = humanSlot.offsetHeight;
+    } else if (this.rackCanvas && this.rackCanvas.closest('.board-human-rack') && this.rackCanvas.offsetHeight > 0) {
+      humanH = this.rackCanvas.offsetHeight + 16;
+    } else if (humanSlot) {
+      humanH = rackFallback;
     }
     var headerEl = document.querySelector('.board-top-header');
     var headerH = headerEl && headerEl.offsetHeight > 0 ? headerEl.offsetHeight : 0;
-    return { oppRackH: oppH, headerH: headerH, wrapPadV: padV, total: oppH + headerH + padV };
+    return {
+      oppRackH: oppH,
+      humanRackH: humanH,
+      headerH: headerH,
+      wrapPadV: padV,
+      total: oppH + humanH + headerH + padV,
+    };
   }
 
   getCompactPlayReservedHeight() {

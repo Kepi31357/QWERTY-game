@@ -722,7 +722,7 @@ body.game-exited .app {
   width: 100%;
   height: auto;
   max-height: none;
-  border-radius: 0 0 14px 14px;
+  border-radius: 0;
 }
 
 /*
@@ -825,7 +825,8 @@ body.game-exited .app {
   text-align: center;
 }
 
-.board-opponent-rack.board-grid-rack {
+.board-opponent-rack.board-grid-rack,
+.board-human-rack.board-grid-rack {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -833,19 +834,34 @@ body.game-exited .app {
   min-width: 0;
   flex: 0 0 auto;
   background: linear-gradient(145deg, #1a2744 0%, #243656 100%);
-  border-radius: 14px 14px 0 0;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  padding: 6px 6px 0;
+  padding: 8px 6px;
   box-sizing: border-box;
 }
 
-.board-grid-rack .rack-slot {
+.board-opponent-rack.board-grid-rack {
+  border-radius: 14px 14px 0 0;
+}
+
+.board-human-rack.board-grid-rack {
+  border-radius: 0 0 14px 14px;
+}
+
+.board-grid-rack .rack-slot,
+.board-human-rack .rack-row,
+.board-human-rack .rack-center,
+.board-human-rack .rack-main {
   width: fit-content;
   margin-left: 0;
   margin-right: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.board-human-rack .rack-row {
+  width: 100%;
+  min-height: 0;
 }
 
 .opponent-grid-header {
@@ -1931,7 +1947,9 @@ body.qwerty-guest-view .game-table {
 }
 
 .player-panel #rack-canvas,
-.player-panel #opponent-rack-canvas {
+.player-panel #opponent-rack-canvas,
+.board-human-rack #rack-canvas,
+.board-grid-rack #opponent-rack-canvas {
   display: block;
   max-width: 100%;
 }
@@ -2015,7 +2033,7 @@ body.qwerty-guest-view .game-table {
   --board-col-gap: 16px;
   position: relative;
   background: linear-gradient(145deg, #1a2744 0%, #243656 100%);
-  border-radius: 0 0 14px 14px;
+  border-radius: 0;
   min-height: 0;
   max-height: 100%;
   overflow: hidden;
@@ -3294,6 +3312,13 @@ body.menu-visible .game-over-splash {
     display: none;
   }
 
+  body:not(.menu-visible):not(.game-exited) .board-human-rack.board-grid-rack {
+    display: flex;
+    justify-content: center;
+    border-radius: 0 0 12px 12px;
+    padding: 6px;
+  }
+
   body:not(.menu-visible):not(.game-exited) .board-gutter-left,
   body:not(.menu-visible):not(.game-exited) .board-gutter-right {
     display: none;
@@ -3705,10 +3730,9 @@ body.menu-visible .game-over-splash {
   body:not(.menu-visible):not(.game-exited) .player-panel.human {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto auto;
+    grid-template-rows: auto auto auto;
     grid-template-areas:
       "mobbar"
-      "rack"
       "submit"
       "ctrl";
     gap: 4px;
@@ -3748,8 +3772,7 @@ body.menu-visible .game-over-splash {
     display: contents;
   }
 
-  body:not(.menu-visible):not(.game-exited) .rack-row {
-    grid-area: rack;
+  body:not(.menu-visible):not(.game-exited) .board-human-rack .rack-row {
     min-height: 0;
     padding-bottom: 0;
     justify-content: center;
@@ -3897,8 +3920,9 @@ body.menu-visible .game-over-splash {
   }
 
 
-  .board-opponent-rack.board-grid-rack {
-    padding-bottom: 2px;
+  .board-opponent-rack.board-grid-rack,
+  .board-human-rack.board-grid-rack {
+    padding: 8px 6px;
   }
 
   .game-layout {
