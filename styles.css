@@ -2060,7 +2060,8 @@ body.qwerty-guest-view .game-table {
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: center;
-  align-items: center;
+  /* Stretch gutters to full panel height so profiles can sit in the true middle */
+  align-items: stretch;
   gap: 12px;
   padding: 8px 12px;
   width: 100%;
@@ -2436,7 +2437,8 @@ body.menu-visible .game-over-splash {
 .board-gutter-right {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; /* horizontal center in the dark strip */
+  justify-content: center; /* vertical middle of the dark panel */
   flex: 0 0 var(--board-side-w);
   width: var(--board-side-w);
   min-width: var(--board-side-w);
@@ -2451,12 +2453,10 @@ body.menu-visible .game-over-splash {
 
 .board-gutter-left {
   order: 0;
-  justify-content: center; /* Computer centered in left dark panel */
 }
 
 .board-gutter-right {
   order: 2;
-  justify-content: center; /* You centered in right dark panel */
 }
 
 /* Board takes leftover width; canvas stays centered in the middle column */
@@ -2503,6 +2503,7 @@ body.menu-visible .game-over-splash {
   .board-wrap {
     --board-side-w: 84px;
     justify-content: center;
+    align-items: stretch;
     gap: 12px;
     padding: 8px 14px;
   }
@@ -2514,18 +2515,25 @@ body.menu-visible .game-over-splash {
     width: var(--board-side-w);
     min-width: var(--board-side-w);
     max-width: var(--board-side-w);
+    align-self: stretch;
     justify-content: center;
+    align-items: center;
   }
 
   .board-center {
     flex: 1 1 auto;
     min-width: 0;
+    align-self: stretch;
+    align-items: center;
   }
 
-  /* Keep both profiles centered in their panels (no vertical offset) */
-  #board-stack-human.board-gutter-stack-human,
-  .board-gutter-right .board-gutter-stack-human,
-  .board-gutter-left .board-gutter-stack {
+  /* Keep both profiles in the geometric middle of each dark panel */
+  #board-stack-ai,
+  #board-stack-human,
+  .board-gutter-stack,
+  .board-gutter-stack-human {
+    margin-top: auto !important;
+    margin-bottom: auto !important;
     transform: none !important;
   }
 }
