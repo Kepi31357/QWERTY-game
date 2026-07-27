@@ -721,8 +721,8 @@ body.game-exited .app {
 }
 
 .game-board-column .board-wrap {
-  /* Hug the grid — do not grow and leave a void above the orange rack */
-  flex: 0 1 auto;
+  /* Fill the play column so the canvas can size up on desktop */
+  flex: 1 1 auto;
   min-height: 0;
   width: 100%;
   height: auto;
@@ -2045,8 +2045,8 @@ body.qwerty-guest-view .game-table {
 
 /* Dark game container — three-column flex (Computer | Board | You) */
 .board-wrap {
-  --board-side-w: 90px;
-  --board-col-gap: 16px;
+  --board-side-w: 84px;
+  --board-col-gap: 12px;
   position: relative;
   background: linear-gradient(145deg, #1a2744 0%, #243656 100%);
   border-radius: 0;
@@ -2056,18 +2056,13 @@ body.qwerty-guest-view .game-table {
   box-shadow:
     0 12px 32px rgba(26, 39, 68, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  /*
-   * Equal outer padding (24px) + space-between pins gutters to the padded
-   * edges; center column grows and centers the canvas between them.
-   */
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  gap: 16px;
-  /* Equal top/bottom padding so blue + orange racks sit the same distance from the grid */
-  padding: 10px 24px;
+  gap: 12px;
+  padding: 8px 12px;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -2433,20 +2428,19 @@ body.menu-visible .game-over-splash {
 }
 
 /*
- * Side panels: grow equally into the navy flanking the board so
- * align-items:center places avatars in the true horizontal center
- * of each dark side area (not only a fixed 90px strip at the edge).
+ * Side panels: fixed width so Computer | Board | You stay tight.
+ * Leftover width goes to .board-center (larger board).
  */
 .board-gutter,
 .board-gutter-left,
 .board-gutter-right {
   display: flex;
   flex-direction: column;
-  align-items: center; /* centers children horizontally in the side area */
-  flex: 1 1 0;
-  width: auto;
+  align-items: center;
+  flex: 0 0 var(--board-side-w);
+  width: var(--board-side-w);
   min-width: var(--board-side-w);
-  max-width: none;
+  max-width: var(--board-side-w);
   padding: 0;
   margin: 0;
   box-sizing: border-box;
@@ -2465,12 +2459,12 @@ body.menu-visible .game-over-splash {
   justify-content: flex-end; /* You near bottom of board */
 }
 
-/* Hug the canvas — leftover width goes into the equal side gutters */
+/* Board takes leftover width; canvas stays centered in the middle column */
 .board-center {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   order: 1;
   width: auto;
   min-width: 0;
@@ -2501,6 +2495,36 @@ body.menu-visible .game-over-splash {
   #board-stack-human.board-gutter-stack-human,
   .board-gutter-right .board-gutter-stack-human {
     transform: translateY(-25px) !important;
+  }
+
+  .board-play-row {
+    column-gap: 10px;
+  }
+
+  .game-board-column .board-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .board-wrap {
+    --board-side-w: 84px;
+    justify-content: center;
+    gap: 12px;
+    padding: 8px 14px;
+  }
+
+  .board-gutter,
+  .board-gutter-left,
+  .board-gutter-right {
+    flex: 0 0 var(--board-side-w);
+    width: var(--board-side-w);
+    min-width: var(--board-side-w);
+    max-width: var(--board-side-w);
+  }
+
+  .board-center {
+    flex: 1 1 auto;
+    min-width: 0;
   }
 }
 
