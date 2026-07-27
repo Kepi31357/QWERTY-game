@@ -2451,12 +2451,12 @@ body.menu-visible .game-over-splash {
 
 .board-gutter-left {
   order: 0;
-  justify-content: flex-start; /* Computer near top of board */
+  justify-content: center; /* Computer centered in left dark panel */
 }
 
 .board-gutter-right {
   order: 2;
-  justify-content: flex-end; /* You near bottom of board */
+  justify-content: center; /* You centered in right dark panel */
 }
 
 /* Board takes leftover width; canvas stays centered in the middle column */
@@ -2490,13 +2490,7 @@ body.menu-visible .game-over-splash {
   align-self: stretch; /* fill gutter width so avatar centers in full side area */
 }
 
-/* Desktop: lift YOU so the score sits on the board's bottom edge */
 @media (min-width: 901px) {
-  #board-stack-human.board-gutter-stack-human,
-  .board-gutter-right .board-gutter-stack-human {
-    transform: translateY(-25px) !important;
-  }
-
   .board-play-row {
     column-gap: 10px;
   }
@@ -2520,11 +2514,19 @@ body.menu-visible .game-over-splash {
     width: var(--board-side-w);
     min-width: var(--board-side-w);
     max-width: var(--board-side-w);
+    justify-content: center;
   }
 
   .board-center {
     flex: 1 1 auto;
     min-width: 0;
+  }
+
+  /* Keep both profiles centered in their panels (no vertical offset) */
+  #board-stack-human.board-gutter-stack-human,
+  .board-gutter-right .board-gutter-stack-human,
+  .board-gutter-left .board-gutter-stack {
+    transform: none !important;
   }
 }
 
