@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '338';
+  var QWERTY_BUILD = '341';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -1673,8 +1673,9 @@ class Game {
     }
 
     /*
-     * Keep Computer / You panels in equal CSS columns inside .board-wrap.
-     * Do not translate them toward the chat sidebar — that broke symmetry.
+     * Pin profiles to the gameboard grid:
+     * - Computer: top of profile = top of grid
+     * - You: bottom of score "0" = bottom of grid
      */
     if (stackAi) this._applyLayoutStyle(stackAi, 'transform', '');
     if (stackHuman) this._applyLayoutStyle(stackHuman, 'transform', '');
@@ -1686,6 +1687,33 @@ class Game {
       this._applyLayoutStyle(rightGutter, 'paddingTop', '');
       this._applyLayoutStyle(rightGutter, 'paddingBottom', '');
     }
+
+    if (this.canvas && stackAi) {
+      var canvasBox = this.canvas.getBoundingClientRect();
+      var aiBox = stackAi.getBoundingClientRect();
+      if (canvasBox.height > 0 && aiBox.height > 0) {
+        var aiDy = Math.round(canvasBox.top - aiBox.top);
+        if (aiDy) {
+          this._applyLayoutStyle(stackAi, 'transform', 'translateY(' + aiDy + 'px)');
+        }
+      }
+    }
+
+    if (this.canvas && stackHuman) {
+      var gridBox = this.canvas.getBoundingClientRect();
+      var scoreEl =
+        document.querySelector('.board-gutter-score-human .board-gutter-score-value') ||
+        document.getElementById('player-score');
+      var alignEl = scoreEl || stackHuman;
+      var alignBox = alignEl.getBoundingClientRect();
+      if (gridBox.height > 0 && alignBox.height > 0) {
+        var youDy = Math.round(gridBox.bottom - alignBox.bottom);
+        if (youDy) {
+          this._applyLayoutStyle(stackHuman, 'transform', 'translateY(' + youDy + 'px)');
+        }
+      }
+    }
+
     this.syncSidebarToBoardGrid();
   }
 

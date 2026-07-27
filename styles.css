@@ -2482,12 +2482,13 @@ body.menu-visible .game-over-splash {
   z-index: 1;
 }
 
-/* Keep profile stacks in-flow — no JS translate offsets */
+/* Profile stacks — desktop JS may translateY to pin to the grid edges */
 .board-gutter-stack,
 .board-gutter-stack-human {
-  transform: none !important;
   margin: 0;
-  align-self: stretch; /* fill gutter width so avatar centers in full side area */
+  align-self: center;
+  width: auto;
+  max-width: 100%;
 }
 
 @media (min-width: 901px) {
@@ -2516,8 +2517,15 @@ body.menu-visible .game-over-splash {
     min-width: var(--board-side-w);
     max-width: none;
     align-self: stretch;
-    justify-content: center;
     align-items: center;
+  }
+
+  .board-gutter-left {
+    justify-content: flex-start; /* top aligned; JS pins to grid top */
+  }
+
+  .board-gutter-right {
+    justify-content: flex-end; /* bottom aligned; JS pins score to grid bottom */
   }
 
   .board-center {
@@ -2529,13 +2537,11 @@ body.menu-visible .game-over-splash {
     justify-content: center;
   }
 
-  /* Profile stacks: true center of each side panel */
   #board-stack-ai,
   #board-stack-human,
   .board-gutter-stack,
   .board-gutter-stack-human {
-    margin: auto !important;
-    transform: none !important;
+    margin: 0 !important;
     align-self: center;
     width: auto;
     max-width: 100%;
