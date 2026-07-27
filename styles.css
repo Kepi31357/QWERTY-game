@@ -1248,9 +1248,19 @@ body.game-exited .app {
 .whos-here-row {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 8px;
   padding: 6px 2px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.whos-here-identity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .whos-here-avatar {
@@ -1261,8 +1271,11 @@ body.game-exited .app {
 }
 
 .whos-here-name {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .whos-here-you .whos-here-name {
@@ -1290,9 +1303,10 @@ body.game-exited .app {
 
 .chat-mod-buttons {
   display: flex;
+  align-items: center;
   gap: 4px;
-  flex-shrink: 0;
-  margin-left: auto;
+  flex: 0 0 auto;
+  margin-left: 0;
 }
 
 .btn-chat-mod {
@@ -1306,6 +1320,7 @@ body.game-exited .app {
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 
 .btn-chat-mod:hover,
