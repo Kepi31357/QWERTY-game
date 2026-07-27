@@ -2429,20 +2429,20 @@ body.menu-visible .game-over-splash {
 }
 
 /*
- * Side panels: fixed width so Computer | Board | You stay tight.
- * Leftover width goes to .board-center (larger board).
+ * Side panels grow into the navy flanking the board so each profile
+ * can sit in the true center of its dark region (equal space on all sides).
  */
 .board-gutter,
 .board-gutter-left,
 .board-gutter-right {
   display: flex;
   flex-direction: column;
-  align-items: center; /* horizontal center in the dark strip */
-  justify-content: center; /* vertical middle of the dark panel */
-  flex: 0 0 var(--board-side-w);
-  width: var(--board-side-w);
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  width: auto;
   min-width: var(--board-side-w);
-  max-width: var(--board-side-w);
+  max-width: none;
   padding: 0;
   margin: 0;
   box-sizing: border-box;
@@ -2459,12 +2459,12 @@ body.menu-visible .game-over-splash {
   order: 2;
 }
 
-/* Board takes leftover width; canvas stays centered in the middle column */
+/* Hug the canvas — leftover width becomes the side panels, not empty board chrome */
 .board-center {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   order: 1;
   width: auto;
   min-width: 0;
@@ -2502,7 +2502,7 @@ body.menu-visible .game-over-splash {
 
   .board-wrap {
     --board-side-w: 84px;
-    justify-content: center;
+    justify-content: space-between;
     align-items: stretch;
     gap: 12px;
     padding: 8px 14px;
@@ -2511,30 +2511,34 @@ body.menu-visible .game-over-splash {
   .board-gutter,
   .board-gutter-left,
   .board-gutter-right {
-    flex: 0 0 var(--board-side-w);
-    width: var(--board-side-w);
+    flex: 1 1 0;
+    width: auto;
     min-width: var(--board-side-w);
-    max-width: var(--board-side-w);
+    max-width: none;
     align-self: stretch;
     justify-content: center;
     align-items: center;
   }
 
   .board-center {
-    flex: 1 1 auto;
+    flex: 0 1 auto;
+    width: auto;
     min-width: 0;
     align-self: stretch;
     align-items: center;
+    justify-content: center;
   }
 
-  /* Keep both profiles in the geometric middle of each dark panel */
+  /* Profile stacks: true center of each side panel */
   #board-stack-ai,
   #board-stack-human,
   .board-gutter-stack,
   .board-gutter-stack-human {
-    margin-top: auto !important;
-    margin-bottom: auto !important;
+    margin: auto !important;
     transform: none !important;
+    align-self: center;
+    width: auto;
+    max-width: 100%;
   }
 }
 
