@@ -1259,13 +1259,38 @@ body.game-exited .app {
   box-sizing: border-box;
 }
 
-/* Opponent row: name column + button column — never overlap */
-.whos-here-row.whos-here-opponent {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) max-content;
+/*
+ * Computer row — flexbox: name left, MUTE/BLOCK right, no overlap.
+ * Who's Here avatars must beat .avatar { width:72px } or the name gets crushed.
+ */
+.chat-panel .whos-here-row.whos-here-opponent {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
-  column-gap: 10px;
-  gap: 6px 10px;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+.chat-panel .whos-here-opponent .whos-here-identity {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.chat-panel .whos-here-you .whos-here-identity {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .whos-here-identity {
@@ -1273,23 +1298,22 @@ body.game-exited .app {
   align-items: center;
   gap: 8px;
   min-width: 0;
-  max-width: 100%;
   overflow: hidden;
 }
 
-.whos-here-you .whos-here-identity {
-  flex: 1 1 auto;
-}
-
+.whos-here .whos-here-avatar.avatar,
 .whos-here-avatar {
   width: 32px;
   height: 32px;
   flex-shrink: 0;
   border-width: 2px;
+  box-shadow:
+    0 0 0 2px transparent,
+    0 2px 6px rgba(26, 39, 68, 0.2);
 }
 
 .whos-here-name {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1320,18 +1344,26 @@ body.game-exited .app {
   text-decoration: none;
 }
 
-.chat-mod-buttons {
+.chat-panel .whos-here-opponent .chat-mod-buttons {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-end;
-  gap: 5px;
+  gap: 6px;
   flex: 0 0 auto;
-  width: max-content;
-  max-width: 100%;
+  width: auto;
   margin: 0;
   padding: 0;
   position: relative;
   z-index: 1;
+}
+
+.chat-mod-buttons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
 }
 
 .btn-chat-mod {
