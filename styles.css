@@ -1243,16 +1243,29 @@ body.game-exited .app {
   padding: 6px 8px;
   font-size: 0.78rem;
   flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .whos-here-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 8px;
   padding: 6px 2px;
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
+}
+
+/* Opponent row: name column + button column — never overlap */
+.whos-here-row.whos-here-opponent {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  align-items: center;
+  column-gap: 10px;
+  gap: 6px 10px;
 }
 
 .whos-here-identity {
@@ -1260,12 +1273,17 @@ body.game-exited .app {
   align-items: center;
   gap: 8px;
   min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.whos-here-you .whos-here-identity {
   flex: 1 1 auto;
 }
 
 .whos-here-avatar {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
   border-width: 2px;
 }
@@ -1276,6 +1294,7 @@ body.game-exited .app {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  line-height: 1.2;
 }
 
 .whos-here-you .whos-here-name {
@@ -1304,23 +1323,32 @@ body.game-exited .app {
 .chat-mod-buttons {
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: flex-end;
+  gap: 5px;
   flex: 0 0 auto;
-  margin-left: 0;
+  width: max-content;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .btn-chat-mod {
+  box-sizing: border-box;
   border: 1px solid #9a9080;
   background: linear-gradient(180deg, #fff 0%, #e8e4dc 100%);
   color: #2a2a36;
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   font-weight: 800;
-  padding: 3px 7px;
+  line-height: 1.1;
+  padding: 4px 6px;
   border-radius: 4px;
   cursor: pointer;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .btn-chat-mod:hover,

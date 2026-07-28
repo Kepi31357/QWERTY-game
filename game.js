@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '341';
+  var QWERTY_BUILD = '342';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -8722,12 +8722,16 @@ class Game {
 
   updateChatModUI() {
     if (this.ui.btnMute) {
-      this.ui.btnMute.textContent = this.chatMuted ? 'Unmute' : 'Mute';
+      this.ui.btnMute.textContent = 'Mute';
+      this.ui.btnMute.title = this.chatMuted ? 'Unmute opponent chat' : 'Mute opponent chat';
+      this.ui.btnMute.setAttribute('aria-pressed', this.chatMuted ? 'true' : 'false');
       this.ui.btnMute.classList.toggle('active', this.chatMuted);
       this.ui.btnMute.disabled = this.chatBlocked;
     }
     if (this.ui.btnBlock) {
-      this.ui.btnBlock.textContent = this.chatBlocked ? 'Unblock' : 'Block';
+      this.ui.btnBlock.textContent = 'Block';
+      this.ui.btnBlock.title = this.chatBlocked ? 'Unblock opponent chat' : 'Block opponent chat';
+      this.ui.btnBlock.setAttribute('aria-pressed', this.chatBlocked ? 'true' : 'false');
       this.ui.btnBlock.classList.toggle('active', this.chatBlocked);
     }
     if (this.ui.chatOpponentRow) {
