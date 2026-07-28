@@ -604,7 +604,7 @@ body.game-exited .app {
 
 .game-play-stack {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
+  grid-template-columns: minmax(0, 1fr) 340px;
   grid-template-rows: minmax(0, 1fr) auto;
   gap: 6px;
   align-items: stretch;
@@ -676,7 +676,7 @@ body.game-exited .app {
  */
 .board-play-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
+  grid-template-columns: minmax(0, 1fr) 340px;
   grid-template-rows: auto minmax(0, 1fr) auto;
   column-gap: 6px;
   row-gap: 0;
@@ -911,9 +911,9 @@ body.game-exited .app {
 .game-layout .sidebar-column {
   grid-column: 2;
   grid-row: 2; /* same row as dark board (rack + wrap) */
-  width: 300px;
-  min-width: 300px;
-  max-width: 300px;
+  width: 340px;
+  min-width: 340px;
+  max-width: 340px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1269,36 +1269,6 @@ body.game-exited .app {
     0 2px 6px rgba(26, 39, 68, 0.2);
 }
 
-/* Let avatar + name participate directly in the row flex */
-.whos-here-row.whos-here-opponent .whos-here-identity {
-  display: contents;
-}
-
-.whos-here-row.whos-here-opponent {
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  width: 100% !important;
-}
-
-.whos-here-row.whos-here-opponent .whos-here-name {
-  flex: 1 1 auto !important;
-  white-space: nowrap !important;
-  overflow: visible !important;
-  text-overflow: unset !important;
-  min-width: auto !important;
-  color: #2d6a9f;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.whos-here-row.whos-here-opponent .chat-mod-buttons {
-  display: flex !important;
-  gap: 6px !important;
-  margin-left: auto !important;
-  flex-shrink: 0 !important;
-}
-
 .whos-here-you .whos-here-name {
   color: #c45c00;
   font-weight: 700;
@@ -1625,7 +1595,7 @@ body.qwerty-guest-view .game-table {
 .player-panel.human {
   border-color: rgba(255, 210, 63, 0.45);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
+  grid-template-columns: minmax(0, 1fr) 340px;
   gap: 6px;
   align-items: start;
   flex-shrink: 0;
@@ -1734,9 +1704,9 @@ body.qwerty-guest-view .game-table {
   align-items: center;
   justify-content: center;
   align-self: center;
-  width: 300px;
-  min-width: 300px;
-  max-width: 300px;
+  width: 340px;
+  min-width: 340px;
+  max-width: 340px;
   box-sizing: border-box;
   padding: 0 4px;
 }
@@ -2418,7 +2388,7 @@ body.menu-visible .game-over-splash {
 }
 
 .play-again-dialog {
-  width: min(100%, 340px);
+  width: min(100%, 300px);
   background: var(--pogo-cream);
   border-radius: 16px;
   padding: 22px 20px 18px;
@@ -3063,7 +3033,7 @@ body.menu-visible .game-over-splash {
 }
 
 .blank-picker-dialog {
-  width: min(100%, 340px);
+  width: min(100%, 300px);
   background: var(--pogo-cream);
   border-radius: 16px;
   padding: 20px 16px 16px;
@@ -4285,4 +4255,42 @@ body.menu-visible .game-over-splash {
     min-height: 44px;
     touch-action: manipulation;
   }
+}
+
+/* ===== Who's Here Computer row — forced layout (keep last) ===== */
+.chat-panel .whos-here .whos-here-avatar.avatar,
+.whos-here-row.whos-here-opponent .whos-here-avatar.avatar {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  max-width: 28px !important;
+  flex: 0 0 28px !important;
+  border-width: 2px !important;
+}
+
+.whos-here-row.whos-here-opponent {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.whos-here-row.whos-here-opponent .whos-here-name {
+  flex: 1 1 auto !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  min-width: auto !important;
+  color: #2d6a9f !important;
+  font-weight: 700 !important;
+}
+
+.whos-here-row.whos-here-opponent .chat-mod-buttons {
+  display: flex !important;
+  gap: 6px !important;
+  margin-left: auto !important;
+  flex-shrink: 0 !important;
 }
