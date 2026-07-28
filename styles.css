@@ -1258,59 +1258,45 @@ body.game-exited .app {
   box-sizing: border-box;
 }
 
-/* Compact chat avatars (global .avatar is 72px) */
+/* Compact chat avatars (global .avatar is 72px) — required so “Computer” fits */
 .chat-panel .whos-here .whos-here-avatar.avatar {
-  width: 32px !important;
-  height: 32px !important;
-  flex: 0 0 32px;
+  width: 28px !important;
+  height: 28px !important;
+  flex: 0 0 28px !important;
   border-width: 2px !important;
   box-shadow:
     0 0 0 2px transparent,
     0 2px 6px rgba(26, 39, 68, 0.2);
 }
 
-/*
- * Computer row — single line:
- * [avatar] Computer .............. [MUTE] [BLOCK]
- */
-.whos-here-row.whos-here-opponent {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
+/* Let avatar + name participate directly in the row flex */
+.whos-here-row.whos-here-opponent .whos-here-identity {
+  display: contents;
 }
 
-.whos-here-row.whos-here-opponent .whos-here-identity {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: 8px;
-  flex: 1 1 auto;
-  min-width: 0;
+.whos-here-row.whos-here-opponent {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
 }
 
 .whos-here-row.whos-here-opponent .whos-here-name {
-  flex: 0 0 auto;
-  white-space: nowrap;
-  overflow: visible;
-  text-overflow: clip;
+  flex: 1 1 auto !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  min-width: auto !important;
   color: #2d6a9f;
   font-weight: 700;
   line-height: 1.2;
 }
 
 .whos-here-row.whos-here-opponent .chat-mod-buttons {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 6px;
-  flex: 0 0 auto;
-  flex-shrink: 0;
-  margin-left: auto;
-  width: auto;
+  display: flex !important;
+  gap: 6px !important;
+  margin-left: auto !important;
+  flex-shrink: 0 !important;
 }
 
 .whos-here-you .whos-here-name {
