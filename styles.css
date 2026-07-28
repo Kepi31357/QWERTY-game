@@ -1258,30 +1258,44 @@ body.game-exited .app {
   box-sizing: border-box;
 }
 
-/* Beat global .avatar { 72px } so “Computer” has room next to MUTE/BLOCK */
+/* Compact chat avatars (global .avatar is 72px) */
 .chat-panel .whos-here .whos-here-avatar.avatar {
-  width: 28px !important;
-  height: 28px !important;
-  flex: 0 0 28px;
+  width: 32px !important;
+  height: 32px !important;
+  flex: 0 0 32px;
   border-width: 2px !important;
   box-shadow:
     0 0 0 2px transparent,
     0 2px 6px rgba(26, 39, 68, 0.2);
 }
 
+/*
+ * Computer row — stacked layout (original):
+ *   [avatar] Computer
+ *            [MUTE] [BLOCK]
+ */
 .whos-here-row.whos-here-opponent {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
   width: 100%;
 }
 
-.whos-here-row.whos-here-opponent .whos-here-name {
-  flex: 1 1 auto;
+.whos-here-row.whos-here-opponent .whos-here-identity {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
   min-width: 0;
+}
+
+.whos-here-row.whos-here-opponent .whos-here-name {
+  flex: 0 0 auto;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow: visible;
+  text-overflow: clip;
   color: #2d6a9f;
   font-weight: 700;
   line-height: 1.2;
@@ -1289,9 +1303,13 @@ body.game-exited .app {
 
 .whos-here-row.whos-here-opponent .chat-mod-buttons {
   display: flex;
+  flex-direction: row;
+  align-items: center;
   gap: 6px;
-  margin-left: auto; /* pushes buttons to the right */
   flex-shrink: 0;
+  margin: 0;
+  margin-left: 40px; /* sit under the name, clear of the avatar */
+  width: auto;
 }
 
 .whos-here-you .whos-here-name {
