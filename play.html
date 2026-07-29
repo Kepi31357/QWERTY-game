@@ -9,43 +9,59 @@
   <meta http-equiv="Expires" content="0">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <title>QWERTY Word Game</title>
-  <link rel="stylesheet" href="styles.css?v=363">
+  <link rel="stylesheet" href="styles.css?v=364">
   <style id="whos-here-opponent-layout">
-    /* Computer row: line1 = avatar+name, line2 = MUTE/BLOCK (in-page so it always applies) */
-    .whos-here-row.whos-here-opponent {
-      display: flex !important;
-      flex-direction: column !important;
-      align-items: flex-start !important;
-      gap: 6px !important;
+    /*
+     * Computer row — isolated from .whos-here-row flex.
+     * Line 1: avatar + name (inline-block)
+     * Line 2: MUTE / BLOCK (block below)
+     */
+    #whos-here-opponent-row.whos-here-opp {
+      display: block !important;
       width: 100% !important;
+      padding: 6px 2px !important;
+      box-sizing: border-box !important;
+      list-style: none !important;
     }
-    .whos-here-row.whos-here-opponent .whos-here-line1 {
-      display: flex !important;
-      flex-direction: row !important;
-      align-items: center !important;
-      gap: 8px !important;
+    #whos-here-opponent-row .whos-here-opp-profile {
+      display: block !important;
       width: 100% !important;
+      line-height: 32px !important;
     }
-    .whos-here-row.whos-here-opponent .whos-here-avatar.avatar {
+    #whos-here-opponent-row .whos-here-opp-profile .whos-here-avatar.avatar {
+      display: inline-block !important;
+      vertical-align: middle !important;
       width: 32px !important;
       height: 32px !important;
-      flex: 0 0 32px !important;
+      min-width: 32px !important;
+      max-width: 32px !important;
       border-width: 2px !important;
+      margin: 0 8px 0 0 !important;
     }
-    .whos-here-row.whos-here-opponent .whos-here-name {
-      flex: 0 0 auto !important;
+    #whos-here-opponent-row .whos-here-opp-profile .whos-here-name {
+      display: inline-block !important;
+      vertical-align: middle !important;
       white-space: nowrap !important;
       overflow: visible !important;
       text-overflow: clip !important;
+      max-width: none !important;
+      width: auto !important;
       color: #2d6a9f !important;
       font-weight: 700 !important;
+      line-height: 1.2 !important;
     }
-    .whos-here-row.whos-here-opponent .whos-here-line2.chat-mod-buttons {
-      display: flex !important;
-      flex-direction: row !important;
-      align-items: center !important;
-      gap: 6px !important;
-      margin: 0 0 0 40px !important;
+    #whos-here-opponent-row .whos-here-opp-actions {
+      display: block !important;
+      margin: 6px 0 0 40px !important;
+      width: auto !important;
+      clear: both !important;
+    }
+    #whos-here-opponent-row .whos-here-opp-actions .btn-chat-mod {
+      display: inline-block !important;
+      vertical-align: middle !important;
+      margin: 0 6px 0 0 !important;
+      font-size: 0.62rem !important;
+      padding: 3px 8px !important;
     }
   </style>
   <script>
@@ -298,12 +314,12 @@
               <span class="whos-here-avatar avatar avatar-human" id="chat-self-avatar" role="img" aria-label="Your avatar"></span>
               <span class="whos-here-name" id="chat-self-name">You</span>
             </li>
-            <li class="whos-here-row whos-here-opponent">
-              <div class="whos-here-line1">
+            <li class="whos-here-opp whos-here-opponent" id="whos-here-opponent-row">
+              <div class="whos-here-opp-profile">
                 <span class="whos-here-avatar avatar avatar-ai" id="chat-opponent-avatar" role="img" aria-label="Opponent avatar"></span>
                 <span class="whos-here-name" id="chat-opponent-name">Computer</span>
               </div>
-              <div class="whos-here-line2 chat-mod-buttons">
+              <div class="whos-here-opp-actions chat-mod-buttons">
                 <button type="button" class="btn-chat-mod" id="btn-mute" title="Mute opponent chat">Mute</button>
                 <button type="button" class="btn-chat-mod" id="btn-block" title="Block opponent chat">Block</button>
               </div>
