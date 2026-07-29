@@ -14,7 +14,7 @@
   --pogo-yellow: #ffd23f;
   --pogo-cream: #fff8e7;
   --text-dark: #2d1b4e;
-  --text-soft: rgba(45, 27, 78, 0.74);
+  --text-soft: #4a3a66;
   --ink: #fff8e7;
   --ink-muted: rgba(255, 248, 231, 0.88);
   --font-display: "Syne", "Avenir Next", "Segoe UI", sans-serif;
@@ -524,6 +524,7 @@ ul {
   background: linear-gradient(180deg, #fffaf0 0%, #f3ebff 100%);
   border: 1px solid rgba(255, 248, 231, 0.55);
   box-shadow: 0 12px 28px rgba(20, 10, 40, 0.22);
+  color: var(--text-soft);
 }
 
 .feature-grid li::before {
@@ -549,7 +550,7 @@ ul {
   display: block;
   font-family: var(--font-display);
   font-size: 1.08rem;
-  color: var(--pogo-orange);
+  color: var(--text-dark);
   margin-bottom: 0.3rem;
 }
 
@@ -576,6 +577,7 @@ ul {
   background: linear-gradient(180deg, #fffaf0 0%, #f3ebff 100%);
   border: 1px solid rgba(255, 248, 231, 0.55);
   box-shadow: 0 12px 28px rgba(20, 10, 40, 0.22);
+  color: var(--text-soft);
 }
 
 .shot-card--narrow {
