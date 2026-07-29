@@ -11,8 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="/images/qwerty-logo.png?v=3">
-  <link rel="preload" as="image" href="/images/hero-board-live.jpg?v=31">
-  <link rel="stylesheet" href="site.css?v=39">
+  <link rel="preload" as="image" href="/images/hero-board-live.jpg?v=32">
+  <link rel="stylesheet" href="site.css?v=40">
   <script>
     (function () {
       var q = location.search || '';
@@ -35,10 +35,11 @@
       </a>
       <nav aria-label="Page">
         <ul class="nav-links">
-          <li><a href="#features">How to Play</a></li>
+          <li><a href="#rules">How to Play</a></li>
           <li><a href="#screens">Screens</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#tournaments">Tournaments</a></li>
+          <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
     </div>
@@ -62,7 +63,7 @@
       </div>
       <figure class="hero-preview">
         <img
-          src="/images/hero-board-live.jpg?v=31"
+          src="/images/hero-board-live.jpg?v=32"
           width="720"
           height="428"
           alt="QWERTY game board with Computer and You beside the grid, scores, and chat"
@@ -133,6 +134,26 @@
       </ol>
     </section>
 
+    <section class="section" id="rules" aria-labelledby="rules-title">
+      <p class="section-kicker">How to Play</p>
+      <h2 class="section-title" id="rules-title">Full game rules</h2>
+      <div class="rules-copy">
+        <p>To play, use the letters in your rack to make a word by placing your first word on the corner colored square. On your next turn, create another word to connect with your first word. You can stack letters. You cannot play on your opponent’s words until a connection is made. Once both player’s words are connected, the letter tiles will turn purple and play continues except now you can play on your opponent’s words.</p>
+        <ul class="landing-rules-list">
+          <li>Cover a gold star for an additional 50 points.</li>
+          <li>Score 10 points per letter for every new word you form (full word length).</li>
+          <li>Utilize blank “wild” tiles and change them to any letter.</li>
+          <li>If you do not like your letters, hit the “Exchange” button and select the letters you would like to exchange.</li>
+          <li>You have 2:00 minutes to make your play. If you exceed the time limit, you lose your turn and the next play goes to your opponent.</li>
+          <li>The first time you connect to an opponent’s word(s), score an additional 75 points (once).</li>
+          <li>Empty your rack in one play for a Bingo bonus of 100 points.</li>
+          <li>Score 1000 points to win the game!</li>
+          <li>You can choose to play a computer bot or a real live player.</li>
+          <li>You can choose which level bot you want to play against: Easy, Medium, or Hard.</li>
+        </ul>
+      </div>
+    </section>
+
     <section class="section section--band" id="screens" aria-labelledby="screens-title">
       <div class="section-inner">
         <p class="section-kicker">Screenshots</p>
@@ -142,7 +163,7 @@
           <figure class="shot-card">
             <div class="shot-frame">
               <img
-                src="/images/ss-live-board.png?v=1"
+                src="/images/ss-live-board.jpg?v=2"
                 alt="Live QWERTY game board with Computer and You scores, chat, and letter rack"
                 width="1400"
                 height="900"
@@ -159,7 +180,7 @@
           <figure class="shot-card">
             <div class="shot-frame">
               <img
-                src="/images/ss-connection.png?v=1"
+                src="/images/ss-connection.jpg?v=2"
                 alt="Connection bonus popup showing +155 for AXIS with +75 Connect"
                 width="1400"
                 height="900"
@@ -176,7 +197,7 @@
           <figure class="shot-card shot-card--narrow">
             <div class="shot-frame shot-frame--contain">
               <img
-                src="/images/ss-victory.png?v=1"
+                src="/images/ss-victory.jpg?v=2"
                 alt="Victory screen showing You Won with scores and Play Again"
                 width="720"
                 height="1100"
@@ -193,7 +214,7 @@
           <figure class="shot-card shot-card--narrow">
             <div class="shot-frame shot-frame--contain">
               <img
-                src="/images/ss-start-menu.png?v=1"
+                src="/images/ss-start-menu.jpg?v=2"
                 alt="Start menu with avatar picker, room code, and computer difficulty"
                 width="720"
                 height="1100"
@@ -210,7 +231,7 @@
           <figure class="shot-card">
             <div class="shot-frame shot-frame--wide">
               <img
-                src="/images/ss-timer.png?v=1"
+                src="/images/ss-timer.jpg?v=2"
                 alt="Turn timer showing 0:03 with game controls and legend"
                 width="1400"
                 height="280"
@@ -232,7 +253,7 @@
       <h2 class="section-title" id="about-title">Made for lively word nights</h2>
       <div class="about-copy about-copy--on-purple">
         <p>QWERTY is a colorful word game inspired by classic online tile battles — quick matches vs the computer, or longer games with someone you know.</p>
-        <p>Private rooms, live chat, and three difficulty levels keep every session fresh. Full rules and the 2-letter word list live inside Play.</p>
+        <p>Private rooms, live chat, and three difficulty levels keep every session fresh. Full rules are above — and the 2-letter word list lives inside Play.</p>
       </div>
       <ul class="about-modes about-modes--on-purple" aria-label="Ways to play">
         <li>Vs Computer</li>
@@ -244,8 +265,7 @@
     <section class="section section--band" id="tournaments" aria-labelledby="tourneys-title">
       <div class="section-inner">
         <p class="section-kicker">Tournaments</p>
-        <h2 class="section-title" id="tourneys-title">Leaderboard coming soon</h2>
-        <p class="section-lead">Season ranks and weekly boards — without changing how you play today.</p>
+        <h2 class="section-title" id="tourneys-title">Coming soon — weekly leaderboards and seasonal ranks.</h2>
         <div class="board-teaser" aria-hidden="true">
           <div class="board-row">
             <span class="board-rank">1</span>
@@ -263,50 +283,28 @@
             <span>—</span>
           </div>
         </div>
-        <p class="teaser-note teaser-note--on-cream">Public leaderboards are on the roadmap. Jump in now — your wins will have a place to shine.</p>
       </div>
+    </section>
+
+    <section class="section" id="contact" aria-labelledby="contact-title">
+      <p class="section-kicker">Contact</p>
+      <h2 class="section-title" id="contact-title">Say hello</h2>
+      <p class="section-lead contact-lead">
+        Coming soon — for now, reach us at
+        <a class="contact-mail" href="mailto:contact@qwerty-game.com">contact@qwerty-game.com</a>.
+      </p>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <img
-        class="footer-brand"
-        src="/images/qwerty-logo.png?v=3"
-        width="240"
-        height="134"
-        alt="QWERTY"
-        loading="lazy"
-      >
       <nav class="footer-links" aria-label="Footer">
-        <a href="#features">How to Play</a>
-        <a href="#screens">Screenshots</a>
+        <a href="#rules">How to Play</a>
         <a href="#about">About</a>
         <a href="#tournaments">Tournaments</a>
-        <a href="#download">Download</a>
+        <a href="#contact">Contact</a>
       </nav>
-      <a class="btn btn-primary btn-play-lg" href="play.html">Play Now</a>
-      <div class="store-row">
-        <a class="store-badge" href="#download" aria-label="App Store — coming soon">
-          <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-            <path d="M16.5 2.2c-.9.1-2 .7-2.6 1.5-.6.7-1.1 1.8-.9 2.8 1 .1 2-.5 2.6-1.3.6-.8 1-1.9.9-3zm3.4 14.1c-.6 1.3-.9 1.9-1.7 3-.9 1.2-2.1 2.7-3.6 2.7-1.3 0-1.7-.8-3.5-.8s-2.3.8-3.5.8c-1.5 0-2.6-1.3-3.5-2.5C2.5 17.5 1.4 13.8 2.8 11.2c.8-1.5 2.2-2.5 3.8-2.5 1.4 0 2.4.9 3.5.9 1.1 0 2.3-1.1 3.9-1 .7 0 2.5.2 3.7 1.7-3.2 1.8-2.7 6.4.2 7z"/>
-          </svg>
-          <span class="store-badge-text">
-            <small>Coming soon on</small>
-            <strong>App Store</strong>
-          </span>
-        </a>
-        <a class="store-badge" href="#download" aria-label="Google Play — coming soon">
-          <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-            <path d="M3.6 2.3c-.4.2-.6.7-.6 1.3v16.8c0 .6.2 1.1.6 1.3l.1.1 9.5-9.5v-.2L3.7 2.3h-.1zm11.1 6.3L11.4 12l3.3 3.4 3.9-2.2c1.1-.6 1.1-1.7 0-2.3l-3.9-2.3zM13.3 12l-9.4 9.4c.2.1.4.1.5.1.3 0 .7-.1 1.1-.3l9.1-5.2L13.3 12zm0 0 1.3-1.3 9.1-5.2c.8-.5 1.3-.2 1.3.7v11.6c0 .9-.5 1.2-1.3.7l-9.1-5.2L13.3 12z"/>
-          </svg>
-          <span class="store-badge-text">
-            <small>Coming soon on</small>
-            <strong>Google Play</strong>
-          </span>
-        </a>
-      </div>
-      <p class="footer-copy">© QWERTY Word Game · Play free in your browser</p>
+      <p class="footer-copy">© 2026</p>
     </div>
   </footer>
 
