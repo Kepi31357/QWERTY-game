@@ -55,6 +55,8 @@ assert(/site\.css\?v=\d+/.test(landing), 'cache-busted stylesheet');
 assert(landing.indexOf('preload') >= 0, 'image preload for fast load');
 assert(landing.indexOf('mobile-play-bar') < 0, 'no sticky mobile Play Now bar');
 assert(css.indexOf('.site-nav') >= 0 && /@media \(max-width: 779px\)[\s\S]*\.site-nav\s*\{\s*display:\s*none/.test(css), 'hide top nav on mobile');
+assert(css.indexOf('background-color: #4a1f78') >= 0, 'solid deep purple page base');
+assert(!/@media \(max-width: 779px\)[\s\S]*body::before/.test(css), 'no mobile corner eraser overlay');
 assert(css.indexOf('.store-badge-text strong') >= 0 && css.indexOf('var(--font-body)') >= 0, 'store badge uses readable body font');
 assert(css.indexOf('.hero-preview') >= 0, 'hero preview styles');
 assert(
