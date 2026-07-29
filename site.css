@@ -28,6 +28,7 @@
   --card-bg: #d9c7f2;
   --feature-card-bg: #d9c7f2;
   --rules-card-bg: #d9c7f2;
+  --preview-pad: clamp(10px, 1.4vw, 16px);
 }
 
 html {
@@ -346,7 +347,7 @@ ul {
   box-shadow: 0 18px 40px rgba(20, 10, 40, 0.38);
   border: 2px solid rgba(255, 248, 231, 0.28);
   display: block;
-  padding: clamp(10px, 1.4vw, 16px);
+  padding: var(--preview-pad);
   box-sizing: border-box;
   position: relative;
   z-index: 1;
@@ -587,7 +588,7 @@ ul {
 .shot-stack {
   display: flex;
   flex-direction: column;
-  gap: clamp(1.5rem, 3.5vw, 2.25rem);
+  gap: clamp(1.25rem, 3vw, 2rem);
   max-width: 920px;
   margin: 1.35rem auto 0;
 }
@@ -595,14 +596,16 @@ ul {
 .shot-card {
   margin: 0;
   text-align: left;
-  padding: 1.25rem 1.3rem 1.35rem;
-  border-radius: 18px;
+  /* Match hero-preview inner framing */
+  padding: var(--preview-pad);
+  border-radius: clamp(14px, 1.4vw, 22px);
   background: #fffaf0;
   background-image: linear-gradient(180deg, #fffaf0 0%, #f3ebff 100%);
   border: 1px solid rgba(255, 248, 231, 0.55);
   box-shadow: 0 12px 28px rgba(20, 10, 40, 0.22);
   color: #3d2a5c;
   -webkit-text-fill-color: #3d2a5c;
+  box-sizing: border-box;
 }
 
 .shot-card--narrow {
@@ -614,7 +617,7 @@ ul {
 
 .shot-frame {
   overflow: hidden;
-  border-radius: 14px;
+  border-radius: 10px;
   border: 1px solid rgba(61, 29, 99, 0.12);
   box-shadow: none;
   background: #2a1848;
@@ -631,6 +634,7 @@ ul {
   object-fit: contain;
   object-position: center top;
   background: #2a1848;
+  border-radius: 10px;
 }
 
 .shot-frame--contain {
@@ -652,11 +656,11 @@ ul {
 }
 
 .shot-caption {
-  margin-top: 1rem;
+  margin-top: var(--preview-pad);
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  padding: 0 0.15rem;
+  padding: 0;
 }
 
 .shot-caption-title {
@@ -866,7 +870,7 @@ ul {
 
   .shot-stack {
     max-width: 960px;
-    gap: 2.5rem;
+    gap: 2rem;
   }
 
   .shot-caption-title {
@@ -936,6 +940,14 @@ ul {
     padding: 12px 14px;
     gap: 12px;
     margin: 0;
+  }
+
+  .shot-card {
+    padding: 12px 14px;
+  }
+
+  .shot-caption {
+    margin-top: 12px;
   }
 
   .hero-downloads {
