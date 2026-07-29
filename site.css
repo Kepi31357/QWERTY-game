@@ -23,6 +23,8 @@
   --max: 1040px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --nav-h: 4.1rem;
+  --card-lavender: #efe9f8;
+  --card-lavender-border: rgba(92, 45, 145, 0.22);
 }
 
 html {
@@ -424,9 +426,8 @@ ul {
   font-size: 1.02rem;
   padding: 1.45rem 1.5rem;
   border-radius: 18px;
-  background: #fffaf0;
-  background-image: linear-gradient(180deg, #fffaf0 0%, #f3ebff 100%);
-  border: 1px solid rgba(255, 248, 231, 0.55);
+  background: var(--card-lavender);
+  border: 1px solid var(--card-lavender-border);
   box-shadow: 0 12px 28px rgba(20, 10, 40, 0.22);
 }
 
@@ -525,9 +526,8 @@ ul {
   align-items: start;
   padding: 1.25rem 1.3rem;
   border-radius: 18px;
-  background: #efe9f8;
-  background-image: linear-gradient(180deg, #f3eefc 0%, #e8dff7 100%);
-  border: 1px solid rgba(92, 45, 145, 0.22);
+  background: var(--card-lavender);
+  border: 1px solid var(--card-lavender-border);
   box-shadow: 0 12px 28px rgba(20, 10, 40, 0.22);
   color: #3d2a5c;
   -webkit-text-fill-color: #3d2a5c;
