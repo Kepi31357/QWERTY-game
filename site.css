@@ -33,11 +33,12 @@ html {
 body {
   min-height: 100dvh;
   font-family: var(--font-body);
-  color: var(--text-dark);
+  color: var(--ink);
   background:
-    radial-gradient(100% 70% at 50% -10%, rgba(255, 210, 63, 0.18), transparent 55%),
-    radial-gradient(80% 50% at 100% 20%, rgba(26, 158, 143, 0.22), transparent 50%),
-    linear-gradient(165deg, #4a1f78 0%, var(--pogo-purple) 45%, #178577 100%);
+    radial-gradient(100% 70% at 50% -10%, rgba(255, 210, 63, 0.12), transparent 55%),
+    radial-gradient(70% 45% at 100% 15%, rgba(124, 77, 168, 0.28), transparent 55%),
+    radial-gradient(65% 40% at 0% 85%, rgba(61, 29, 99, 0.55), transparent 55%),
+    linear-gradient(165deg, #4a1f78 0%, var(--pogo-purple) 48%, #3d1d63 100%);
   line-height: 1.55;
   overflow-x: hidden;
 }
@@ -420,6 +421,11 @@ ul {
   text-align: left;
   color: var(--ink-muted);
   font-size: 1.02rem;
+  padding: 1.15rem 1.25rem;
+  border-radius: 16px;
+  background: rgba(45, 27, 78, 0.35);
+  border: 1px solid rgba(255, 248, 231, 0.14);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.16);
 }
 
 .rules-copy > p {
@@ -467,7 +473,14 @@ ul {
 .section--band {
   width: 100%;
   max-width: none;
-  background: linear-gradient(180deg, #fff8e7 0%, #f4ebff 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(45, 27, 78, 0.72) 0%,
+    rgba(61, 29, 99, 0.55) 50%,
+    rgba(45, 27, 78, 0.72) 100%
+  );
+  border-top: 1px solid rgba(255, 248, 231, 0.08);
+  border-bottom: 1px solid rgba(255, 248, 231, 0.08);
 }
 
 .section--band .section-inner {
@@ -478,15 +491,15 @@ ul {
 }
 
 .section--band .section-kicker {
-  color: var(--pogo-purple);
+  color: var(--pogo-yellow);
 }
 
 .section--band .section-title {
-  color: var(--text-dark);
+  color: var(--ink);
 }
 
 .section--band .section-lead {
-  color: var(--text-soft);
+  color: var(--ink-muted);
 }
 
 /* Features / How to play */
@@ -506,8 +519,9 @@ ul {
   align-items: start;
   padding: 1rem 1.1rem;
   border-radius: 16px;
-  background: rgba(255, 248, 231, 0.08);
-  border: 1px solid rgba(255, 248, 231, 0.12);
+  background: rgba(45, 27, 78, 0.35);
+  border: 1px solid rgba(255, 248, 231, 0.14);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.16);
 }
 
 .feature-grid li::before {
@@ -565,9 +579,9 @@ ul {
 .shot-frame {
   overflow: hidden;
   border-radius: 18px;
-  border: 2px solid rgba(92, 45, 145, 0.12);
-  box-shadow: 0 14px 30px rgba(45, 27, 78, 0.12);
-  background: #1a2744;
+  border: 2px solid rgba(255, 248, 231, 0.14);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
+  background: #2a1848;
   display: block;
   padding: 0;
   box-sizing: border-box;
@@ -580,11 +594,11 @@ ul {
   aspect-ratio: auto;
   object-fit: contain;
   object-position: center top;
-  background: #1a2744;
+  background: #2a1848;
 }
 
 .shot-frame--contain {
-  background: linear-gradient(165deg, #3d1d63 0%, #1a2744 100%);
+  background: linear-gradient(165deg, #3d1d63 0%, #2a1848 100%);
 }
 
 .shot-frame--contain img {
@@ -593,12 +607,12 @@ ul {
 }
 
 .shot-frame--wide {
-  background: #fff8e7;
+  background: #2a1848;
 }
 
 .shot-frame--wide img {
   object-fit: contain;
-  background: #fff8e7;
+  background: #2a1848;
 }
 
 .shot-caption {
@@ -612,14 +626,14 @@ ul {
   font-family: var(--font-body);
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--text-dark);
+  color: var(--ink);
   letter-spacing: -0.01em;
 }
 
 .shot-caption-text {
   font-size: 0.98rem;
   line-height: 1.45;
-  color: var(--text-soft);
+  color: var(--ink-muted);
   max-width: 52ch;
 }
 
@@ -628,7 +642,7 @@ ul {
   max-width: 46ch;
   margin: 0 auto;
   font-size: 1.06rem;
-  color: var(--text-soft);
+  color: var(--ink-muted);
 }
 
 .about-copy--on-purple {
@@ -650,9 +664,9 @@ ul {
 .about-modes li {
   padding: 0.5rem 0.9rem;
   border-radius: 999px;
-  background: rgba(92, 45, 145, 0.1);
-  border: 1px solid rgba(92, 45, 145, 0.16);
-  color: var(--pogo-purple-dark);
+  background: rgba(255, 248, 231, 0.1);
+  border: 1px solid rgba(255, 248, 231, 0.18);
+  color: var(--ink);
   font-weight: 700;
   font-size: 0.88rem;
 }
@@ -664,14 +678,18 @@ ul {
 }
 
 .teaser-note--on-cream {
-  color: var(--text-soft);
+  color: var(--ink-muted);
 }
 
 /* Tournaments */
 .board-teaser {
   max-width: 360px;
-  margin: 0 auto;
+  margin: 1.25rem auto 0;
   text-align: left;
+  padding: 0.35rem 1rem;
+  border-radius: 16px;
+  background: rgba(45, 27, 78, 0.4);
+  border: 1px solid rgba(255, 248, 231, 0.12);
 }
 
 .board-row {
