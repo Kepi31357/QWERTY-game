@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="/images/qwerty-logo.png?v=3">
   <link rel="preload" as="image" href="/images/hero-board-live.jpg?v=31">
-  <link rel="stylesheet" href="site.css?v=34">
+  <link rel="stylesheet" href="site.css?v=35">
   <script>
     (function () {
       var q = location.search || '';
@@ -130,63 +130,93 @@
     <section class="section section--band" id="screens" aria-labelledby="screens-title">
       <div class="section-inner">
         <p class="section-kicker">Screenshots</p>
-        <h2 class="section-title" id="screens-title">See the board</h2>
-        <p class="section-lead">Play on desktop or mobile — green corner for you, amber for your opponent, gold stars for bonus points.</p>
-        <div class="shot-stage">
-          <figure>
+        <h2 class="section-title" id="screens-title">See QWERTY in Action</h2>
+        <p class="section-lead">From the first play to the victory screen — here’s how a match looks.</p>
+        <div class="shot-stack">
+          <figure class="shot-card">
             <div class="shot-frame">
               <img
-                src="/images/hero-board-live.jpg?v=31"
-                alt="Full QWERTY board with difficulty and turn indicators"
-                width="758"
-                height="450"
+                src="/images/ss-live-board.png?v=1"
+                alt="Live QWERTY game board with Computer and You scores, chat, and letter rack"
+                width="1400"
+                height="900"
                 loading="lazy"
                 decoding="async"
               >
             </div>
-            <figcaption class="shot-caption">Board, scores, and your turn — ready to play.</figcaption>
+            <figcaption class="shot-caption">
+              <strong class="shot-caption-title">Live Game Board</strong>
+              <span class="shot-caption-text">Players start from opposite corners, build words, and score points with gold stars and connection bonuses.</span>
+            </figcaption>
           </figure>
-          <figure class="shot-mobile">
-            <div class="shot-frame shot-frame--phone">
+
+          <figure class="shot-card">
+            <div class="shot-frame">
               <img
-                src="/images/shot-mobile.png"
-                alt="QWERTY mobile app view with board, rack, and SUBMIT"
-                width="360"
-                height="780"
+                src="/images/ss-connection.png?v=1"
+                alt="Connection bonus popup showing +155 for AXIS with +75 Connect"
+                width="1400"
+                height="900"
                 loading="lazy"
                 decoding="async"
               >
             </div>
-            <figcaption class="shot-caption">Mobile app view — board, rack, and controls in your hand.</figcaption>
+            <figcaption class="shot-caption">
+              <strong class="shot-caption-title">Connection Bonus</strong>
+              <span class="shot-caption-text">Connect to your opponent’s words to earn a big +75 point bonus and light up the board.</span>
+            </figcaption>
           </figure>
-          <div class="shot-side">
-            <figure>
-              <div class="shot-frame">
-                <img
-                  src="/images/shot-grid.jpg"
-                  alt="Close-up of cream tiles and gold star bonuses"
-                  width="430"
-                  height="367"
-                  loading="lazy"
-                  decoding="async"
-                >
-              </div>
-              <figcaption class="shot-caption">Cream tiles and gold star bonuses.</figcaption>
-            </figure>
-            <figure>
-              <div class="shot-frame shot-frame--wide">
-                <img
-                  src="/images/shot-rack.jpg"
-                  alt="Tile rack and SUBMIT controls"
-                  width="900"
-                  height="129"
-                  loading="lazy"
-                  decoding="async"
-                >
-              </div>
-              <figcaption class="shot-caption">Your rack, timer, and SUBMIT.</figcaption>
-            </figure>
-          </div>
+
+          <figure class="shot-card shot-card--narrow">
+            <div class="shot-frame shot-frame--contain">
+              <img
+                src="/images/ss-victory.png?v=1"
+                alt="Victory screen showing You Won with scores and Play Again"
+                width="720"
+                height="1100"
+                loading="lazy"
+                decoding="async"
+              >
+            </div>
+            <figcaption class="shot-caption">
+              <strong class="shot-caption-title">Victory Screen</strong>
+              <span class="shot-caption-text">Reach 1,000 points first to win. Then choose to Play Again or Leave.</span>
+            </figcaption>
+          </figure>
+
+          <figure class="shot-card shot-card--narrow">
+            <div class="shot-frame shot-frame--contain">
+              <img
+                src="/images/ss-start-menu.png?v=1"
+                alt="Start menu with avatar picker, room code, and computer difficulty"
+                width="720"
+                height="1100"
+                loading="lazy"
+                decoding="async"
+              >
+            </div>
+            <figcaption class="shot-caption">
+              <strong class="shot-caption-title">Start Menu</strong>
+              <span class="shot-caption-text">Choose an avatar, enter a room code to play with a friend, or challenge the computer at Easy, Medium, or Hard.</span>
+            </figcaption>
+          </figure>
+
+          <figure class="shot-card">
+            <div class="shot-frame shot-frame--wide">
+              <img
+                src="/images/ss-timer.png?v=1"
+                alt="Turn timer showing 0:03 with game controls and legend"
+                width="1400"
+                height="280"
+                loading="lazy"
+                decoding="async"
+              >
+            </div>
+            <figcaption class="shot-caption">
+              <strong class="shot-caption-title">Turn Timer</strong>
+              <span class="shot-caption-text">Keep an eye on the timer — you’ll hear a countdown sound when only 10 seconds remain.</span>
+            </figcaption>
+          </figure>
         </div>
       </div>
     </section>

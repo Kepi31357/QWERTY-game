@@ -488,12 +488,25 @@ ul {
   font-size: 0.97rem;
 }
 
-/* Screenshots */
-.shot-stage {
-  display: grid;
-  gap: 1.2rem;
+/* Screenshots — vertical gallery */
+.shot-stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.75rem, 4vw, 2.75rem);
   max-width: 920px;
   margin: 0 auto;
+}
+
+.shot-card {
+  margin: 0;
+  text-align: left;
+}
+
+.shot-card--narrow {
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
 }
 
 .shot-frame {
@@ -503,46 +516,58 @@ ul {
   box-shadow: 0 14px 30px rgba(45, 27, 78, 0.12);
   background: #1a2744;
   display: block;
-  padding: 14px 16px;
+  padding: 0;
   box-sizing: border-box;
 }
 
 .shot-frame img {
+  display: block;
   width: 100%;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-  object-position: center;
+  height: auto;
+  aspect-ratio: auto;
+  object-fit: contain;
+  object-position: center top;
+  background: #1a2744;
+}
+
+.shot-frame--contain {
+  background: linear-gradient(165deg, #3d1d63 0%, #1a2744 100%);
+}
+
+.shot-frame--contain img {
+  object-fit: contain;
+  background: transparent;
+}
+
+.shot-frame--wide {
+  background: #fff8e7;
 }
 
 .shot-frame--wide img {
-  aspect-ratio: 21 / 6;
-}
-
-.shot-mobile {
-  max-width: 280px;
-  margin: 0 auto;
-}
-
-.shot-frame--phone {
-  border-radius: 28px;
-  border-width: 3px;
-  background: #12091f;
-  /* Phone mockups are not the three-column board frame */
-  padding: 0;
-  gap: 0;
-  justify-content: center;
-}
-
-.shot-frame--phone img {
-  aspect-ratio: 9 / 19.5;
-  object-fit: cover;
-  object-position: top center;
+  object-fit: contain;
+  background: #fff8e7;
 }
 
 .shot-caption {
-  margin-top: 0.6rem;
-  font-size: 0.94rem;
+  margin-top: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.shot-caption-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  letter-spacing: -0.01em;
+}
+
+.shot-caption-text {
+  font-size: 0.98rem;
+  line-height: 1.45;
   color: var(--text-soft);
+  max-width: 52ch;
 }
 
 /* About */
@@ -721,39 +746,13 @@ ul {
     gap: 1rem;
   }
 
-  .shot-stage {
-    grid-template-columns: 1.15fr 0.55fr 0.9fr;
-    align-items: stretch;
+  .shot-stack {
+    max-width: 960px;
+    gap: 2.5rem;
   }
 
-  .shot-mobile {
-    max-width: none;
-    margin: 0;
-    align-self: center;
-  }
-
-  .shot-side {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-  }
-
-  .shot-side .shot-frame {
-    flex: 1;
-  }
-
-  .shot-side .shot-frame img {
-    height: 100%;
-    min-height: 100%;
-    aspect-ratio: auto;
-  }
-
-  .shot-side .shot-frame--wide {
-    flex: 0 0 auto;
-  }
-
-  .shot-side .shot-frame--wide img {
-    aspect-ratio: 16 / 6;
+  .shot-caption-title {
+    font-size: 1.25rem;
   }
 }
 
