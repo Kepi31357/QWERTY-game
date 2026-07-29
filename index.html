@@ -12,7 +12,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="/images/qwerty-logo.png?v=3">
   <link rel="preload" as="image" href="/images/hero-board-live.jpg?v=32">
-  <link rel="stylesheet" href="site.css?v=53">
+  <link rel="stylesheet" href="site.css?v=60">
+  <style id="card-lavender-force">
+    /* Force light-lavender cards — beats cached cream backgrounds */
+    :root {
+      --card-lavender: #efe9f8 !important;
+      --card-bg: #efe9f8 !important;
+      --feature-card-bg: #efe9f8 !important;
+      --rules-card-bg: #efe9f8 !important;
+    }
+    .feature-grid .feature-card,
+    .feature-card,
+    #features .feature-card,
+    #features .feature-grid li,
+    #rules .rules-card,
+    #rules .card,
+    #rules .rules-copy {
+      background: #efe9f8 !important;
+      background-color: #efe9f8 !important;
+      background-image: none !important;
+    }
+  </style>
   <script>
     (function () {
       var q = location.search || '';
@@ -101,31 +121,31 @@
       <h2 class="section-title" id="features-title">Simple to start. Sharp to master.</h2>
       <p class="section-lead">Five moves to know — the rest is wordcraft and a race to 1000.</p>
       <ol class="feature-grid">
-        <li>
+        <li class="feature-card">
           <div>
             <strong class="feature-title">Start on green</strong>
             <span class="feature-body">Your first word covers the green YOU square. Opponents start on amber P2.</span>
           </div>
         </li>
-        <li>
+        <li class="feature-card">
           <div>
             <strong class="feature-title">Connect every play</strong>
             <span class="feature-body">New words share a letter with the board — classic crossword rules.</span>
           </div>
         </li>
-        <li>
+        <li class="feature-card">
           <div>
             <strong class="feature-title">Chase gold stars</strong>
             <span class="feature-body">Land on a star for +50. First to 1000 points wins the match.</span>
           </div>
         </li>
-        <li>
+        <li class="feature-card">
           <div>
             <strong class="feature-title">Connect to opponent’s words</strong>
             <span class="feature-body">Play a word that touches your opponent’s tiles to score a +75 connection bonus, turn the connected tiles purple, and open the whole board for play.</span>
           </div>
         </li>
-        <li>
+        <li class="feature-card">
           <div>
             <strong class="feature-title">Play your way</strong>
             <span class="feature-body">Solo vs Computer (Easy / Medium / Hard) or invite a friend with a room code and chat.</span>
@@ -137,7 +157,7 @@
     <section class="section" id="rules" aria-labelledby="rules-title">
       <p class="section-kicker">How to Play</p>
       <h2 class="section-title" id="rules-title">Full game rules</h2>
-      <div class="rules-copy">
+      <div class="rules-copy rules-card card">
         <p>To play, use the letters in your rack to make a word by placing your first word on the corner colored square. On your next turn, create another word to connect with your first word. You can stack letters. You cannot play on your opponent’s words until a connection is made. Once both player’s words are connected, the letter tiles will turn purple and play continues except now you can play on your opponent’s words.</p>
         <ul class="landing-rules-list">
           <li>Cover a gold star for an additional 50 points.</li>
