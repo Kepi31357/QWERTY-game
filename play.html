@@ -9,59 +9,81 @@
   <meta http-equiv="Expires" content="0">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <title>QWERTY Word Game</title>
-  <link rel="stylesheet" href="styles.css?v=365">
+  <link rel="stylesheet" href="styles.css?v=366">
   <style id="whos-here-opponent-layout">
     /*
-     * Computer row — isolated from .whos-here-row flex.
-     * Line 1: avatar + name (inline-block)
-     * Line 2: MUTE / BLOCK (block below)
+     * Computer row — TABLE layout (cannot sit side-by-side with buttons).
+     * Overrides: global .avatar{72px}, .whos-here-row{display:flex; flex-direction:row}
      */
-    #whos-here-opponent-row.whos-here-opp {
+    #whos-here-opponent-row {
       display: block !important;
+      list-style: none !important;
       width: 100% !important;
       padding: 6px 2px !important;
       box-sizing: border-box !important;
-      list-style: none !important;
+      flex-direction: unset !important;
     }
-    #whos-here-opponent-row .whos-here-opp-profile {
-      display: block !important;
+    #whos-here-opponent-row .whos-here-opp-table {
+      display: table !important;
       width: 100% !important;
-      line-height: 32px !important;
+      border-collapse: collapse !important;
+      table-layout: auto !important;
     }
-    #whos-here-opponent-row .whos-here-opp-profile .whos-here-avatar.avatar {
-      display: inline-block !important;
+    #whos-here-opponent-row .whos-here-opp-r1,
+    #whos-here-opponent-row .whos-here-opp-r2 {
+      display: table-row !important;
+    }
+    #whos-here-opponent-row .whos-here-opp-avatar-cell,
+    #whos-here-opponent-row .whos-here-opp-name-cell,
+    #whos-here-opponent-row .whos-here-opp-actions-cell,
+    #whos-here-opponent-row .whos-here-opp-spacer-cell {
+      display: table-cell !important;
       vertical-align: middle !important;
+    }
+    #whos-here-opponent-row .whos-here-opp-avatar-cell {
+      width: 32px !important;
+      padding: 0 8px 0 0 !important;
+    }
+    #whos-here-opponent-row .whos-here-avatar.avatar {
+      display: block !important;
       width: 32px !important;
       height: 32px !important;
       min-width: 32px !important;
       max-width: 32px !important;
+      min-height: 32px !important;
+      max-height: 32px !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
       border-width: 2px !important;
-      margin: 0 8px 0 0 !important;
+      flex: none !important;
     }
-    #whos-here-opponent-row .whos-here-opp-profile .whos-here-name {
-      display: inline-block !important;
-      vertical-align: middle !important;
+    #whos-here-opponent-row .whos-here-avatar.avatar .avatar-art,
+    #whos-here-opponent-row .whos-here-avatar.avatar svg {
+      display: block !important;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: 32px !important;
+      max-height: 32px !important;
+    }
+    #whos-here-opponent-row .whos-here-name {
+      display: inline !important;
       white-space: nowrap !important;
       overflow: visible !important;
       text-overflow: clip !important;
       max-width: none !important;
-      width: auto !important;
       color: #2d6a9f !important;
       font-weight: 700 !important;
-      line-height: 1.2 !important;
     }
-    #whos-here-opponent-row .whos-here-opp-actions {
-      display: block !important;
-      margin: 6px 0 0 40px !important;
-      width: auto !important;
-      clear: both !important;
+    #whos-here-opponent-row .whos-here-opp-actions-cell {
+      padding-top: 6px !important;
+      white-space: nowrap !important;
     }
-    #whos-here-opponent-row .whos-here-opp-actions .btn-chat-mod {
+    #whos-here-opponent-row .btn-chat-mod {
       display: inline-block !important;
-      vertical-align: middle !important;
       margin: 0 6px 0 0 !important;
       font-size: 0.62rem !important;
       padding: 3px 8px !important;
+      vertical-align: middle !important;
     }
   </style>
   <script>
@@ -314,15 +336,24 @@
               <span class="whos-here-avatar avatar avatar-human" id="chat-self-avatar" role="img" aria-label="Your avatar"></span>
               <span class="whos-here-name" id="chat-self-name">You</span>
             </li>
-            <li class="whos-here-opp whos-here-opponent" id="whos-here-opponent-row">
-              <div class="whos-here-opp-profile">
-                <span class="whos-here-avatar avatar avatar-ai" id="chat-opponent-avatar" role="img" aria-label="Opponent avatar"></span>
-                <span class="whos-here-name" id="chat-opponent-name">Computer</span>
-              </div>
-              <div class="whos-here-opp-actions chat-mod-buttons">
-                <button type="button" class="btn-chat-mod" id="btn-mute" title="Mute opponent chat">Mute</button>
-                <button type="button" class="btn-chat-mod" id="btn-block" title="Block opponent chat">Block</button>
-              </div>
+            <li class="whos-here-opponent" id="whos-here-opponent-row">
+              <table class="whos-here-opp-table" role="presentation">
+                <tr class="whos-here-opp-r1">
+                  <td class="whos-here-opp-avatar-cell">
+                    <span class="whos-here-avatar avatar avatar-ai" id="chat-opponent-avatar" role="img" aria-label="Opponent avatar"></span>
+                  </td>
+                  <td class="whos-here-opp-name-cell">
+                    <span class="whos-here-name" id="chat-opponent-name">Computer</span>
+                  </td>
+                </tr>
+                <tr class="whos-here-opp-r2">
+                  <td class="whos-here-opp-spacer-cell" aria-hidden="true"></td>
+                  <td class="whos-here-opp-actions-cell chat-mod-buttons">
+                    <button type="button" class="btn-chat-mod" id="btn-mute" title="Mute opponent chat">Mute</button>
+                    <button type="button" class="btn-chat-mod" id="btn-block" title="Block opponent chat">Block</button>
+                  </td>
+                </tr>
+              </table>
             </li>
           </ul>
 
@@ -476,6 +507,6 @@
   <script src="validateAndScorePlacement.js?v=338"></script>
   <script src="game-engine.js?v=338"></script>
   <script src="online.js?v=338"></script>
-  <script src="game.js?v=342" onerror="qwertyBootError('Failed to load game.js — use OPEN ONLINE GAME.bat to launch.')"></script>
+  <script src="game.js?v=343" onerror="qwertyBootError('Failed to load game.js — use OPEN ONLINE GAME.bat to launch.')"></script>
 </body>
 </html>

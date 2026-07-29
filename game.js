@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '342';
+  var QWERTY_BUILD = '343';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -1990,6 +1990,28 @@ class Game {
     QWERTYAvatars.paint(this.ui.boardAvatarAi, oppId);
     QWERTYAvatars.paint(this.ui.chatSelfAvatar, selfId);
     QWERTYAvatars.paint(this.ui.chatOpponentAvatar, oppId);
+    this.forceWhosHereOpponentAvatarSize();
+  }
+
+  /** Keep Who's Here Computer avatar at 32px — global .avatar is 72px. */
+  forceWhosHereOpponentAvatarSize() {
+    var av = document.getElementById('chat-opponent-avatar');
+    if (!av) return;
+    av.style.setProperty('width', '32px', 'important');
+    av.style.setProperty('height', '32px', 'important');
+    av.style.setProperty('min-width', '32px', 'important');
+    av.style.setProperty('max-width', '32px', 'important');
+    av.style.setProperty('min-height', '32px', 'important');
+    av.style.setProperty('max-height', '32px', 'important');
+    av.style.setProperty('overflow', 'hidden', 'important');
+    av.style.setProperty('display', 'block', 'important');
+    var art = av.querySelector('.avatar-art, svg');
+    if (art) {
+      art.style.setProperty('width', '100%', 'important');
+      art.style.setProperty('height', '100%', 'important');
+      art.style.setProperty('max-width', '32px', 'important');
+      art.style.setProperty('max-height', '32px', 'important');
+    }
   }
 
   parseOnlineUrlParams() {

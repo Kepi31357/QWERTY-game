@@ -4257,60 +4257,84 @@ body.menu-visible .game-over-splash {
   }
 }
 
-/* ===== Who's Here Computer row — block stack (isolated from .whos-here-row) ===== */
-#whos-here-opponent-row.whos-here-opp {
+/* ===== Who's Here Computer row — table stack (beats flex / 72px avatar) ===== */
+#whos-here-opponent-row {
   display: block !important;
+  list-style: none !important;
   width: 100% !important;
   padding: 6px 2px !important;
   box-sizing: border-box !important;
-  list-style: none !important;
+  flex-direction: unset !important;
 }
 
-#whos-here-opponent-row .whos-here-opp-profile {
-  display: block !important;
+#whos-here-opponent-row .whos-here-opp-table {
+  display: table !important;
   width: 100% !important;
-  line-height: 32px !important;
+  border-collapse: collapse !important;
+  table-layout: auto !important;
 }
 
-#whos-here-opponent-row .whos-here-opp-profile .whos-here-avatar.avatar {
-  display: inline-block !important;
+#whos-here-opponent-row .whos-here-opp-r1,
+#whos-here-opponent-row .whos-here-opp-r2 {
+  display: table-row !important;
+}
+
+#whos-here-opponent-row .whos-here-opp-avatar-cell,
+#whos-here-opponent-row .whos-here-opp-name-cell,
+#whos-here-opponent-row .whos-here-opp-actions-cell,
+#whos-here-opponent-row .whos-here-opp-spacer-cell {
+  display: table-cell !important;
   vertical-align: middle !important;
+}
+
+#whos-here-opponent-row .whos-here-opp-avatar-cell {
+  width: 32px !important;
+  padding: 0 8px 0 0 !important;
+}
+
+#whos-here-opponent-row .whos-here-avatar.avatar {
+  display: block !important;
   width: 32px !important;
   height: 32px !important;
   min-width: 32px !important;
   max-width: 32px !important;
-  flex: none !important;
+  min-height: 32px !important;
+  max-height: 32px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
   border-width: 2px !important;
-  margin: 0 8px 0 0 !important;
+  flex: none !important;
 }
 
-#whos-here-opponent-row .whos-here-opp-profile .whos-here-name {
-  display: inline-block !important;
-  vertical-align: middle !important;
+#whos-here-opponent-row .whos-here-avatar.avatar .avatar-art,
+#whos-here-opponent-row .whos-here-avatar.avatar svg {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+}
+
+#whos-here-opponent-row .whos-here-name {
+  display: inline !important;
   white-space: nowrap !important;
   overflow: visible !important;
   text-overflow: clip !important;
   max-width: none !important;
-  width: auto !important;
-  min-width: 0 !important;
-  flex: none !important;
   color: #2d6a9f !important;
   font-weight: 700 !important;
-  line-height: 1.2 !important;
 }
 
-#whos-here-opponent-row .whos-here-opp-actions {
-  display: block !important;
-  margin: 6px 0 0 40px !important;
-  width: auto !important;
-  clear: both !important;
+#whos-here-opponent-row .whos-here-opp-actions-cell {
+  padding-top: 6px !important;
+  white-space: nowrap !important;
 }
 
-#whos-here-opponent-row .whos-here-opp-actions .btn-chat-mod {
+#whos-here-opponent-row .btn-chat-mod {
   display: inline-block !important;
-  vertical-align: middle !important;
   margin: 0 6px 0 0 !important;
   font-size: 0.62rem !important;
   line-height: 1.1 !important;
   padding: 3px 8px !important;
+  vertical-align: middle !important;
 }
