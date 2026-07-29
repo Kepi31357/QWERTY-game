@@ -9,7 +9,7 @@
   <meta http-equiv="Expires" content="0">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <title>QWERTY Word Game</title>
-  <link rel="stylesheet" href="styles.css?v=361">
+  <link rel="stylesheet" href="styles.css?v=362">
   <script>
     window.QWERTY_WS_PORT = 3001;
     if (location.protocol === 'file:') {
@@ -261,8 +261,10 @@
               <span class="whos-here-name" id="chat-self-name">You</span>
             </li>
             <li class="whos-here-row whos-here-opponent">
-              <span class="whos-here-avatar avatar avatar-ai" id="chat-opponent-avatar" role="img" aria-label="Opponent avatar"></span>
-              <span class="whos-here-name" id="chat-opponent-name">Computer</span>
+              <div class="whos-here-identity">
+                <span class="whos-here-avatar avatar avatar-ai" id="chat-opponent-avatar" role="img" aria-label="Opponent avatar"></span>
+                <span class="whos-here-name" id="chat-opponent-name">Computer</span>
+              </div>
               <div class="chat-mod-buttons">
                 <button type="button" class="btn-chat-mod" id="btn-mute" title="Mute opponent chat">Mute</button>
                 <button type="button" class="btn-chat-mod" id="btn-block" title="Block opponent chat">Block</button>
