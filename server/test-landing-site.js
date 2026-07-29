@@ -67,6 +67,8 @@ assert(css.indexOf('.store-badge') >= 0, 'store badge styles');
 assert(css.indexOf('--pogo-purple') >= 0, 'brand colors');
 assert(css.indexOf('.shot-stack') >= 0, 'shot stack styles');
 assert(css.indexOf('.landing-rules-list') >= 0, 'landing rules list styles');
+assert(landing.indexOf('feature-title') >= 0 && landing.indexOf('feature-body') >= 0, 'feature title/body classes');
+assert(css.indexOf('#features .feature-grid .feature-title') >= 0, 'forced dark feature title styles');
 assert(play.indexOf('game-board-column') >= 0, 'play.html is the game');
 assert(server.indexOf('/play.html') >= 0, 'server knows play.html');
 assert(game.indexOf('/play.html?guest&code=') >= 0, 'join URLs use play.html');
