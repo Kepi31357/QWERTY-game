@@ -23,11 +23,11 @@
   --max: 1040px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --nav-h: 4.1rem;
-  --card-lavender: #efe9f8;
+  --card-lavender: #e8dff8;
   --card-lavender-border: rgba(92, 45, 145, 0.22);
-  --card-bg: #efe9f8;
-  --feature-card-bg: #efe9f8;
-  --rules-card-bg: #efe9f8;
+  --card-bg: #e8dff8;
+  --feature-card-bg: #e8dff8;
+  --rules-card-bg: #e8dff8;
 }
 
 html {
@@ -431,8 +431,8 @@ ul {
   font-size: 1.02rem;
   padding: 1.45rem 1.5rem;
   border-radius: 18px;
-  background: #efe9f8 !important;
-  background-color: #efe9f8 !important;
+  background: #e8dff8 !important;
+  background-color: #e8dff8 !important;
   background-image: none !important;
   border: 1px solid var(--card-lavender-border);
   box-shadow: 0 12px 28px rgba(20, 10, 40, 0.22);
@@ -536,8 +536,8 @@ ul {
   align-items: start;
   padding: 1.25rem 1.3rem;
   border-radius: 18px;
-  background: #efe9f8 !important;
-  background-color: #efe9f8 !important;
+  background: #e8dff8 !important;
+  background-color: #e8dff8 !important;
   background-image: none !important;
   border: 1px solid var(--card-lavender-border);
   box-shadow: 0 12px 28px rgba(20, 10, 40, 0.22);
@@ -990,7 +990,7 @@ ul {
 #rules .rules-card,
 #rules .card,
 #rules .rules-copy {
-  background: #efe9f8 !important;
-  background-color: #efe9f8 !important;
+  background: #e8dff8 !important;
+  background-color: #e8dff8 !important;
   background-image: none !important;
 }

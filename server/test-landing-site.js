@@ -71,7 +71,7 @@ assert(landing.indexOf('feature-title') >= 0 && landing.indexOf('feature-body') 
 assert(landing.indexOf('feature-card') >= 0, 'feature-card class on items');
 assert(landing.indexOf('rules-card') >= 0, 'rules-card class on rules block');
 assert(css.indexOf('#features .feature-grid .feature-title') >= 0, 'forced dark feature title styles');
-assert(/background-color:\s*#efe9f8\s*!important/.test(css), 'forced lavender card background');
+assert(/background-color:\s*#e8dff8\s*!important/.test(css), 'forced lavender card background');
 assert(play.indexOf('game-board-column') >= 0, 'play.html is the game');
 assert(server.indexOf('/play.html') >= 0, 'server knows play.html');
 assert(game.indexOf('/play.html?guest&code=') >= 0, 'join URLs use play.html');
