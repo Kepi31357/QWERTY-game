@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="/images/qwerty-logo.png?v=3">
   <link rel="preload" as="image" href="/images/hero-board-live.jpg?v=32">
-  <link rel="stylesheet" href="site.css?v=64">
+  <link rel="stylesheet" href="site.css?v=65">
   <style id="card-lavender-force">
     /* Force light-lavender cards — beats cached cream backgrounds */
     :root {
@@ -33,10 +33,18 @@
       background-color: #d9c7f2 !important;
       background-image: none !important;
     }
+    /* Hero preview + screenshot board chrome share identical padding */
     .hero-preview,
+    #screens .shot-board,
+    .shot-board {
+      padding: 16px !important;
+      border-width: 2px !important;
+      border-style: solid !important;
+      box-sizing: border-box !important;
+    }
     #screens .shot-card,
     .shot-card {
-      padding: 16px !important;
+      padding: 0 !important;
     }
     #screens .shot-caption,
     .shot-caption {
@@ -44,8 +52,8 @@
     }
     @media (max-width: 779px) {
       .hero-preview,
-      #screens .shot-card,
-      .shot-card {
+      #screens .shot-board,
+      .shot-board {
         padding: 12px 14px !important;
       }
       #screens .shot-caption,
@@ -202,15 +210,17 @@
         <p class="section-lead">From the first play to the victory screen — here’s how a match looks.</p>
         <div class="shot-stack">
           <figure class="shot-card">
-            <div class="shot-frame">
-              <img
-                src="/images/ss-live-board.jpg?v=2"
-                alt="Live QWERTY game board with Computer and You scores, chat, and letter rack"
-                width="1400"
-                height="900"
-                loading="lazy"
-                decoding="async"
-              >
+            <div class="shot-board">
+              <div class="shot-frame">
+                <img
+                  src="/images/ss-live-board.jpg?v=2"
+                  alt="Live QWERTY game board with Computer and You scores, chat, and letter rack"
+                  width="1400"
+                  height="900"
+                  loading="lazy"
+                  decoding="async"
+                >
+              </div>
             </div>
             <figcaption class="shot-caption">
               <strong class="shot-caption-title">Live Game Board</strong>
@@ -219,15 +229,17 @@
           </figure>
 
           <figure class="shot-card">
-            <div class="shot-frame">
-              <img
-                src="/images/ss-connection.jpg?v=2"
-                alt="Connection bonus popup showing +155 for AXIS with +75 Connect"
-                width="1400"
-                height="900"
-                loading="lazy"
-                decoding="async"
-              >
+            <div class="shot-board">
+              <div class="shot-frame">
+                <img
+                  src="/images/ss-connection.jpg?v=2"
+                  alt="Connection bonus popup showing +155 for AXIS with +75 Connect"
+                  width="1400"
+                  height="900"
+                  loading="lazy"
+                  decoding="async"
+                >
+              </div>
             </div>
             <figcaption class="shot-caption">
               <strong class="shot-caption-title">Connection Bonus</strong>
@@ -236,15 +248,17 @@
           </figure>
 
           <figure class="shot-card shot-card--narrow">
-            <div class="shot-frame shot-frame--contain">
-              <img
-                src="/images/ss-victory.jpg?v=2"
-                alt="Victory screen showing You Won with scores and Play Again"
-                width="720"
-                height="1100"
-                loading="lazy"
-                decoding="async"
-              >
+            <div class="shot-board">
+              <div class="shot-frame shot-frame--contain">
+                <img
+                  src="/images/ss-victory.jpg?v=2"
+                  alt="Victory screen showing You Won with scores and Play Again"
+                  width="720"
+                  height="1100"
+                  loading="lazy"
+                  decoding="async"
+                >
+              </div>
             </div>
             <figcaption class="shot-caption">
               <strong class="shot-caption-title">Victory Screen</strong>
@@ -253,15 +267,17 @@
           </figure>
 
           <figure class="shot-card shot-card--narrow">
-            <div class="shot-frame shot-frame--contain">
-              <img
-                src="/images/ss-start-menu.jpg?v=2"
-                alt="Start menu with avatar picker, room code, and computer difficulty"
-                width="720"
-                height="1100"
-                loading="lazy"
-                decoding="async"
-              >
+            <div class="shot-board">
+              <div class="shot-frame shot-frame--contain">
+                <img
+                  src="/images/ss-start-menu.jpg?v=2"
+                  alt="Start menu with avatar picker, room code, and computer difficulty"
+                  width="720"
+                  height="1100"
+                  loading="lazy"
+                  decoding="async"
+                >
+              </div>
             </div>
             <figcaption class="shot-caption">
               <strong class="shot-caption-title">Start Menu</strong>
@@ -270,15 +286,17 @@
           </figure>
 
           <figure class="shot-card">
-            <div class="shot-frame shot-frame--wide">
-              <img
-                src="/images/ss-timer.jpg?v=2"
-                alt="Turn timer showing 0:03 with game controls and legend"
-                width="1400"
-                height="280"
-                loading="lazy"
-                decoding="async"
-              >
+            <div class="shot-board">
+              <div class="shot-frame shot-frame--wide">
+                <img
+                  src="/images/ss-timer.jpg?v=2"
+                  alt="Turn timer showing 0:03 with game controls and legend"
+                  width="1400"
+                  height="280"
+                  loading="lazy"
+                  decoding="async"
+                >
+              </div>
             </div>
             <figcaption class="shot-caption">
               <strong class="shot-caption-title">Turn Timer</strong>
