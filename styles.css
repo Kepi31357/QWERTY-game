@@ -4257,7 +4257,7 @@ body.menu-visible .game-over-splash {
   }
 }
 
-/* ===== Who's Here Computer row — stacked layout (keep last) ===== */
+/* ===== Who's Here Computer row — stacked (line1 / line2) ===== */
 .chat-panel .whos-here .whos-here-avatar.avatar,
 .whos-here-row.whos-here-opponent .whos-here-avatar.avatar {
   width: 32px !important;
@@ -4278,13 +4278,12 @@ body.menu-visible .game-over-splash {
   box-sizing: border-box !important;
 }
 
-.whos-here-row.whos-here-opponent .whos-here-identity {
+.whos-here-row.whos-here-opponent .whos-here-line1 {
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
   gap: 8px !important;
   width: 100% !important;
-  min-width: 0 !important;
 }
 
 .whos-here-row.whos-here-opponent .whos-here-name {
@@ -4298,13 +4297,13 @@ body.menu-visible .game-over-splash {
   line-height: 1.2 !important;
 }
 
-.whos-here-row.whos-here-opponent .chat-mod-buttons {
+.whos-here-row.whos-here-opponent .whos-here-line2.chat-mod-buttons {
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
   gap: 6px !important;
   flex: 0 0 auto !important;
-  margin: 0 0 0 40px !important; /* under the name, clear of avatar */
+  margin: 0 0 0 40px !important;
   width: auto !important;
 }
 
