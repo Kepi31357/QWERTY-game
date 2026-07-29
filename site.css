@@ -563,18 +563,23 @@ ul {
 .shot-stack {
   display: flex;
   flex-direction: column;
-  gap: clamp(1.75rem, 4vw, 2.75rem);
+  gap: clamp(1.5rem, 3.5vw, 2.25rem);
   max-width: 920px;
-  margin: 0 auto;
+  margin: 1.35rem auto 0;
 }
 
 .shot-card {
   margin: 0;
   text-align: left;
+  padding: 1.25rem 1.3rem 1.35rem;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fffaf0 0%, #f3ebff 100%);
+  border: 1px solid rgba(255, 248, 231, 0.55);
+  box-shadow: 0 12px 28px rgba(20, 10, 40, 0.22);
 }
 
 .shot-card--narrow {
-  max-width: 420px;
+  max-width: 460px;
   margin-left: auto;
   margin-right: auto;
   width: 100%;
@@ -582,9 +587,9 @@ ul {
 
 .shot-frame {
   overflow: hidden;
-  border-radius: 18px;
-  border: 2px solid rgba(255, 248, 231, 0.14);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
+  border-radius: 14px;
+  border: 1px solid rgba(61, 29, 99, 0.12);
+  box-shadow: none;
   background: #2a1848;
   display: block;
   padding: 0;
@@ -620,24 +625,25 @@ ul {
 }
 
 .shot-caption {
-  margin-top: 0.85rem;
+  margin-top: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  padding: 0 0.15rem;
 }
 
 .shot-caption-title {
   font-family: var(--font-body);
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--ink);
+  color: var(--pogo-orange);
   letter-spacing: -0.01em;
 }
 
 .shot-caption-text {
   font-size: 0.98rem;
-  line-height: 1.45;
-  color: var(--ink-muted);
+  line-height: 1.5;
+  color: var(--text-soft);
   max-width: 52ch;
 }
 
