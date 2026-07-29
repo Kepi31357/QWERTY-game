@@ -417,19 +417,20 @@ ul {
 /* Full game rules */
 .rules-copy {
   max-width: 58ch;
-  margin: 0 auto;
+  margin: 1.35rem auto 0;
   text-align: left;
-  color: var(--ink-muted);
+  color: var(--text-soft);
   font-size: 1.02rem;
-  padding: 1.15rem 1.25rem;
-  border-radius: 16px;
-  background: rgba(45, 27, 78, 0.35);
-  border: 1px solid rgba(255, 248, 231, 0.14);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.16);
+  padding: 1.45rem 1.5rem;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fffaf0 0%, #f3ebff 100%);
+  border: 1px solid rgba(255, 248, 231, 0.55);
+  box-shadow: 0 12px 28px rgba(20, 10, 40, 0.22);
 }
 
 .rules-copy > p {
-  margin-bottom: 1.1rem;
+  margin-bottom: 1.25rem;
+  color: var(--text-dark);
 }
 
 .landing-rules-list {
@@ -438,12 +439,13 @@ ul {
 }
 
 .landing-rules-list li {
-  margin: 0.45rem 0;
-  padding-left: 0.2rem;
+  margin: 0.55rem 0;
+  padding-left: 0.25rem;
+  color: var(--text-soft);
 }
 
 .landing-rules-list li::marker {
-  color: var(--pogo-yellow);
+  color: var(--pogo-orange);
 }
 
 .contact-lead {
@@ -505,41 +507,42 @@ ul {
 /* Features / How to play */
 .feature-grid {
   display: grid;
-  gap: 0.9rem;
+  gap: 1.25rem;
   max-width: 860px;
-  margin: 0 auto;
+  margin: 1.35rem auto 0;
   text-align: left;
   counter-reset: feature;
 }
 
 .feature-grid li {
   display: grid;
-  grid-template-columns: 2.4rem 1fr;
-  gap: 0.9rem;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 1rem;
   align-items: start;
-  padding: 1rem 1.1rem;
-  border-radius: 16px;
-  background: rgba(45, 27, 78, 0.35);
-  border: 1px solid rgba(255, 248, 231, 0.14);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.16);
+  padding: 1.25rem 1.3rem;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fffaf0 0%, #f3ebff 100%);
+  border: 1px solid rgba(255, 248, 231, 0.55);
+  box-shadow: 0 12px 28px rgba(20, 10, 40, 0.22);
 }
 
 .feature-grid li::before {
   counter-increment: feature;
   content: counter(feature);
-  width: 2.4rem;
-  height: 2.4rem;
-  border-radius: 12px;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
   display: grid;
   place-items: center;
   font-family: var(--font-body);
-  font-size: 1.08rem;
-  font-weight: 700;
+  font-size: 1.05rem;
+  font-weight: 800;
   letter-spacing: -0.015em;
   line-height: 1;
-  background: rgba(255, 248, 231, 0.1);
-  border: 1px solid rgba(255, 248, 231, 0.18);
-  color: var(--pogo-yellow);
+  background: linear-gradient(180deg, #ffe56a 0%, var(--pogo-yellow) 48%, var(--pogo-orange) 100%);
+  border: none;
+  color: var(--pogo-purple-dark);
+  box-shadow: 0 4px 12px rgba(247, 148, 29, 0.35);
 }
 
 .feature-grid strong {
@@ -547,12 +550,13 @@ ul {
   font-family: var(--font-display);
   font-size: 1.08rem;
   color: var(--pogo-orange);
-  margin-bottom: 0.15rem;
+  margin-bottom: 0.3rem;
 }
 
 .feature-grid span {
-  color: var(--ink-muted);
+  color: var(--text-soft);
   font-size: 0.97rem;
+  line-height: 1.5;
 }
 
 /* Screenshots — vertical gallery */
@@ -799,12 +803,12 @@ ul {
 
   .feature-grid {
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 1.35rem;
   }
 
   .feature-grid li:nth-child(5) {
     grid-column: 1 / -1;
-    width: calc((100% - 1rem) / 2);
+    width: calc((100% - 1.35rem) / 2);
     justify-self: center;
   }
 
