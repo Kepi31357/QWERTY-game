@@ -556,7 +556,7 @@ ul {
 }
 
 .shot-caption-title {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: 1.15rem;
   font-weight: 800;
   color: var(--text-dark);
