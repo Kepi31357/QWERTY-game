@@ -687,6 +687,16 @@ ul {
   color: var(--ink);
 }
 
+.section-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.section-cta .btn-play-lg {
+  min-width: min(100%, 250px);
+}
+
 .teaser-note--on-cream {
   color: var(--ink-muted);
 }
@@ -732,7 +742,7 @@ ul {
 
 /* Footer */
 .site-footer {
-  padding: 2.25rem var(--page-pad) 2.75rem;
+  padding: 2.25rem var(--page-pad) max(2.75rem, env(safe-area-inset-bottom, 0px));
   text-align: center;
   color: rgba(255, 248, 231, 0.72);
   border-top: 1px solid rgba(255, 248, 231, 0.1);
@@ -747,7 +757,8 @@ ul {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.85rem 1.35rem;
+  align-items: center;
+  gap: 0.55rem 0.75rem;
   margin-bottom: 1rem;
 }
 
@@ -760,6 +771,12 @@ ul {
 .footer-links a:focus-visible {
   color: var(--pogo-yellow);
   outline: none;
+}
+
+.footer-sep {
+  color: rgba(255, 248, 231, 0.35);
+  font-weight: 500;
+  user-select: none;
 }
 
 .footer-copy {
