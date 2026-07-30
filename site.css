@@ -986,6 +986,170 @@ ul {
   }
 }
 
+/* Phones ≤640px — denser vertical rhythm (desktop unchanged) */
+@media (max-width: 640px) {
+  :root {
+    --page-pad: 0.95rem;
+  }
+
+  .hero {
+    --hero-stack-gap: 0.65rem;
+    --hero-block-gap: 0.8rem;
+    min-height: auto;
+    padding: 0.85rem 0.85rem 1rem;
+    gap: var(--hero-block-gap);
+  }
+
+  .hero-content {
+    width: min(100% - 0.1rem, 420px);
+    padding-top: 0;
+    gap: var(--hero-stack-gap);
+  }
+
+  .hero-cta {
+    margin-top: 0;
+    gap: 0.65rem;
+  }
+
+  .hero .btn-play-lg {
+    min-height: 3.1rem;
+    margin: 0;
+  }
+
+  .hero-preview {
+    width: min(100%, 680px);
+    margin: 0;
+  }
+
+  .hero-downloads {
+    width: min(100%, 680px);
+    margin: 0;
+    padding: 0;
+  }
+
+  .hero-downloads .store-row {
+    gap: 0.5rem;
+  }
+
+  .store-note {
+    margin-top: 0.3rem;
+    margin-bottom: 0;
+  }
+
+  .section,
+  .section--band .section-inner {
+    padding: 1.85rem var(--page-pad);
+  }
+
+  .section-kicker {
+    margin-bottom: 0.4rem;
+  }
+
+  .section-title {
+    margin-bottom: 0.45rem;
+  }
+
+  .section-lead {
+    margin: 0 auto 1.05rem;
+  }
+
+  .feature-grid {
+    gap: 0.7rem;
+    margin-top: 0.95rem;
+    max-width: 100%;
+  }
+
+  .feature-grid li,
+  .feature-grid .feature-card,
+  .feature-card,
+  #features .feature-card {
+    padding: 1rem 0.9rem;
+    gap: 0.8rem;
+  }
+
+  .rules-copy,
+  #rules .rules-card,
+  #rules .card {
+    margin-top: 0.95rem;
+    padding: 1.15rem 1rem;
+  }
+
+  .landing-rules-list li {
+    margin: 0.4rem 0;
+  }
+
+  .shot-stack {
+    gap: 1.1rem;
+    margin-top: 0.95rem;
+    max-width: 100%;
+  }
+
+  .shot-caption,
+  #screens .shot-caption {
+    margin-top: 0.75rem !important;
+    padding: 0.85rem 0.9rem !important;
+  }
+
+  .about-modes {
+    margin-top: 1rem;
+    gap: 0.45rem;
+  }
+
+  .section-cta {
+    margin-top: 1.25rem;
+  }
+
+  .board-teaser {
+    margin-top: 0.95rem;
+  }
+
+  .contact-lead {
+    margin-bottom: 0;
+  }
+
+  .site-footer {
+    padding: 1.25rem var(--page-pad) max(1.4rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .footer-links {
+    gap: 0.4rem 0.55rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-copy {
+    margin: 0;
+  }
+}
+
+/* Extra-narrow phones — a bit tighter side gutters */
+@media (max-width: 480px) {
+  :root {
+    --page-pad: 0.8rem;
+  }
+
+  .hero {
+    --hero-stack-gap: 0.55rem;
+    --hero-block-gap: 0.7rem;
+    padding: 0.75rem 0.75rem 0.9rem;
+  }
+
+  .feature-grid {
+    gap: 0.6rem;
+  }
+
+  .feature-grid li,
+  .feature-grid .feature-card,
+  .feature-card,
+  #features .feature-card {
+    padding: 0.95rem 0.8rem;
+  }
+
+  .section,
+  .section--band .section-inner {
+    padding: 1.65rem var(--page-pad);
+  }
+}
+
 /* Light cards — force dark readable text (beats body cream inherit) */
 #features .feature-grid li,
 #features .feature-grid li > div,
