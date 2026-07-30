@@ -54,7 +54,9 @@ assert(gameSrc.indexOf('Board-wrap does not contain the racks') >= 0 || gameSrc.
 assert(cssSrc.indexOf('flex: 1 1 0') >= 0 && cssSrc.indexOf('max-width: none') >= 0, 'gutters grow so profiles sit beside board');
 assert(gameSrc.indexOf('_boardFitAbovePanel304') >= 0, 'clears stale compact board lock');
 assert(gameSrc.indexOf('_mobileBalance351') >= 0, 'clears lock for mobile profile+board balance');
+assert(gameSrc.indexOf('_mobileBoardGrow352') >= 0, 'clears small-board feedback lock on phones');
 assert(gameSrc.indexOf('COMPACT_MAX_CELL_SIZE') >= 0, 'caps phone cell size so board fits viewport');
+assert(/COMPACT_MAX_CELL_SIZE = (3[2-9]|[4-9][0-9])/.test(gameSrc), 'phone max cell raised for readability');
 assert(gameSrc.indexOf('board-human-rack') >= 0 && gameSrc.indexOf('getCompactPlayReservedHeight') >= 0, 'reserves human rack height on compact');
 assert(
   cssSrc.indexOf('body:not(.menu-visible):not(.game-exited) .board-gutter-left') >= 0 &&

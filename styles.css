@@ -3675,14 +3675,14 @@ body.menu-visible .game-over-splash {
    * so profiles stay visible and the grid no longer eats the whole viewport.
    */
   body:not(.menu-visible):not(.game-exited) .board-wrap {
-    --board-side-w: 52px;
+    --board-side-w: 44px;
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 2px 2px;
-    column-gap: 4px;
+    gap: 2px;
+    padding: 2px 1px;
+    column-gap: 2px;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-gutter-left,
@@ -3707,9 +3707,10 @@ body.menu-visible .game-over-splash {
 
   body:not(.menu-visible):not(.game-exited) .board-center {
     order: 1;
-    flex: 0 1 auto;
+    flex: 1 1 auto;
     width: auto;
-    max-width: calc(100% - (var(--board-side-w) * 2) - 8px);
+    min-width: 0;
+    max-width: calc(100% - (var(--board-side-w) * 2) - 4px);
   }
 
   body:not(.menu-visible):not(.game-exited) .board-gutter-right {
@@ -3723,7 +3724,7 @@ body.menu-visible .game-over-splash {
     align-items: center;
     width: 100%;
     max-width: 100%;
-    gap: 4px;
+    gap: 3px;
     transform: none !important;
   }
 
@@ -3732,8 +3733,8 @@ body.menu-visible .game-over-splash {
   }
 
   body:not(.menu-visible):not(.game-exited) .board-avatar-slot .avatar {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     border-width: 2px;
   }
 

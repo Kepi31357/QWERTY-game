@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '351';
+  var QWERTY_BUILD = '352';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -495,9 +495,9 @@ const ROWS = 15;
 const RACK_SIZE = 8;
 const MAX_CELL_SIZE = 100;
 const MIN_CELL_SIZE = 16;
-/* Phones: keep tiles readable but leave room for side profiles + rack + controls. */
-const COMPACT_MAX_CELL_SIZE = 28;
-const COMPACT_SIDE_W = 52;
+/* Phones: larger readable tiles while keeping slim side profiles + rack + controls. */
+const COMPACT_MAX_CELL_SIZE = 36;
+const COMPACT_SIDE_W = 44;
 const LAYOUT_GAP = 8;
 const STAR_BONUS = 50;
 const LINK_BONUS = 75;
@@ -1212,7 +1212,7 @@ class Game {
 
   getLayoutInsets() {
     if (this.isCompactLayout()) {
-      var gap = 4;
+      var gap = 2;
       return { gutterW: COMPACT_SIDE_W * 2 + gap * 2, sidebarW: 0, edgePad: 8 };
     }
     /* Match .board-wrap gutters + gaps (desktop trio). */
@@ -1397,13 +1397,16 @@ class Game {
       : 0;
     const gutterW = insets.gutterW;
     const sidebarW = insets.sidebarW;
-    let centerW = boardCenter && boardCenter.clientWidth >= 50 ? boardCenter.clientWidth : 0;
-    if (!centerW && boardWrap) {
+    /*
+     * Always size from the wrap minus side-profile reserve.
+     * Using .board-center's current width on phones created a feedback loop that
+     * locked the canvas small (center hugged the tiny canvas).
+     */
+    let centerW = 0;
+    if (boardWrap) {
       centerW = Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW);
-    }
-    if (!compact && boardWrap) {
-      /* Desktop: size from wrap minus min gutter reserve; leftover navy fills the profiles. */
-      centerW = Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW);
+    } else if (boardCenter && boardCenter.clientWidth >= 50) {
+      centerW = boardCenter.clientWidth;
     }
     if (centerW < 100) {
       centerW = Math.min(
@@ -1448,6 +1451,13 @@ class Game {
     /* One-shot: rebalance phone layout — side profiles visible + shorter board. */
     if (!this._mobileBalance351) {
       this._mobileBalance351 = true;
+      this._compactLayoutLock = null;
+      this._compactChromeReserve = null;
+    }
+
+    /* One-shot: grow phone board out of the small center-width feedback lock. */
+    if (!this._mobileBoardGrow352) {
+      this._mobileBoardGrow352 = true;
       this._compactLayoutLock = null;
       this._compactChromeReserve = null;
     }
