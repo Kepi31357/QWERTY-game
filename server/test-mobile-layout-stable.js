@@ -53,6 +53,14 @@ assert(gameSrc.indexOf('_boardFillWrap348') >= 0 || gameSrc.indexOf('_boardScale
 assert(gameSrc.indexOf('Board-wrap does not contain the racks') >= 0 || gameSrc.indexOf('never subtract their heights from wrapInner') >= 0, 'wrap height budget excludes rack chrome');
 assert(cssSrc.indexOf('flex: 1 1 0') >= 0 && cssSrc.indexOf('max-width: none') >= 0, 'gutters grow so profiles sit beside board');
 assert(gameSrc.indexOf('_boardFitAbovePanel304') >= 0, 'clears stale compact board lock');
+assert(gameSrc.indexOf('_mobileBalance351') >= 0, 'clears lock for mobile profile+board balance');
+assert(gameSrc.indexOf('COMPACT_MAX_CELL_SIZE') >= 0, 'caps phone cell size so board fits viewport');
+assert(gameSrc.indexOf('board-human-rack') >= 0 && gameSrc.indexOf('getCompactPlayReservedHeight') >= 0, 'reserves human rack height on compact');
+assert(
+  cssSrc.indexOf('body:not(.menu-visible):not(.game-exited) .board-gutter-left') >= 0 &&
+    !/body:not\(\.menu-visible\):not\(\.game-exited\) \.board-gutter-left,\s*body:not\(\.menu-visible\):not\(\.game-exited\) \.board-gutter-right \{\s*display:\s*none/m.test(cssSrc),
+  'mobile play shows side profile gutters'
+);
 assert(gameSrc.indexOf('must stay clear of the last board row') >= 0, 'reserves full player panel height');
 assert(cssSrc.indexOf('flex: 1 1 auto') >= 0 && cssSrc.indexOf('game-board-column .board-wrap') >= 0, 'board-wrap fills column (original layout)');
 

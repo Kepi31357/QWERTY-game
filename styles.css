@@ -3654,8 +3654,8 @@ body.menu-visible .game-over-splash {
   }
 
   body:not(.menu-visible):not(.game-exited) .board-top-header .qwerty-header-img {
-    width: min(100%, 260px);
-    max-height: 64px;
+    width: min(100%, 200px);
+    max-height: 44px;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-opponent-rack.board-grid-rack {
@@ -3666,12 +3666,95 @@ body.menu-visible .game-over-splash {
     display: flex;
     justify-content: center;
     border-radius: 0 0 12px 12px;
-    padding: 6px;
+    padding: 4px 6px;
+    flex: 0 0 auto;
+  }
+
+  /*
+   * Phone play: keep Computer (left) + You (right) beside a moderately sized board
+   * so profiles stay visible and the grid no longer eats the whole viewport.
+   */
+  body:not(.menu-visible):not(.game-exited) .board-wrap {
+    --board-side-w: 52px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 2px 2px;
+    column-gap: 4px;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-gutter-left,
   body:not(.menu-visible):not(.game-exited) .board-gutter-right {
+    display: flex;
+    flex: 0 0 var(--board-side-w);
+    width: var(--board-side-w);
+    min-width: var(--board-side-w);
+    max-width: var(--board-side-w);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 !important;
+    overflow: visible;
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .board-gutter-left {
+    order: 0;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .board-center {
+    order: 1;
+    flex: 0 1 auto;
+    width: auto;
+    max-width: calc(100% - (var(--board-side-w) * 2) - 8px);
+  }
+
+  body:not(.menu-visible):not(.game-exited) .board-gutter-right {
+    order: 2;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .board-gutter-stack,
+  body:not(.menu-visible):not(.game-exited) .board-gutter-stack-human,
+  body:not(.menu-visible):not(.game-exited) .board-profile {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    gap: 4px;
+    transform: none !important;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .board-difficulty-picker {
     display: none;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .board-avatar-slot .avatar {
+    width: 44px;
+    height: 44px;
+    border-width: 2px;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .board-gutter-name {
+    font-size: 0.55rem;
+    letter-spacing: 0.02em;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .board-gutter-score-value {
+    font-size: 0.95rem;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .board-gutter-score .score-unit {
+    display: none;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .board-gutter-stack .turn-ribbon {
+    height: 16px;
+    line-height: 16px;
+    font-size: 0.5rem;
+    padding: 0 3px;
   }
 
   /*
@@ -3880,28 +3963,27 @@ body.menu-visible .game-over-splash {
   }
 
   body:not(.menu-visible):not(.game-exited) .board-wrap {
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
+    max-height: 100%;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     overflow: hidden;
     grid-template-columns: none;
     grid-template-rows: none;
-    padding: 4px 4px 2px;
-    column-gap: 0;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-center {
-    flex: 1;
     min-height: 0;
-    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     position: relative;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .board-center > #game-canvas {
+    max-width: 100%;
+    max-height: 100%;
   }
 
   /* Compact: in-flow under board, above rack — never overlaps controls. */
@@ -3915,7 +3997,7 @@ body.menu-visible .game-over-splash {
 
   body:not(.menu-visible):not(.game-exited) .board-status-bar,
   body:not(.menu-visible):not(.game-exited) #panel-message-row {
-    --qwerty-status-h: 3.5em; /* 3 lines @ mobile font — fixed, no board jump */
+    --qwerty-status-h: 2.8em; /* tighter on phones so the board can breathe */
     position: relative;
     flex: 0 0 var(--qwerty-status-h);
     flex-grow: 0;
@@ -4085,8 +4167,9 @@ body.menu-visible .game-over-splash {
       "mobbar"
       "submit"
       "ctrl";
-    gap: 4px;
-    padding: 4px 6px;
+    gap: 3px;
+    padding: 3px 6px 4px;
+    flex: 0 0 auto;
     flex-shrink: 0;
     position: relative;
     z-index: 6;

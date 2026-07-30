@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '350';
+  var QWERTY_BUILD = '351';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -495,6 +495,9 @@ const ROWS = 15;
 const RACK_SIZE = 8;
 const MAX_CELL_SIZE = 100;
 const MIN_CELL_SIZE = 16;
+/* Phones: keep tiles readable but leave room for side profiles + rack + controls. */
+const COMPACT_MAX_CELL_SIZE = 28;
+const COMPACT_SIDE_W = 52;
 const LAYOUT_GAP = 8;
 const STAR_BONUS = 50;
 const LINK_BONUS = 75;
@@ -1071,18 +1074,25 @@ class Game {
     if (headerEl && headerEl.offsetHeight > 10) {
       reserved += headerEl.offsetHeight;
     } else {
-      reserved += 56;
+      reserved += 48;
+    }
+    /* Human rack sits under the board (outside the player panel). */
+    var humanRack = document.querySelector('.board-human-rack');
+    if (humanRack && humanRack.offsetHeight > 10) {
+      reserved += humanRack.offsetHeight;
+    } else {
+      reserved += 58;
     }
     var panel = document.getElementById('player-panel');
     if (panel && panel.offsetHeight > 20) {
-      /* Full panel (scores + rack + buttons) — must stay clear of the last board row. */
+      /* Scores + submit + control buttons — must stay clear of the last board row. */
       reserved += panel.offsetHeight;
     } else {
-      reserved += 300;
+      reserved += 260;
     }
     /* In-flow status strip under the board + gap so the last row is never covered. */
-    reserved += 40;
-    reserved += 14;
+    reserved += 36;
+    reserved += 12;
     this._compactChromeReserve = reserved;
     return this._compactChromeReserve;
   }
@@ -1095,11 +1105,12 @@ class Game {
       var wrapPadH = wrapStyle
         ? (parseFloat(wrapStyle.paddingLeft) || 0) + (parseFloat(wrapStyle.paddingRight) || 0)
         : 0;
-      /* Compact gutters are hidden — use full wrap width for the grid. */
-      var byWidth = Math.floor(Math.max(120, wrapW - wrapPadH) / COLS) * ROWS;
+      var compactInsets = this.getLayoutInsets();
+      /* Side profiles reclaim a slim column each — size the grid from the remaining width. */
+      var byWidth = Math.floor(Math.max(120, wrapW - wrapPadH - compactInsets.gutterW) / COLS) * ROWS;
       /*
-       * Fit the full 15×15 grid above the player panel. Width can fill the screen,
-       * but height must win whenever the board would cover the last row.
+       * Fit the full 15×15 grid above rack + player panel. Height must win whenever
+       * a full-width board would push profiles/controls off-screen.
        */
       var viewportH = window.innerHeight || document.documentElement.clientHeight || 600;
       var reserved = document.body.classList.contains('menu-visible')
@@ -1201,7 +1212,8 @@ class Game {
 
   getLayoutInsets() {
     if (this.isCompactLayout()) {
-      return { gutterW: 0, sidebarW: 0, edgePad: 16 };
+      var gap = 4;
+      return { gutterW: COMPACT_SIDE_W * 2 + gap * 2, sidebarW: 0, edgePad: 8 };
     }
     /* Match .board-wrap gutters + gaps (desktop trio). */
     var sideW = 56;
@@ -1433,11 +1445,18 @@ class Game {
       this._compactChromeReserve = null;
     }
 
+    /* One-shot: rebalance phone layout — side profiles visible + shorter board. */
+    if (!this._mobileBalance351) {
+      this._mobileBalance351 = true;
+      this._compactLayoutLock = null;
+      this._compactChromeReserve = null;
+    }
+
     var nextCellSize;
     if (compact) {
       /*
-       * Mobile: size to width, then hard-cap so the full grid sits above the
-       * player panel (last row must never be covered).
+       * Mobile: size to width (minus side profiles), then hard-cap so the grid,
+       * rack, and controls all fit in the viewport without scrolling away profiles.
        */
       var lockW = Math.round(centerW);
       var orient = (window.innerWidth || 0) >= (window.innerHeight || 0) ? 'l' : 'p';
@@ -1455,11 +1474,14 @@ class Game {
         var cellFromH = canvasBudget / ROWS;
         nextCellSize = Math.max(
           MIN_CELL_SIZE,
-          Math.floor(Math.min(cellFromW, cellFromH, MAX_CELL_SIZE))
+          Math.floor(Math.min(cellFromW, cellFromH, COMPACT_MAX_CELL_SIZE))
         );
         if (boardWrap) {
           var maxCenterW = Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW);
-          nextCellSize = Math.max(MIN_CELL_SIZE, Math.min(nextCellSize, Math.floor(maxCenterW / COLS)));
+          nextCellSize = Math.max(
+            MIN_CELL_SIZE,
+            Math.min(nextCellSize, Math.floor(maxCenterW / COLS), COMPACT_MAX_CELL_SIZE)
+          );
         }
         this._compactLayoutLock = { w: lockW, orient: orient, cellSize: nextCellSize };
         this._compactChromeReserve = null; /* refresh chrome estimate on real width change */
