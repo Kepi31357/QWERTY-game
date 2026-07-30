@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '348';
+  var QWERTY_BUILD = '349';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -1383,7 +1383,7 @@ class Game {
       centerW = Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW);
     }
     if (!compact && boardWrap) {
-      /* Desktop: prefer remaining width between equal fixed gutters. */
+      /* Desktop: size from wrap minus min gutter reserve; leftover navy fills the profiles. */
       centerW = Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW);
     }
     if (centerW < 100) {
@@ -1461,7 +1461,7 @@ class Game {
       this._compactLayoutLock = null;
       /*
        * Fill the dark-blue wrap: cell size = min(available width, available height).
-       * Fixed-width gutters (CSS) so leftover space goes to the tile grid, not empty chrome.
+       * Gutters grow into leftover navy beside the canvas (profiles), not empty board chrome.
        */
       var canvasBudgetDesk = this.getCanvasHeightBudget(innerWrapH, wrapPadV, this.cellSize);
       var cellFromW = centerW / COLS;

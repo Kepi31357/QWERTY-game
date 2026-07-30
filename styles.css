@@ -2540,6 +2540,7 @@ body.menu-visible .game-over-splash {
   align-self: stretch;
   position: relative;
   z-index: 2;
+  overflow: visible;
 }
 
 .board-gutter-left {
@@ -2600,13 +2601,17 @@ body.menu-visible .game-over-splash {
     padding: 2px 4px;
   }
 
+  /*
+   * Profiles reclaim leftover navy beside the canvas (original layout).
+   * Board size stays JS-owned; center hugs the grid so gutters grow, not empty chrome.
+   */
   .board-gutter,
   .board-gutter-left,
   .board-gutter-right {
-    flex: 0 0 var(--board-side-w);
-    width: var(--board-side-w);
+    flex: 1 1 0;
+    width: auto;
     min-width: var(--board-side-w);
-    max-width: var(--board-side-w);
+    max-width: none;
     align-self: stretch;
     align-items: center;
   }
@@ -2620,7 +2625,7 @@ body.menu-visible .game-over-splash {
   }
 
   .board-center {
-    flex: 1 1 auto;
+    flex: 0 1 auto;
     width: auto;
     min-width: 0;
     align-self: stretch;
