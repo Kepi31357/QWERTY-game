@@ -3675,14 +3675,14 @@ body.menu-visible .game-over-splash {
    * so profiles stay visible and the grid no longer eats the whole viewport.
    */
   body:not(.menu-visible):not(.game-exited) .board-wrap {
-    --board-side-w: 44px;
+    --board-side-w: 30px;
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
-    gap: 2px;
-    padding: 2px 1px;
-    column-gap: 2px;
+    gap: 1px;
+    padding: 1px 0;
+    column-gap: 1px;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-gutter-left,
@@ -3710,7 +3710,7 @@ body.menu-visible .game-over-splash {
     flex: 1 1 auto;
     width: auto;
     min-width: 0;
-    max-width: calc(100% - (var(--board-side-w) * 2) - 4px);
+    max-width: calc(100% - (var(--board-side-w) * 2) - 2px);
   }
 
   body:not(.menu-visible):not(.game-exited) .board-gutter-right {
@@ -3724,7 +3724,7 @@ body.menu-visible .game-over-splash {
     align-items: center;
     width: 100%;
     max-width: 100%;
-    gap: 3px;
+    gap: 2px;
     transform: none !important;
   }
 
@@ -3732,19 +3732,24 @@ body.menu-visible .game-over-splash {
     display: none;
   }
 
+  body:not(.menu-visible):not(.game-exited) .board-avatar-slot {
+    gap: 2px;
+  }
+
   body:not(.menu-visible):not(.game-exited) .board-avatar-slot .avatar {
-    width: 40px;
-    height: 40px;
+    width: 28px;
+    height: 28px;
     border-width: 2px;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-gutter-name {
-    font-size: 0.55rem;
-    letter-spacing: 0.02em;
+    font-size: 0.42rem;
+    letter-spacing: 0.01em;
+    max-width: 100%;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-gutter-score-value {
-    font-size: 0.95rem;
+    font-size: 0.78rem;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-gutter-score .score-unit {
@@ -3752,10 +3757,13 @@ body.menu-visible .game-over-splash {
   }
 
   body:not(.menu-visible):not(.game-exited) .board-gutter-stack .turn-ribbon {
-    height: 16px;
-    line-height: 16px;
-    font-size: 0.5rem;
-    padding: 0 3px;
+    height: 12px;
+    line-height: 12px;
+    font-size: 0.42rem;
+    padding: 0 2px;
+    max-width: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /*

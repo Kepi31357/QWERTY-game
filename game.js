@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '352';
+  var QWERTY_BUILD = '353';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -495,9 +495,9 @@ const ROWS = 15;
 const RACK_SIZE = 8;
 const MAX_CELL_SIZE = 100;
 const MIN_CELL_SIZE = 16;
-/* Phones: larger readable tiles while keeping slim side profiles + rack + controls. */
-const COMPACT_MAX_CELL_SIZE = 36;
-const COMPACT_SIDE_W = 44;
+/* Phones: prioritize tile size; keep tiny side profiles visible beside the grid. */
+const COMPACT_MAX_CELL_SIZE = 40;
+const COMPACT_SIDE_W = 30;
 const LAYOUT_GAP = 8;
 const STAR_BONUS = 50;
 const LINK_BONUS = 75;
@@ -1458,6 +1458,13 @@ class Game {
     /* One-shot: grow phone board out of the small center-width feedback lock. */
     if (!this._mobileBoardGrow352) {
       this._mobileBoardGrow352 = true;
+      this._compactLayoutLock = null;
+      this._compactChromeReserve = null;
+    }
+
+    /* One-shot: shrink phone profile columns so the board can use more width. */
+    if (!this._mobilePlayability353) {
+      this._mobilePlayability353 = true;
       this._compactLayoutLock = null;
       this._compactChromeReserve = null;
     }
