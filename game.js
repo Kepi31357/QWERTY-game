@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '349';
+  var QWERTY_BUILD = '350';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -865,6 +865,13 @@ class Game {
       chatSelfAvatar: document.getElementById('chat-self-avatar'),
       chatOpponentAvatar: document.getElementById('chat-opponent-avatar'),
       avatarPicker: document.getElementById('avatar-picker'),
+      avatarPickerOverlay: document.getElementById('avatar-picker-overlay'),
+      avatarChooserCurrent: document.getElementById('avatar-chooser-current'),
+      avatarChooserName: document.getElementById('avatar-chooser-name'),
+      btnOpenAvatarPicker: document.getElementById('btn-open-avatar-picker'),
+      btnAvatarPickerClose: document.getElementById('btn-avatar-picker-close'),
+      btnAvatarPickerCancel: document.getElementById('btn-avatar-picker-cancel'),
+      btnAvatarPickerSelect: document.getElementById('btn-avatar-picker-select'),
       chatOpponentName: document.getElementById('chat-opponent-name'),
       playAgainOverlay: document.getElementById('play-again-overlay'),
       playAgainTitle: document.getElementById('play-again-title'),
@@ -1966,11 +1973,69 @@ class Game {
     this.applyPlayerAvatars();
   }
 
+  refreshAvatarChooserPreview() {
+    if (typeof QWERTYAvatars === 'undefined') return;
+    var id = getSelectedAvatarId();
+    if (this.ui.avatarChooserCurrent) {
+      QWERTYAvatars.paint(this.ui.avatarChooserCurrent, id);
+      this.ui.avatarChooserCurrent.setAttribute(
+        'aria-label',
+        (QWERTYAvatars.getLabel ? QWERTYAvatars.getLabel(id) : id) + ' avatar'
+      );
+    }
+    if (this.ui.avatarChooserName) {
+      this.ui.avatarChooserName.textContent = QWERTYAvatars.getLabel
+        ? QWERTYAvatars.getLabel(id)
+        : id;
+    }
+  }
+
+  setAvatarPickerDraft(id) {
+    var picker = this.ui.avatarPicker;
+    if (!picker || typeof QWERTYAvatars === 'undefined' || !QWERTYAvatars.isValidId(id)) return;
+    this._avatarPickerDraftId = id;
+    var options = picker.querySelectorAll('.avatar-picker-option');
+    for (var i = 0; i < options.length; i++) {
+      var on = options[i].getAttribute('data-avatar-id') === id;
+      options[i].classList.toggle('selected', on);
+      options[i].setAttribute('aria-selected', on ? 'true' : 'false');
+    }
+  }
+
+  openAvatarPicker() {
+    var overlay = this.ui.avatarPickerOverlay;
+    if (!overlay || typeof QWERTYAvatars === 'undefined') return;
+    this._avatarPickerDraftId = getSelectedAvatarId();
+    this.setAvatarPickerDraft(this._avatarPickerDraftId);
+    overlay.hidden = false;
+    overlay.setAttribute('aria-hidden', 'false');
+    var selectedBtn = this.ui.avatarPicker &&
+      this.ui.avatarPicker.querySelector('.avatar-picker-option.selected');
+    if (selectedBtn && selectedBtn.scrollIntoView) {
+      selectedBtn.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    }
+    if (this.ui.btnAvatarPickerSelect) this.ui.btnAvatarPickerSelect.focus();
+  }
+
+  closeAvatarPicker(confirm) {
+    var overlay = this.ui.avatarPickerOverlay;
+    if (!overlay) return;
+    if (confirm && typeof QWERTYAvatars !== 'undefined' && this._avatarPickerDraftId) {
+      QWERTYAvatars.saveStoredAvatarId(this._avatarPickerDraftId);
+      this.refreshAvatarChooserPreview();
+      this.applyPlayerAvatars();
+    }
+    overlay.hidden = true;
+    overlay.setAttribute('aria-hidden', 'true');
+    if (this.ui.btnOpenAvatarPicker) this.ui.btnOpenAvatarPicker.focus();
+  }
+
   setupAvatarPicker() {
     var picker = this.ui.avatarPicker;
     if (!picker || typeof QWERTYAvatars === 'undefined') return;
     var self = this;
     var selected = getSelectedAvatarId();
+    this._avatarPickerDraftId = selected;
     picker.innerHTML = '';
     QWERTYAvatars.listSelectable().forEach(function (entry) {
       var btn = document.createElement('button');
@@ -1987,16 +2052,55 @@ class Game {
       if (nameEl) nameEl.textContent = entry.label;
       QWERTYAvatars.paint(btn, entry.id);
       btn.addEventListener('click', function () {
-        QWERTYAvatars.saveStoredAvatarId(entry.id);
-        var options = picker.querySelectorAll('.avatar-picker-option');
-        for (var i = 0; i < options.length; i++) {
-          var on = options[i].getAttribute('data-avatar-id') === entry.id;
-          options[i].classList.toggle('selected', on);
-          options[i].setAttribute('aria-selected', on ? 'true' : 'false');
-        }
-        self.applyPlayerAvatars();
+        self.setAvatarPickerDraft(entry.id);
       });
       picker.appendChild(btn);
+    });
+
+    this.refreshAvatarChooserPreview();
+
+    if (this.ui.btnOpenAvatarPicker) {
+      this.ui.btnOpenAvatarPicker.addEventListener('click', function () {
+        self.openAvatarPicker();
+      });
+    }
+    if (this.ui.avatarChooserCurrent) {
+      this.ui.avatarChooserCurrent.style.cursor = 'pointer';
+      this.ui.avatarChooserCurrent.addEventListener('click', function () {
+        self.openAvatarPicker();
+      });
+    }
+    if (this.ui.btnAvatarPickerClose) {
+      this.ui.btnAvatarPickerClose.addEventListener('click', function () {
+        self.closeAvatarPicker(false);
+      });
+    }
+    if (this.ui.btnAvatarPickerCancel) {
+      this.ui.btnAvatarPickerCancel.addEventListener('click', function () {
+        self.closeAvatarPicker(false);
+      });
+    }
+    if (this.ui.btnAvatarPickerSelect) {
+      this.ui.btnAvatarPickerSelect.addEventListener('click', function () {
+        self.closeAvatarPicker(true);
+      });
+    }
+    if (this.ui.avatarPickerOverlay) {
+      this.ui.avatarPickerOverlay.addEventListener('click', function (ev) {
+        if (ev.target === self.ui.avatarPickerOverlay) self.closeAvatarPicker(false);
+      });
+    }
+    document.addEventListener('keydown', function (ev) {
+      if (!self.ui.avatarPickerOverlay || self.ui.avatarPickerOverlay.hidden) return;
+      if (ev.key === 'Escape') {
+        ev.preventDefault();
+        self.closeAvatarPicker(false);
+      } else if (ev.key === 'Enter' && ev.target &&
+        ev.target.classList &&
+        ev.target.classList.contains('avatar-picker-option')) {
+        ev.preventDefault();
+        self.closeAvatarPicker(true);
+      }
     });
   }
 

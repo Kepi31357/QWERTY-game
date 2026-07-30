@@ -240,62 +240,217 @@ body.game-exited .app {
   margin-bottom: 6px;
 }
 
+/* Compact chooser on the main menu */
+.avatar-chooser {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 2px solid rgba(92, 45, 145, 0.16);
+  background: rgba(255, 255, 255, 0.72);
+  text-align: left;
+}
+
+.avatar-chooser .avatar {
+  width: 64px;
+  height: 64px;
+  flex: 0 0 auto;
+  border-width: 3px;
+}
+
+.avatar-chooser-meta {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.avatar-chooser-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--pogo-purple-dark, #3d1d63);
+  line-height: 1.15;
+}
+
+.avatar-chooser-hint {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--pogo-purple, #5c2d91);
+  opacity: 0.75;
+  line-height: 1.25;
+}
+
+.avatar-chooser-open {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding: 10px 14px !important;
+  font-size: 0.85rem !important;
+}
+
+/* Full-screen avatar picker modal */
+.avatar-picker-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2700;
+  display: flex;
+  align-items: safe center;
+  justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: rgba(28, 16, 52, 0.78);
+  backdrop-filter: blur(8px);
+}
+
+.avatar-picker-overlay[hidden] {
+  display: none !important;
+}
+
+.avatar-picker-dialog {
+  width: min(100%, 720px);
+  max-height: min(92dvh, 860px);
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(165deg, #fff8e7 0%, #f3e8ff 100%);
+  border-radius: 22px;
+  border: 3px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 24px 56px rgba(26, 39, 68, 0.5);
+  padding: 18px 20px 16px;
+  color: var(--text-dark);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.avatar-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.avatar-picker-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--pogo-purple, #5c2d91);
+  letter-spacing: 0.01em;
+}
+
+.avatar-picker-close {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(92, 45, 145, 0.1);
+  color: var(--pogo-purple-dark, #3d1d63);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.avatar-picker-close:hover,
+.avatar-picker-close:focus-visible {
+  background: rgba(92, 45, 145, 0.18);
+  outline: none;
+}
+
+.avatar-picker-subtitle {
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+  color: var(--pogo-purple, #5c2d91);
+  opacity: 0.8;
+  text-align: left;
+}
+
 .avatar-picker {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
-  gap: 6px;
-  margin: 0 0 8px;
-  padding: 6px;
-  max-height: 118px;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 12px;
+  flex: 1 1 auto;
+  min-height: 280px;
+  max-height: none;
   overflow-y: auto;
-  border-radius: 10px;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 16px;
   border: 2px solid rgba(92, 45, 145, 0.16);
-  background: rgba(255, 248, 231, 0.55);
+  background: rgba(255, 255, 255, 0.55);
+  scrollbar-gutter: stable;
 }
 
 .avatar-picker-option {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  padding: 4px 2px;
+  gap: 6px;
+  padding: 10px 6px 8px;
   border: 2px solid transparent;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.65);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.78);
   cursor: pointer;
   color: var(--pogo-purple-dark, #3d1d63);
   font: inherit;
-  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 .avatar-picker-option:hover,
 .avatar-picker-option:focus-visible {
   border-color: rgba(92, 45, 145, 0.45);
   outline: none;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(61, 29, 99, 0.12);
 }
 
 .avatar-picker-option.selected {
   border-color: var(--pogo-yellow, #ffd23f);
-  box-shadow: 0 0 0 2px rgba(92, 45, 145, 0.25);
+  box-shadow: 0 0 0 3px rgba(92, 45, 145, 0.28);
   background: #fff;
 }
 
 .avatar-picker-option .avatar {
-  width: 40px;
-  height: 40px;
-  border-width: 2px;
+  width: 72px;
+  height: 72px;
+  border-width: 3px;
+}
+
+.avatar-picker-option .avatar .avatar-art,
+.avatar-chooser .avatar .avatar-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .avatar-picker-name {
-  font-size: 0.58rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.15;
   text-align: center;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.avatar-picker-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+  flex: 0 0 auto;
+}
+
+.avatar-picker-footer .btn {
+  min-width: 110px;
+  padding: 11px 18px;
 }
 
 .online-menu-actions {
@@ -598,15 +753,38 @@ body.game-exited .app {
     margin-bottom: 4px;
   }
 
+  .avatar-chooser {
+    gap: 10px;
+    padding: 8px 10px;
+  }
+
+  .avatar-chooser .avatar {
+    width: 56px;
+    height: 56px;
+  }
+
+  .avatar-chooser-open {
+    padding: 8px 12px !important;
+    font-size: 0.8rem !important;
+  }
+
+  .avatar-picker-dialog {
+    width: min(100%, 100%);
+    max-height: min(94dvh, 860px);
+    padding: 14px 14px 12px;
+    border-radius: 18px;
+  }
+
   .avatar-picker {
-    max-height: 96px;
-    gap: 4px;
-    padding: 4px;
+    grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+    gap: 10px;
+    padding: 10px;
+    min-height: 220px;
   }
 
   .avatar-picker-option .avatar {
-    width: 34px;
-    height: 34px;
+    width: 64px;
+    height: 64px;
   }
 
   .difficulty-hints {
@@ -647,8 +825,23 @@ body.game-exited .app {
     overflow: hidden;
   }
 
+  .avatar-picker-title {
+    font-size: 1.15rem;
+  }
+
   .avatar-picker {
-    max-height: 78px;
+    grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+    gap: 8px;
+    min-height: 180px;
+  }
+
+  .avatar-picker-option {
+    padding: 8px 4px 6px;
+  }
+
+  .avatar-picker-option .avatar {
+    width: 56px;
+    height: 56px;
   }
 
   .online-nickname-input,
@@ -4057,9 +4250,27 @@ body.menu-visible .game-over-splash {
     height: 56px;
   }
 
+  .avatar-picker-overlay {
+    padding: 10px;
+    align-items: flex-end;
+  }
+
+  .avatar-picker-dialog {
+    width: 100%;
+    max-height: min(88dvh, 760px);
+    border-radius: 18px 18px 12px 12px;
+  }
+
   .avatar-picker {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    max-height: 140px;
+    grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+  }
+
+  .avatar-chooser {
+    flex-wrap: wrap;
+  }
+
+  .avatar-chooser-open {
+    width: 100%;
   }
 
   .board-gutter-score {

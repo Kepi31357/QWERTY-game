@@ -100,9 +100,15 @@ async function main() {
   if (await nick.count()) {
     await nick.fill('Alex');
   }
-  var avatarOpt = page.locator('.avatar-picker-option').nth(2);
-  if (await avatarOpt.count()) {
-    await avatarOpt.click();
+  var openAvatar = page.locator('#btn-open-avatar-picker');
+  if (await openAvatar.count()) {
+    await openAvatar.click();
+    var avatarOpt = page.locator('.avatar-picker-option').nth(2);
+    if (await avatarOpt.count()) {
+      await avatarOpt.click();
+      var selectAvatar = page.locator('#btn-avatar-picker-select');
+      if (await selectAvatar.count()) await selectAvatar.click();
+    }
   }
 
   await page.click('#btn-start-game');
