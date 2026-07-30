@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '344';
+  var QWERTY_BUILD = '345';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -493,8 +493,8 @@
 const COLS = 15;
 const ROWS = 15;
 const RACK_SIZE = 8;
-const MAX_CELL_SIZE = 70;
-const MIN_CELL_SIZE = 14;
+const MAX_CELL_SIZE = 96;
+const MIN_CELL_SIZE = 16;
 const LAYOUT_GAP = 8;
 const STAR_BONUS = 50;
 const LINK_BONUS = 75;
@@ -619,8 +619,8 @@ function applyBoardThemeCss() {
 applyBoardThemeCss();
 
 function tileLetterFont(size) {
-  /* Larger fraction of the tile face so letters read clearly at a glance. */
-  return '700 ' + Math.round(size * 0.86) + 'px system-ui, "Segoe UI", Roboto, sans-serif';
+  /* Fill most of the tile face — aim ~1.5–1.8× older letter sizes at typical cells. */
+  return '800 ' + Math.round(size * 0.94) + 'px system-ui, "Segoe UI", Roboto, sans-serif';
 }
 
 function drawStarShape(ctx, cx, cy, outerR, innerR, fill) {
@@ -971,8 +971,8 @@ class Game {
       throw new Error('Canvas 2D is not supported in this browser');
     }
 
-    this.cellSize = 52;
-    this.tileSize = 50;
+    this.cellSize = 64;
+    this.tileSize = 60;
     this.rackTileGap = 6;
     this.opponentRackTileGap = 6;
     this.drag = null;
@@ -1014,8 +1014,8 @@ class Game {
   getBoardVerticalChrome(wrapPadV, cellSizeGuess) {
     var padV = wrapPadV || 0;
     var cs = cellSizeGuess != null ? cellSizeGuess : (this.cellSize || MIN_CELL_SIZE + 10);
-    var ts = Math.max(MIN_CELL_SIZE - 2, cs - 2);
-    var rackFallback = ts + 16;
+    var ts = Math.max(MIN_CELL_SIZE - 2, cs - Math.max(2, Math.round(cs * 0.035)));
+    var rackFallback = ts + 22;
     var oppSlot = document.querySelector('.board-opponent-rack.board-grid-rack');
     var oppH = 0;
     if (oppSlot && oppSlot.offsetHeight > 0) {
@@ -1190,9 +1190,9 @@ class Game {
     if (this.isCompactLayout()) {
       return { gutterW: 0, sidebarW: 0, edgePad: 16 };
     }
-    /* Match .board-wrap: 90px gutters + 16px gap (desktop trio). */
-    var sideW = 90;
-    var gap = 16;
+    /* Match .board-wrap gutters + gaps (desktop trio). */
+    var sideW = 64;
+    var gap = 8;
     var wrap = this.getBoardWrapEl();
     if (wrap) {
       var cs = window.getComputedStyle(wrap);
@@ -1392,6 +1392,13 @@ class Game {
       (parseFloat(wrapStyle.paddingTop) || 0) + (parseFloat(wrapStyle.paddingBottom) || 0);
     const innerWrapH = boardWrap ? boardWrap.clientHeight - wrapPadV : (boardCenter || this.canvas.parentElement).clientHeight;
 
+    /* One-shot: drop stale compact locks so the larger readability cell cap applies. */
+    if (!this._boardReadability345) {
+      this._boardReadability345 = true;
+      this._compactLayoutLock = null;
+      this._compactChromeReserve = null;
+    }
+
     /* One-shot: drop stale compact locks that overflowed under the player panel. */
     if (!this._boardFitAbovePanel304) {
       this._boardFitAbovePanel304 = true;
@@ -1463,8 +1470,8 @@ class Game {
 
     this.cellSize = nextCellSize;
 
-    /* Same on-screen tile size for board and rack (~4–5% cell gap keeps tiles readable, not cramped). */
-    var tileGap = Math.max(2, Math.round(this.cellSize * 0.05));
+    /* Tile face fills most of the cell; ~3.5% gap keeps rows/cols readable. */
+    var tileGap = Math.max(2, Math.round(this.cellSize * 0.035));
     this.tileSize = Math.max(MIN_CELL_SIZE - 2, this.cellSize - tileGap);
 
     const boardW = COLS * this.cellSize;
@@ -1493,20 +1500,20 @@ class Game {
     this.canvas.style.height = boardH + 'px';
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    const rackW = Math.min(centerW, RACK_SIZE * (this.tileSize + 6) + 20);
+    const rackW = Math.min(centerW, RACK_SIZE * (this.tileSize + 8) + 24);
     this.rackCanvas.width = rackW * dpr;
-    this.rackCanvas.height = (this.tileSize + 16) * dpr;
+    this.rackCanvas.height = (this.tileSize + 22) * dpr;
     this.rackCanvas.style.width = rackW + 'px';
-    this.rackCanvas.style.height = (this.tileSize + 16) + 'px';
+    this.rackCanvas.style.height = (this.tileSize + 22) + 'px';
     this.rackCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    this.rackTileGap = Math.max(4, (rackW - RACK_SIZE * this.tileSize) / (RACK_SIZE + 1));
+    this.rackTileGap = Math.max(5, (rackW - RACK_SIZE * this.tileSize) / (RACK_SIZE + 1));
 
     if (this.opponentRackCanvas && this.opponentRackCtx) {
       this.opponentRackCanvas.width = rackW * dpr;
-      this.opponentRackCanvas.height = (this.tileSize + 16) * dpr;
+      this.opponentRackCanvas.height = (this.tileSize + 22) * dpr;
       this.opponentRackCanvas.style.width = rackW + 'px';
-      this.opponentRackCanvas.style.height = (this.tileSize + 16) + 'px';
+      this.opponentRackCanvas.style.height = (this.tileSize + 22) + 'px';
       this.opponentRackCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
       this.opponentRackTileGap = this.rackTileGap;
     }
