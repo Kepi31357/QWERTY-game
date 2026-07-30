@@ -49,8 +49,9 @@ assert(gameSrc.indexOf('this.cellSize - 2') >= 0, 'board tileSize matches rack (
 assert(/#game-canvas\s*\{[^}]*max-height:\s*none/m.test(cssSrc), 'board canvas not CSS height-shrunk');
 assert(/MAX_CELL_SIZE = (9[0-9]|1[0-9]{2})/.test(gameSrc), 'board max cell size enlarged for readability');
 assert(gameSrc.indexOf('size * 0.78') >= 0, 'tile letter font restored to original scale');
-assert(gameSrc.indexOf('_boardScale347') >= 0 || gameSrc.indexOf('_boardReadability345') >= 0, 'clears compact lock for larger board');
-assert(cssSrc.indexOf('max-width: min(100%, 1840px)') >= 0 || cssSrc.indexOf('1840px') >= 0, 'wider app shell for larger board');
+assert(gameSrc.indexOf('_boardFillWrap348') >= 0 || gameSrc.indexOf('_boardScale347') >= 0, 'clears compact lock for larger board');
+assert(gameSrc.indexOf('Board-wrap does not contain the racks') >= 0 || gameSrc.indexOf('never subtract their heights from wrapInner') >= 0, 'wrap height budget excludes rack chrome');
+assert(cssSrc.indexOf('flex: 0 0 var(--board-side-w)') >= 0, 'fixed gutters so board fills wrap width');
 assert(gameSrc.indexOf('_boardFitAbovePanel304') >= 0, 'clears stale compact board lock');
 assert(gameSrc.indexOf('must stay clear of the last board row') >= 0, 'reserves full player panel height');
 assert(cssSrc.indexOf('flex: 1 1 auto') >= 0 && cssSrc.indexOf('game-board-column .board-wrap') >= 0, 'board-wrap fills column (original layout)');

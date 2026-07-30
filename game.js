@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '347';
+  var QWERTY_BUILD = '348';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -1088,6 +1088,7 @@ class Game {
       var wrapPadH = wrapStyle
         ? (parseFloat(wrapStyle.paddingLeft) || 0) + (parseFloat(wrapStyle.paddingRight) || 0)
         : 0;
+      /* Compact gutters are hidden — use full wrap width for the grid. */
       var byWidth = Math.floor(Math.max(120, wrapW - wrapPadH) / COLS) * ROWS;
       /*
        * Fit the full 15×15 grid above the player panel. Width can fill the screen,
@@ -1104,16 +1105,21 @@ class Game {
       }
       return Math.max(ROWS * MIN_CELL_SIZE, budget);
     }
-    var canvasBudget = this.measureBoardBudget();
-    var chrome = this.getBoardVerticalChrome(wrapPadV, cellSizeGuess);
-    var boardRow = document.querySelector('.game-board-row');
-    if (boardRow && boardRow.clientHeight > 80) {
-      canvasBudget = Math.min(canvasBudget, boardRow.clientHeight - chrome.total);
+    /*
+     * Desktop: the canvas lives inside .board-wrap only. Racks/header are siblings
+     * outside the wrap — never subtract their heights from wrapInner (that was
+     * leaving empty dark-blue gutters while the tile grid stayed small).
+     */
+    var wrap = this.getBoardWrapEl();
+    if (wrap && wrap.clientHeight > 80) {
+      var padV = wrapPadV || 0;
+      if (!padV) {
+        var ws = window.getComputedStyle(wrap);
+        padV = (parseFloat(ws.paddingTop) || 0) + (parseFloat(ws.paddingBottom) || 0);
+      }
+      return Math.max(ROWS * MIN_CELL_SIZE, wrap.clientHeight - padV);
     }
-    if (innerWrapH > 80) {
-      canvasBudget = Math.min(canvasBudget, innerWrapH - chrome.oppRackH);
-    }
-    return Math.max(ROWS * MIN_CELL_SIZE, canvasBudget);
+    return Math.max(ROWS * MIN_CELL_SIZE, this.measureBoardBudget());
   }
 
   measureBoardBudget() {
@@ -1392,6 +1398,13 @@ class Game {
       (parseFloat(wrapStyle.paddingTop) || 0) + (parseFloat(wrapStyle.paddingBottom) || 0);
     const innerWrapH = boardWrap ? boardWrap.clientHeight - wrapPadV : (boardCenter || this.canvas.parentElement).clientHeight;
 
+    /* One-shot: fill wrap with the tile grid (stop gutters eating leftover width). */
+    if (!this._boardFillWrap348) {
+      this._boardFillWrap348 = true;
+      this._compactLayoutLock = null;
+      this._compactChromeReserve = null;
+    }
+
     /* One-shot: drop stale compact locks when widening the play shell for larger tiles. */
     if (!this._boardScale347) {
       this._boardScale347 = true;
@@ -1446,33 +1459,24 @@ class Game {
       }
     } else {
       this._compactLayoutLock = null;
+      /*
+       * Fill the dark-blue wrap: cell size = min(available width, available height).
+       * Fixed-width gutters (CSS) so leftover space goes to the tile grid, not empty chrome.
+       */
       var canvasBudgetDesk = this.getCanvasHeightBudget(innerWrapH, wrapPadV, this.cellSize);
-      const cellFromW = centerW / COLS;
-      const cellFromH = canvasBudgetDesk / ROWS;
+      var cellFromW = centerW / COLS;
+      var cellFromH = canvasBudgetDesk / ROWS;
       nextCellSize = Math.max(
         MIN_CELL_SIZE,
-        Math.floor(Math.min(cellFromW, MAX_CELL_SIZE))
+        Math.floor(Math.min(cellFromW, cellFromH, MAX_CELL_SIZE))
       );
-      if (cellFromH >= MIN_CELL_SIZE && nextCellSize > cellFromH + 1) {
-        nextCellSize = Math.max(MIN_CELL_SIZE, Math.floor(cellFromH));
-      }
-
       if (boardWrap) {
-        const maxCenterW = Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW);
-        const maxByWrapW = Math.floor(maxCenterW / COLS);
-        nextCellSize = Math.max(MIN_CELL_SIZE, Math.min(nextCellSize, maxByWrapW));
+        var maxCenterW = Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW);
+        nextCellSize = Math.max(
+          MIN_CELL_SIZE,
+          Math.min(nextCellSize, Math.floor(maxCenterW / COLS), MAX_CELL_SIZE)
+        );
       }
-
-      canvasBudgetDesk = this.getCanvasHeightBudget(innerWrapH, wrapPadV, nextCellSize);
-      var cellFromH2 = canvasBudgetDesk / ROWS;
-      if (cellFromH2 >= MIN_CELL_SIZE && nextCellSize > cellFromH2 + 1) {
-        nextCellSize = Math.max(MIN_CELL_SIZE, Math.floor(cellFromH2));
-      }
-      nextCellSize = Math.max(
-        MIN_CELL_SIZE,
-        Math.min(nextCellSize, Math.floor(cellFromW), MAX_CELL_SIZE)
-      );
-      /* Do not cap by .board-center clientWidth — it hugs the canvas on desktop. */
     }
 
     this.cellSize = nextCellSize;
