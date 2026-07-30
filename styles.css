@@ -2136,8 +2136,8 @@ body.qwerty-guest-view .game-table {
 
 /* Dark game container — three-column flex (Computer | Board | You) */
 .board-wrap {
-  --board-side-w: 84px;
-  --board-col-gap: 12px;
+  --board-side-w: 76px;
+  --board-col-gap: 10px;
   position: relative;
   background: linear-gradient(145deg, #1a2744 0%, #243656 100%);
   border-radius: 0;
@@ -2153,8 +2153,8 @@ body.qwerty-guest-view .game-table {
   justify-content: center;
   /* Stretch gutters to full panel height so profiles can sit in the true middle */
   align-items: stretch;
-  gap: 12px;
-  padding: 8px 12px;
+  gap: 10px;
+  padding: 6px 8px;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -2593,11 +2593,11 @@ body.menu-visible .game-over-splash {
   }
 
   .board-wrap {
-    --board-side-w: 84px;
+    --board-side-w: 76px;
     justify-content: space-between;
     align-items: stretch;
-    gap: 12px;
-    padding: 8px 14px;
+    gap: 10px;
+    padding: 6px 10px;
   }
 
   .board-gutter,

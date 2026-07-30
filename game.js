@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '343';
+  var QWERTY_BUILD = '344';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -493,7 +493,7 @@
 const COLS = 15;
 const ROWS = 15;
 const RACK_SIZE = 8;
-const MAX_CELL_SIZE = 56;
+const MAX_CELL_SIZE = 70;
 const MIN_CELL_SIZE = 14;
 const LAYOUT_GAP = 8;
 const STAR_BONUS = 50;
@@ -619,7 +619,8 @@ function applyBoardThemeCss() {
 applyBoardThemeCss();
 
 function tileLetterFont(size) {
-  return '500 ' + Math.round(size * 0.78) + 'px system-ui, "Segoe UI", Roboto, sans-serif';
+  /* Larger fraction of the tile face so letters read clearly at a glance. */
+  return '700 ' + Math.round(size * 0.86) + 'px system-ui, "Segoe UI", Roboto, sans-serif';
 }
 
 function drawStarShape(ctx, cx, cy, outerR, innerR, fill) {
@@ -970,8 +971,8 @@ class Game {
       throw new Error('Canvas 2D is not supported in this browser');
     }
 
-    this.cellSize = 42;
-    this.tileSize = 40;
+    this.cellSize = 52;
+    this.tileSize = 50;
     this.rackTileGap = 6;
     this.opponentRackTileGap = 6;
     this.drag = null;
@@ -1462,8 +1463,9 @@ class Game {
 
     this.cellSize = nextCellSize;
 
-    /* Same on-screen tile size for board and rack (1px grid gap each side). */
-    this.tileSize = Math.max(MIN_CELL_SIZE - 2, this.cellSize - 2);
+    /* Same on-screen tile size for board and rack (~4–5% cell gap keeps tiles readable, not cramped). */
+    var tileGap = Math.max(2, Math.round(this.cellSize * 0.05));
+    this.tileSize = Math.max(MIN_CELL_SIZE - 2, this.cellSize - tileGap);
 
     const boardW = COLS * this.cellSize;
     const boardH = ROWS * this.cellSize;
