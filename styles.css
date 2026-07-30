@@ -57,15 +57,15 @@ body {
 }
 
 .app {
-  max-width: 1360px;
+  max-width: min(100%, 1840px);
   width: 100%;
   height: 100dvh;
   max-height: 100dvh;
   margin: 0 auto;
-  padding: 6px 10px 8px;
+  padding: 4px 8px 6px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   overflow: hidden;
   overflow-anchor: none;
 }
@@ -931,7 +931,7 @@ body.game-exited .app {
   flex: 0 0 auto;
   background: #1a2744;
   box-shadow: none;
-  padding: 6px 8px; /* equal spacing above + below the grid */
+  padding: 4px 6px; /* equal spacing above + below the grid */
   box-sizing: border-box;
 }
 
@@ -2136,8 +2136,8 @@ body.qwerty-guest-view .game-table {
 
 /* Dark game container — three-column flex (Computer | Board | You) */
 .board-wrap {
-  --board-side-w: 64px;
-  --board-col-gap: 8px;
+  --board-side-w: 56px;
+  --board-col-gap: 6px;
   position: relative;
   background: linear-gradient(145deg, #1a2744 0%, #243656 100%);
   border-radius: 0;
@@ -2153,8 +2153,8 @@ body.qwerty-guest-view .game-table {
   justify-content: center;
   /* Stretch gutters to full panel height so profiles can sit in the true middle */
   align-items: stretch;
-  gap: 8px;
-  padding: 4px 6px;
+  gap: 6px;
+  padding: 2px 4px;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -2593,11 +2593,11 @@ body.menu-visible .game-over-splash {
   }
 
   .board-wrap {
-    --board-side-w: 64px;
+    --board-side-w: 56px;
     justify-content: space-between;
     align-items: stretch;
-    gap: 8px;
-    padding: 4px 6px;
+    gap: 6px;
+    padding: 2px 4px;
   }
 
   .board-gutter,

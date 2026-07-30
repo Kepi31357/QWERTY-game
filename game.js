@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '346';
+  var QWERTY_BUILD = '347';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -493,7 +493,7 @@
 const COLS = 15;
 const ROWS = 15;
 const RACK_SIZE = 8;
-const MAX_CELL_SIZE = 96;
+const MAX_CELL_SIZE = 100;
 const MIN_CELL_SIZE = 16;
 const LAYOUT_GAP = 8;
 const STAR_BONUS = 50;
@@ -1191,8 +1191,8 @@ class Game {
       return { gutterW: 0, sidebarW: 0, edgePad: 16 };
     }
     /* Match .board-wrap gutters + gaps (desktop trio). */
-    var sideW = 64;
-    var gap = 8;
+    var sideW = 56;
+    var gap = 6;
     var wrap = this.getBoardWrapEl();
     if (wrap) {
       var cs = window.getComputedStyle(wrap);
@@ -1201,7 +1201,7 @@ class Game {
       var g = parseFloat(cs.columnGap || cs.gap);
       if (g > 0) gap = g;
     }
-    return { gutterW: sideW * 2 + gap * 2, sidebarW: 260, edgePad: 48 };
+    return { gutterW: sideW * 2 + gap * 2, sidebarW: 360, edgePad: 24 };
   }
 
   getBoardCenterEl() {
@@ -1391,6 +1391,13 @@ class Game {
     const wrapPadV =
       (parseFloat(wrapStyle.paddingTop) || 0) + (parseFloat(wrapStyle.paddingBottom) || 0);
     const innerWrapH = boardWrap ? boardWrap.clientHeight - wrapPadV : (boardCenter || this.canvas.parentElement).clientHeight;
+
+    /* One-shot: drop stale compact locks when widening the play shell for larger tiles. */
+    if (!this._boardScale347) {
+      this._boardScale347 = true;
+      this._compactLayoutLock = null;
+      this._compactChromeReserve = null;
+    }
 
     /* One-shot: drop stale compact locks so the larger readability cell cap applies. */
     if (!this._boardReadability345) {
