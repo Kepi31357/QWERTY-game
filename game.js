@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '345';
+  var QWERTY_BUILD = '346';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -619,8 +619,8 @@ function applyBoardThemeCss() {
 applyBoardThemeCss();
 
 function tileLetterFont(size) {
-  /* Fill most of the tile face — aim ~1.5–1.8× older letter sizes at typical cells. */
-  return '800 ' + Math.round(size * 0.94) + 'px system-ui, "Segoe UI", Roboto, sans-serif';
+  /* Original letter scale — smaller glyphs inside larger tile faces. */
+  return '500 ' + Math.round(size * 0.78) + 'px system-ui, "Segoe UI", Roboto, sans-serif';
 }
 
 function drawStarShape(ctx, cx, cy, outerR, innerR, fill) {
@@ -1014,7 +1014,7 @@ class Game {
   getBoardVerticalChrome(wrapPadV, cellSizeGuess) {
     var padV = wrapPadV || 0;
     var cs = cellSizeGuess != null ? cellSizeGuess : (this.cellSize || MIN_CELL_SIZE + 10);
-    var ts = Math.max(MIN_CELL_SIZE - 2, cs - Math.max(2, Math.round(cs * 0.035)));
+    var ts = Math.max(MIN_CELL_SIZE - 2, cs - 2);
     var rackFallback = ts + 22;
     var oppSlot = document.querySelector('.board-opponent-rack.board-grid-rack');
     var oppH = 0;
@@ -1470,9 +1470,8 @@ class Game {
 
     this.cellSize = nextCellSize;
 
-    /* Tile face fills most of the cell; ~3.5% gap keeps rows/cols readable. */
-    var tileGap = Math.max(2, Math.round(this.cellSize * 0.035));
-    this.tileSize = Math.max(MIN_CELL_SIZE - 2, this.cellSize - tileGap);
+    /* Classic 1px-per-side gap so each tile face is as large as the cell allows. */
+    this.tileSize = Math.max(MIN_CELL_SIZE - 2, this.cellSize - 2);
 
     const boardW = COLS * this.cellSize;
     const boardH = ROWS * this.cellSize;

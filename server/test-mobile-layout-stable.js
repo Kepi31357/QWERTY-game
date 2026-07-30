@@ -45,10 +45,10 @@ assert(gameSrc.indexOf('getVisualViewportBottomInset') >= 0, 'keyboard inset fro
 assert(gameSrc.indexOf('startMobileChatKeyboardWatch') >= 0, 'watches keyboard animation while focused');
 assert(gameSrc.indexOf('ctx.scale(pulseScale, pulseScale)') >= 0, 'place pulse uses transform scale');
 assert(gameSrc.indexOf('_lastPlacePulseAt') >= 0, 'placement pulse throttled');
-assert(gameSrc.indexOf('cellSize * 0.035') >= 0 || gameSrc.indexOf('this.cellSize * 0.035') >= 0, 'board tile gap scales with cell size');
+assert(gameSrc.indexOf('this.cellSize - 2') >= 0, 'board tileSize matches rack (cellSize - 2)');
 assert(/#game-canvas\s*\{[^}]*max-height:\s*none/m.test(cssSrc), 'board canvas not CSS height-shrunk');
 assert(/MAX_CELL_SIZE = (9[0-9]|1[0-9]{2})/.test(gameSrc), 'board max cell size enlarged for readability');
-assert(gameSrc.indexOf('size * 0.94') >= 0, 'tile letter font uses larger face fraction');
+assert(gameSrc.indexOf('size * 0.78') >= 0, 'tile letter font restored to original scale');
 assert(gameSrc.indexOf('_boardReadability345') >= 0, 'clears compact lock for larger board');
 assert(gameSrc.indexOf('_boardFitAbovePanel304') >= 0, 'clears stale compact board lock');
 assert(gameSrc.indexOf('must stay clear of the last board row') >= 0, 'reserves full player panel height');
