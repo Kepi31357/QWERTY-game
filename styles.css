@@ -4246,8 +4246,36 @@ body.menu-visible .game-over-splash {
   }
 
   .board-avatar-slot .avatar {
-    width: 56px;
-    height: 56px;
+    width: 88px;
+    height: 88px;
+  }
+
+  .board-gutter-name {
+    font-size: 0.88rem;
+  }
+
+  .board-gutter-score-value {
+    font-size: 1.55rem;
+  }
+
+  .board-gutter-score .score-unit {
+    font-size: 0.88rem;
+  }
+
+  .board-difficulty-picker {
+    max-width: 96px;
+    gap: 6px;
+  }
+
+  .board-difficulty-btn {
+    padding: 8px 9px;
+    font-size: 0.75rem;
+  }
+
+  .board-gutter-stack .turn-ribbon {
+    height: 24px;
+    line-height: 24px;
+    font-size: 0.68rem;
   }
 
   .avatar-picker-overlay {
