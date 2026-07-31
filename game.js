@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '354';
+  var QWERTY_BUILD = '355';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -1093,6 +1093,8 @@ class Game {
     /* In-flow status strip under the board + gap so the last row is never covered. */
     reserved += 36;
     reserved += 12;
+    /* Extra cushion so the top/bottom board rows are never clipped by overflow:hidden. */
+    reserved += 28;
     this._compactChromeReserve = reserved;
     return this._compactChromeReserve;
   }
@@ -1476,6 +1478,13 @@ class Game {
       this._compactChromeReserve = null;
     }
 
+    /* One-shot: stop phone board rows from clipping inside overflow:hidden wrap. */
+    if (!this._mobileNoClip355) {
+      this._mobileNoClip355 = true;
+      this._compactLayoutLock = null;
+      this._compactChromeReserve = null;
+    }
+
     var nextCellSize;
     if (compact) {
       /*
@@ -1509,6 +1518,18 @@ class Game {
         }
         this._compactLayoutLock = { w: lockW, orient: orient, cellSize: nextCellSize };
         this._compactChromeReserve = null; /* refresh chrome estimate on real width change */
+      }
+      /*
+       * Final fit: never let the canvas taller than the dark-blue wrap (that was
+       * clipping the top/bottom rows). Prefer a slightly smaller cell over cut-off tiles.
+       */
+      if (boardWrap && boardWrap.clientHeight > 80) {
+        var wrapFitH = boardWrap.clientHeight - wrapPadV - 8;
+        var fitCell = Math.floor(wrapFitH / ROWS);
+        if (fitCell >= MIN_CELL_SIZE && nextCellSize > fitCell) {
+          nextCellSize = fitCell;
+          this._compactLayoutLock = { w: lockW, orient: orient, cellSize: nextCellSize };
+        }
       }
     } else {
       this._compactLayoutLock = null;

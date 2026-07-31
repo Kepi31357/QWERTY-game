@@ -57,6 +57,9 @@ assert(gameSrc.indexOf('_mobileBalance351') >= 0, 'clears lock for mobile profil
 assert(gameSrc.indexOf('_mobileBoardGrow352') >= 0, 'clears small-board feedback lock on phones');
 assert(gameSrc.indexOf('_mobilePlayability353') >= 0, 'clears lock after shrinking phone profiles');
 assert(gameSrc.indexOf('_mobileHideProfiles354') >= 0, 'clears lock after hiding phone side profiles');
+assert(gameSrc.indexOf('_mobileNoClip355') >= 0, 'clears lock so clipped phone board can refit');
+assert(gameSrc.indexOf('wrapFitH') >= 0 || gameSrc.indexOf('never let the canvas taller') >= 0, 'fits phone canvas inside board-wrap height');
+assert(cssSrc.indexOf('clear of the scores/timer bar') >= 0, 'chat FAB moved off the score bar');
 assert(gameSrc.indexOf('COMPACT_MAX_CELL_SIZE') >= 0, 'caps phone cell size so board fits viewport');
 assert(/COMPACT_MAX_CELL_SIZE = (4[0-9]|[5-9][0-9])/.test(gameSrc), 'phone max cell raised for full-width board');
 assert(gameSrc.indexOf('COMPACT_SIDE_W = 0') >= 0, 'phone side profile width reserve cleared');
