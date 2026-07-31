@@ -1514,6 +1514,19 @@ body.game-exited .app {
   display: none;
 }
 
+/* Desktop: util row dissolves so New Game / Sound stay in the normal control flow */
+.mobile-util-row {
+  display: contents;
+}
+
+.mobile-util-icon {
+  display: none;
+}
+
+.mobile-util-label {
+  display: inline;
+}
+
 .chat-count {
   font-weight: 700;
   color: #5c2d91;
@@ -3848,45 +3861,105 @@ body.menu-visible .game-over-splash {
     pointer-events: auto;
   }
 
-  body:not(.menu-visible):not(.game-exited) .mobile-chat-fab {
+  /*
+   * Mobile controls: rectangular actions on top, then a centered row of
+   * round New Game / Sound / Chat icons (same size, evenly spaced).
+   */
+  body:not(.menu-visible):not(.game-exited) .player-panel .panel-details-wide .controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: 6px;
+    margin-top: 0;
+    padding-right: 0;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .player-panel .panel-details-wide .controls > .btn {
+    flex: 1 1 calc(50% - 4px);
+    max-width: calc(50% - 3px);
+    padding: 10px 10px;
+    font-size: 0.74rem;
+    min-width: 0;
+    min-height: 42px;
+    touch-action: manipulation;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .mobile-util-row {
+    display: flex;
+    flex: 1 1 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    margin-top: 4px;
+    padding: 2px 0 0;
+    order: 20;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .mobile-util-btn,
+  body:not(.menu-visible):not(.game-exited) .mobile-util-row .mobile-chat-fab {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    position: fixed;
-    right: max(8px, env(safe-area-inset-right, 0px));
-    /* Bottom-right of the control stack — clear of the scores/timer bar. */
-    bottom: max(12px, calc(env(safe-area-inset-bottom, 0px) + 10px));
-    z-index: 2550;
+    position: relative;
+    flex: 0 0 48px;
     width: 48px;
     height: 48px;
-    padding: 0;
-    border: 2px solid rgba(255, 255, 255, 0.35);
+    min-width: 48px;
+    min-height: 48px;
+    max-width: 48px;
+    padding: 0 !important;
+    margin: 0;
     border-radius: 999px;
-    background: linear-gradient(165deg, #6eb0e0 0%, #3d85c4 55%, #2a5a8a 100%);
-    color: #fff;
-    box-shadow: 0 8px 20px rgba(26, 39, 68, 0.4);
-    cursor: pointer;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 4px 12px rgba(26, 39, 68, 0.28);
+    font-size: 1.15rem;
+    line-height: 1;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
   }
 
-  /* Leave room at the bottom-right so the chat FAB doesn't cover control labels. */
-  body:not(.menu-visible):not(.game-exited) .player-panel .panel-details-wide .controls {
-    padding-right: 52px;
+  body:not(.menu-visible):not(.game-exited) #btn-new.mobile-util-btn {
+    background: linear-gradient(165deg, #8ec8f0 0%, #3d85c4 55%, #2a5a8a 100%);
+    color: #fff;
   }
 
-  body:not(.menu-visible):not(.game-exited) .mobile-chat-fab:active {
+  body:not(.menu-visible):not(.game-exited) #btn-sound-toggle-ingame.mobile-util-btn {
+    background: linear-gradient(165deg, #6eb0e0 0%, #3d85c4 55%, #2a5a8a 100%);
+    color: #fff;
+  }
+
+  body:not(.menu-visible):not(.game-exited) #btn-sound-toggle-ingame.mobile-util-btn.sound-toggle--off {
+    background: linear-gradient(165deg, #94a3b8 0%, #64748b 55%, #475569 100%);
+  }
+
+  body:not(.menu-visible):not(.game-exited) .mobile-util-row .mobile-chat-fab {
+    background: linear-gradient(165deg, #6eb0e0 0%, #3d85c4 55%, #2a5a8a 100%);
+    color: #fff;
+    z-index: 1;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .mobile-util-label {
+    display: none;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .mobile-util-icon,
+  body:not(.menu-visible):not(.game-exited) .mobile-chat-fab-icon {
+    display: block;
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .mobile-util-btn:active,
+  body:not(.menu-visible):not(.game-exited) .mobile-util-row .mobile-chat-fab:active {
     transform: scale(0.96);
   }
 
-  body.mobile-chat-open:not(.menu-visible):not(.game-exited) .mobile-chat-fab {
-    opacity: 0;
+  body.mobile-chat-open:not(.menu-visible):not(.game-exited) .mobile-util-row .mobile-chat-fab {
+    opacity: 0.45;
     pointer-events: none;
-  }
-
-  body:not(.menu-visible):not(.game-exited) .mobile-chat-fab-icon {
-    font-size: 1.35rem;
-    line-height: 1;
   }
 
   body:not(.menu-visible):not(.game-exited) .mobile-chat-fab-badge {
@@ -4197,20 +4270,6 @@ body.menu-visible .game-over-splash {
     line-height: 1.1;
   }
 
-  body:not(.menu-visible):not(.game-exited) .player-panel .panel-details-wide .controls {
-    gap: 4px;
-    margin-top: 0;
-  }
-
-  body:not(.menu-visible):not(.game-exited) .player-panel .panel-details-wide .controls .btn {
-    padding: 10px 10px;
-    font-size: 0.74rem;
-    min-width: 0;
-    min-height: 42px;
-    flex: 1 1 calc(50% - 4px);
-    touch-action: manipulation;
-  }
-
   .game-board-column {
     height: auto;
     min-height: 0;
@@ -4470,12 +4529,18 @@ body.menu-visible .game-over-splash {
 }
 
 @media (max-width: 480px) {
-  /* Keep FAB at the bottom control corner — do NOT lift it onto the score bar. */
-  body:not(.menu-visible):not(.game-exited) .mobile-chat-fab {
+  body:not(.menu-visible):not(.game-exited) .mobile-util-btn,
+  body:not(.menu-visible):not(.game-exited) .mobile-util-row .mobile-chat-fab {
+    flex-basis: 46px;
     width: 46px;
     height: 46px;
-    bottom: max(14px, calc(env(safe-area-inset-bottom, 0px) + 12px));
-    right: max(8px, env(safe-area-inset-right, 0px));
+    min-width: 46px;
+    min-height: 46px;
+    max-width: 46px;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .mobile-util-row {
+    gap: 16px;
   }
 
   body:not(.menu-visible):not(.game-exited) .chat-panel {

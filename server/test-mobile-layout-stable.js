@@ -61,8 +61,13 @@ assert(gameSrc.indexOf('_mobileNoClip355') >= 0, 'clears lock so clipped phone b
 assert(gameSrc.indexOf('_mobileTighten356') >= 0, 'clears lock after shrinking phone rack chrome');
 assert(gameSrc.indexOf('wrapFitH') >= 0 || gameSrc.indexOf('never let the canvas taller') >= 0, 'fits phone canvas inside board-wrap height');
 assert(gameSrc.indexOf('rackTileSize') >= 0, 'compact rack uses shorter tile size');
-assert(cssSrc.indexOf('clear of the scores/timer bar') >= 0, 'chat FAB moved off the score bar');
-assert(cssSrc.indexOf('do NOT lift it onto the score bar') >= 0, '480px FAB override stays at bottom');
+assert(htmlSrc.indexOf('mobile-util-row') >= 0, 'mobile util row for round New/Sound/Chat');
+assert(
+  /mobile-util-row[\s\S]*id="btn-new"[\s\S]*id="btn-sound-toggle-ingame"[\s\S]*id="btn-mobile-chat"/.test(htmlSrc),
+  'chat button lives with util controls'
+);
+assert(cssSrc.indexOf('.mobile-util-row') >= 0, 'mobile util row styles');
+assert(cssSrc.indexOf('round New Game') >= 0, 'round util icons documented');
 assert(cssSrc.indexOf('bottom: max(168px') < 0, 'old score-bar FAB lift removed');
 assert(gameSrc.indexOf('COMPACT_MAX_CELL_SIZE') >= 0, 'caps phone cell size so board fits viewport');
 assert(/COMPACT_MAX_CELL_SIZE = (4[0-9]|[5-9][0-9])/.test(gameSrc), 'phone max cell raised for full-width board');

@@ -9,7 +9,7 @@
   <meta http-equiv="Expires" content="0">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <title>QWERTY Word Game</title>
-  <link rel="stylesheet" href="styles.css?v=380">
+  <link rel="stylesheet" href="styles.css?v=381">
   <style id="whos-here-opponent-layout">
     /*
      * Computer row — TABLE layout (cannot sit side-by-side with buttons).
@@ -426,8 +426,20 @@
               <button type="button" class="btn btn-secondary" id="btn-shuffle">Shuffle Rack</button>
               <button type="button" class="btn btn-secondary" id="btn-pass">Exchange Tiles</button>
               <button type="button" class="btn btn-secondary" id="btn-cancel-exchange" hidden>Cancel Exchange</button>
-              <button type="button" class="btn btn-secondary" id="btn-new">New Game</button>
-              <button type="button" class="btn btn-secondary sound-toggle" id="btn-sound-toggle-ingame" aria-pressed="true" title="Mute game sounds">Sound: On</button>
+              <div class="mobile-util-row" id="mobile-util-row">
+                <button type="button" class="btn btn-secondary mobile-util-btn" id="btn-new" title="New Game" aria-label="New Game">
+                  <span class="mobile-util-icon" aria-hidden="true">↻</span>
+                  <span class="mobile-util-label">New Game</span>
+                </button>
+                <button type="button" class="btn btn-secondary sound-toggle mobile-util-btn" id="btn-sound-toggle-ingame" aria-pressed="true" title="Mute game sounds" aria-label="Sound: On">
+                  <span class="mobile-util-icon mobile-util-sound-icon" aria-hidden="true">🔊</span>
+                  <span class="mobile-util-label">Sound: On</span>
+                </button>
+                <button type="button" class="mobile-chat-fab mobile-util-btn" id="btn-mobile-chat" aria-label="Open chat" aria-controls="chat-panel" aria-expanded="false" title="Chat">
+                  <span class="mobile-chat-fab-icon" aria-hidden="true">💬</span>
+                  <span class="mobile-chat-fab-badge" id="mobile-chat-badge" hidden>0</span>
+                </button>
+              </div>
             </div>
             </div>
           </div>
@@ -453,10 +465,6 @@
       </div>
     </div>
 
-    <button type="button" class="mobile-chat-fab" id="btn-mobile-chat" aria-label="Open chat" aria-controls="chat-panel" aria-expanded="false" title="Chat">
-      <span class="mobile-chat-fab-icon" aria-hidden="true">💬</span>
-      <span class="mobile-chat-fab-badge" id="mobile-chat-badge" hidden>0</span>
-    </button>
     <div class="mobile-chat-backdrop" id="mobile-chat-backdrop" aria-hidden="true"></div>
 
     <div class="blank-picker-overlay" id="blank-picker" hidden aria-hidden="true">
@@ -529,6 +537,6 @@
   <script src="validateAndScorePlacement.js?v=338"></script>
   <script src="game-engine.js?v=338"></script>
   <script src="online.js?v=338"></script>
-  <script src="game.js?v=356" onerror="qwertyBootError('Failed to load game.js — use OPEN ONLINE GAME.bat to launch.')"></script>
+  <script src="game.js?v=357" onerror="qwertyBootError('Failed to load game.js — use OPEN ONLINE GAME.bat to launch.')"></script>
 </body>
 </html>

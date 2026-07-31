@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '356';
+  var QWERTY_BUILD = '357';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -5343,12 +5343,21 @@ class Game {
   syncSoundToggleUI() {
     var label = this.soundEnabled ? 'Sound: On' : 'Sound: Off';
     var pressed = this.soundEnabled ? 'true' : 'false';
+    var icon = this.soundEnabled ? '🔊' : '🔇';
     var buttons = [this.ui.btnSoundToggle, this.ui.btnSoundToggleInGame];
     for (var i = 0; i < buttons.length; i++) {
       var btn = buttons[i];
       if (!btn) continue;
-      btn.textContent = label;
+      var labelEl = btn.querySelector('.mobile-util-label');
+      var iconEl = btn.querySelector('.mobile-util-sound-icon');
+      if (labelEl) {
+        labelEl.textContent = label;
+        if (iconEl) iconEl.textContent = icon;
+      } else {
+        btn.textContent = label;
+      }
       btn.setAttribute('aria-pressed', pressed);
+      btn.setAttribute('aria-label', label);
       btn.classList.toggle('sound-toggle--off', !this.soundEnabled);
       btn.title = this.soundEnabled ? 'Mute game sounds' : 'Enable game sounds';
     }
