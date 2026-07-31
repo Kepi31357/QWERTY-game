@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '353';
+  var QWERTY_BUILD = '354';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -495,9 +495,9 @@ const ROWS = 15;
 const RACK_SIZE = 8;
 const MAX_CELL_SIZE = 100;
 const MIN_CELL_SIZE = 16;
-/* Phones: prioritize tile size; keep tiny side profiles visible beside the grid. */
-const COMPACT_MAX_CELL_SIZE = 40;
-const COMPACT_SIDE_W = 30;
+/* Phones: full-width board (side profiles hidden); height budget still wins. */
+const COMPACT_MAX_CELL_SIZE = 42;
+const COMPACT_SIDE_W = 0;
 const LAYOUT_GAP = 8;
 const STAR_BONUS = 50;
 const LINK_BONUS = 75;
@@ -1212,8 +1212,8 @@ class Game {
 
   getLayoutInsets() {
     if (this.isCompactLayout()) {
-      var gap = 2;
-      return { gutterW: COMPACT_SIDE_W * 2 + gap * 2, sidebarW: 0, edgePad: 8 };
+      /* Side profiles are hidden on phones — use the full wrap for the grid. */
+      return { gutterW: 0, sidebarW: 0, edgePad: 8 };
     }
     /* Match .board-wrap gutters + gaps (desktop trio). */
     var sideW = 56;
@@ -1465,6 +1465,13 @@ class Game {
     /* One-shot: shrink phone profile columns so the board can use more width. */
     if (!this._mobilePlayability353) {
       this._mobilePlayability353 = true;
+      this._compactLayoutLock = null;
+      this._compactChromeReserve = null;
+    }
+
+    /* One-shot: hide phone side profiles and grow the board to full width. */
+    if (!this._mobileHideProfiles354) {
+      this._mobileHideProfiles354 = true;
       this._compactLayoutLock = null;
       this._compactChromeReserve = null;
     }

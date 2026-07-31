@@ -3671,99 +3671,37 @@ body.menu-visible .game-over-splash {
   }
 
   /*
-   * Phone play: keep Computer (left) + You (right) beside a moderately sized board
-   * so profiles stay visible and the grid no longer eats the whole viewport.
+   * Phone play: hide side Computer/You profiles (scores live in the timer bar)
+   * so the grid can use full width for larger, easier-to-tap tiles.
    */
   body:not(.menu-visible):not(.game-exited) .board-wrap {
-    --board-side-w: 30px;
+    --board-side-w: 0px;
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
-    gap: 1px;
-    padding: 1px 0;
-    column-gap: 1px;
+    gap: 0;
+    padding: 2px 4px;
+    column-gap: 0;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-gutter-left,
   body:not(.menu-visible):not(.game-exited) .board-gutter-right {
-    display: flex;
-    flex: 0 0 var(--board-side-w);
-    width: var(--board-side-w);
-    min-width: var(--board-side-w);
-    max-width: var(--board-side-w);
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 0 !important;
-    overflow: visible;
-    grid-column: auto;
-    grid-row: auto;
-  }
-
-  body:not(.menu-visible):not(.game-exited) .board-gutter-left {
-    order: 0;
+    display: none !important;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-center {
     order: 1;
     flex: 1 1 auto;
-    width: auto;
-    min-width: 0;
-    max-width: calc(100% - (var(--board-side-w) * 2) - 2px);
-  }
-
-  body:not(.menu-visible):not(.game-exited) .board-gutter-right {
-    order: 2;
-  }
-
-  body:not(.menu-visible):not(.game-exited) .board-gutter-stack,
-  body:not(.menu-visible):not(.game-exited) .board-gutter-stack-human,
-  body:not(.menu-visible):not(.game-exited) .board-profile {
-    flex-direction: column;
-    align-items: center;
     width: 100%;
+    min-width: 0;
     max-width: 100%;
-    gap: 2px;
-    transform: none !important;
+    align-items: center;
+    justify-content: center;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-difficulty-picker {
     display: none;
-  }
-
-  body:not(.menu-visible):not(.game-exited) .board-avatar-slot {
-    gap: 2px;
-  }
-
-  body:not(.menu-visible):not(.game-exited) .board-avatar-slot .avatar {
-    width: 28px;
-    height: 28px;
-    border-width: 2px;
-  }
-
-  body:not(.menu-visible):not(.game-exited) .board-gutter-name {
-    font-size: 0.42rem;
-    letter-spacing: 0.01em;
-    max-width: 100%;
-  }
-
-  body:not(.menu-visible):not(.game-exited) .board-gutter-score-value {
-    font-size: 0.78rem;
-  }
-
-  body:not(.menu-visible):not(.game-exited) .board-gutter-score .score-unit {
-    display: none;
-  }
-
-  body:not(.menu-visible):not(.game-exited) .board-gutter-stack .turn-ribbon {
-    height: 12px;
-    line-height: 12px;
-    font-size: 0.42rem;
-    padding: 0 2px;
-    max-width: 30px;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   /*

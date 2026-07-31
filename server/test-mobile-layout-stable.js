@@ -56,15 +56,14 @@ assert(gameSrc.indexOf('_boardFitAbovePanel304') >= 0, 'clears stale compact boa
 assert(gameSrc.indexOf('_mobileBalance351') >= 0, 'clears lock for mobile profile+board balance');
 assert(gameSrc.indexOf('_mobileBoardGrow352') >= 0, 'clears small-board feedback lock on phones');
 assert(gameSrc.indexOf('_mobilePlayability353') >= 0, 'clears lock after shrinking phone profiles');
+assert(gameSrc.indexOf('_mobileHideProfiles354') >= 0, 'clears lock after hiding phone side profiles');
 assert(gameSrc.indexOf('COMPACT_MAX_CELL_SIZE') >= 0, 'caps phone cell size so board fits viewport');
-assert(/COMPACT_MAX_CELL_SIZE = (3[6-9]|[4-9][0-9])/.test(gameSrc), 'phone max cell raised for readability');
-assert(/COMPACT_SIDE_W = (2[4-9]|3[0-2])/.test(gameSrc), 'phone side profiles slim for larger board');
-assert(cssSrc.indexOf('--board-side-w: 30px') >= 0, 'mobile CSS side columns match slim profiles');
+assert(/COMPACT_MAX_CELL_SIZE = (4[0-9]|[5-9][0-9])/.test(gameSrc), 'phone max cell raised for full-width board');
+assert(gameSrc.indexOf('COMPACT_SIDE_W = 0') >= 0, 'phone side profile width reserve cleared');
 assert(gameSrc.indexOf('board-human-rack') >= 0 && gameSrc.indexOf('getCompactPlayReservedHeight') >= 0, 'reserves human rack height on compact');
 assert(
-  cssSrc.indexOf('body:not(.menu-visible):not(.game-exited) .board-gutter-left') >= 0 &&
-    !/body:not\(\.menu-visible\):not\(\.game-exited\) \.board-gutter-left,\s*body:not\(\.menu-visible\):not\(\.game-exited\) \.board-gutter-right \{\s*display:\s*none/m.test(cssSrc),
-  'mobile play shows side profile gutters'
+  /body:not\(\.menu-visible\):not\(\.game-exited\) \.board-gutter-left,\s*body:not\(\.menu-visible\):not\(\.game-exited\) \.board-gutter-right \{\s*display:\s*none/m.test(cssSrc),
+  'mobile play hides side profile gutters'
 );
 assert(gameSrc.indexOf('must stay clear of the last board row') >= 0, 'reserves full player panel height');
 assert(cssSrc.indexOf('flex: 1 1 auto') >= 0 && cssSrc.indexOf('game-board-column .board-wrap') >= 0, 'board-wrap fills column (original layout)');
