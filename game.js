@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '355';
+  var QWERTY_BUILD = '356';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -1081,7 +1081,7 @@ class Game {
     if (humanRack && humanRack.offsetHeight > 10) {
       reserved += humanRack.offsetHeight;
     } else {
-      reserved += 58;
+      reserved += 42; /* compact rack estimate */
     }
     var panel = document.getElementById('player-panel');
     if (panel && panel.offsetHeight > 20) {
@@ -1091,10 +1091,10 @@ class Game {
       reserved += 260;
     }
     /* In-flow status strip under the board + gap so the last row is never covered. */
-    reserved += 36;
-    reserved += 12;
-    /* Extra cushion so the top/bottom board rows are never clipped by overflow:hidden. */
     reserved += 28;
+    reserved += 8;
+    /* Extra cushion so the top/bottom board rows are never clipped by overflow:hidden. */
+    reserved += 16;
     this._compactChromeReserve = reserved;
     return this._compactChromeReserve;
   }
@@ -1485,6 +1485,13 @@ class Game {
       this._compactChromeReserve = null;
     }
 
+    /* One-shot: shrink phone rack/status chrome so the board can grow. */
+    if (!this._mobileTighten356) {
+      this._mobileTighten356 = true;
+      this._compactLayoutLock = null;
+      this._compactChromeReserve = null;
+    }
+
     var nextCellSize;
     if (compact) {
       /*
@@ -1557,6 +1564,10 @@ class Game {
 
     /* Classic 1px-per-side gap so each tile face is as large as the cell allows. */
     this.tileSize = Math.max(MIN_CELL_SIZE - 2, this.cellSize - 2);
+    /* Phones: shorter rack tiles free vertical space for a larger board. */
+    this.rackTileSize = compact
+      ? Math.max(26, Math.min(32, Math.round(this.tileSize * 0.62)))
+      : this.tileSize;
 
     const boardW = COLS * this.cellSize;
     const boardH = ROWS * this.cellSize;
@@ -1584,20 +1595,23 @@ class Game {
     this.canvas.style.height = boardH + 'px';
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    const rackW = Math.min(centerW, RACK_SIZE * (this.tileSize + 8) + 24);
+    var rackTile = this.rackTileSize || this.tileSize;
+    var rackPadY = compact ? 6 : 11;
+    var rackH = rackTile + rackPadY * 2;
+    const rackW = Math.min(centerW, RACK_SIZE * (rackTile + 8) + 24);
     this.rackCanvas.width = rackW * dpr;
-    this.rackCanvas.height = (this.tileSize + 22) * dpr;
+    this.rackCanvas.height = rackH * dpr;
     this.rackCanvas.style.width = rackW + 'px';
-    this.rackCanvas.style.height = (this.tileSize + 22) + 'px';
+    this.rackCanvas.style.height = rackH + 'px';
     this.rackCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    this.rackTileGap = Math.max(5, (rackW - RACK_SIZE * this.tileSize) / (RACK_SIZE + 1));
+    this.rackTileGap = Math.max(4, (rackW - RACK_SIZE * rackTile) / (RACK_SIZE + 1));
 
     if (this.opponentRackCanvas && this.opponentRackCtx) {
       this.opponentRackCanvas.width = rackW * dpr;
-      this.opponentRackCanvas.height = (this.tileSize + 22) * dpr;
+      this.opponentRackCanvas.height = rackH * dpr;
       this.opponentRackCanvas.style.width = rackW + 'px';
-      this.opponentRackCanvas.style.height = (this.tileSize + 22) + 'px';
+      this.opponentRackCanvas.style.height = rackH + 'px';
       this.opponentRackCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
       this.opponentRackTileGap = this.rackTileGap;
     }
@@ -6645,10 +6659,16 @@ class Game {
     this.draw();
   }
 
+  getRackTileSize() {
+    var rts = this.rackTileSize;
+    if (Number.isFinite(rts) && rts > 0) return rts;
+    return Number.isFinite(this.tileSize) ? this.tileSize : 40;
+  }
+
   rackSlotX(i, gap) {
     var g = gap != null ? gap : this.rackTileGap;
     if (!Number.isFinite(g)) g = 6;
-    var ts = Number.isFinite(this.tileSize) ? this.tileSize : 40;
+    var ts = this.getRackTileSize();
     return g + i * (ts + g) + ts / 2;
   }
 
@@ -6663,16 +6683,17 @@ class Game {
   }
 
   rackSlotAt(x) {
+    var half = this.getRackTileSize() / 2 + 4;
     for (let i = 0; i < RACK_SIZE; i++) {
       const cx = this.rackSlotX(i);
-      if (Math.abs(x - cx) < this.tileSize / 2 + 4) return i;
+      if (Math.abs(x - cx) < half) return i;
     }
     return -1;
   }
 
   rackInsertSlotAt(x) {
     if (RACK_SIZE <= 0) return -1;
-    if (x <= this.rackSlotX(0) - this.tileSize * 0.3) return 0;
+    if (x <= this.rackSlotX(0) - this.getRackTileSize() * 0.3) return 0;
     for (var i = 0; i < RACK_SIZE - 1; i++) {
       var mid = (this.rackSlotX(i) + this.rackSlotX(i + 1)) / 2;
       if (x < mid) return i;
@@ -7777,7 +7798,8 @@ class Game {
     if (!this.racks) return;
 
     var rackCtx = this.rackCtx;
-    var tileSize = this.tileSize;
+    var tileSize = this.getRackTileSize();
+    var ty = this.isCompactLayout() ? 6 : 8;
     rackCtx.save();
     rackCtx.setTransform(1, 0, 0, 1, 0, 0);
     rackCtx.clearRect(0, 0, this.rackCanvas.width, this.rackCanvas.height);
@@ -7792,7 +7814,6 @@ class Game {
       var tile = rack[i];
       var letter = tileLetter(tile);
       var cx = this.rackSlotX(i);
-      var ty = 8;
 
       if (this.rackSelectedSlot === i && letter && !this.isRackSlotPending(i)) {
         rackCtx.save();
