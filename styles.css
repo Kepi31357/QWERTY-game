@@ -3366,15 +3366,19 @@ body.menu-visible .game-over-splash {
 
 .blank-picker-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 6px;
   margin-bottom: 14px;
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .blank-picker-letter {
   aspect-ratio: 1;
-  min-height: 40px;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
   border: none;
   border-radius: 8px;
   background: linear-gradient(180deg, #faf6ef 0%, #e8dfd0 100%);
@@ -3388,6 +3392,8 @@ body.menu-visible .game-over-splash {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  padding: 0;
 }
 
 .blank-picker-letter:hover,
@@ -3405,6 +3411,51 @@ body.menu-visible .game-over-splash {
 
 .blank-picker-cancel {
   width: 100%;
+}
+
+/* Mobile: keep the A–Z grid fully inside the rounded popup (no side overflow). */
+@media (max-width: 900px) {
+  .blank-picker-overlay {
+    padding: 12px;
+    z-index: 2800;
+    align-items: safe center;
+  }
+
+  .blank-picker-dialog {
+    width: min(100%, 360px);
+    max-width: calc(100vw - 24px);
+    padding: 16px 12px 14px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .blank-picker-title {
+    font-size: 1rem;
+  }
+
+  .blank-picker-hint {
+    font-size: 0.72rem;
+    margin-bottom: 12px;
+  }
+
+  .blank-picker-grid {
+    gap: 5px;
+    margin-bottom: 12px;
+  }
+
+  .blank-picker-letter {
+    font-size: 0.92rem;
+    border-radius: 7px;
+  }
+
+  .blank-picker-letter:hover,
+  .blank-picker-letter:focus-visible {
+    transform: scale(1.04);
+  }
+
+  .blank-picker-cancel {
+    min-height: 44px;
+  }
 }
 
 /* Two-letter word reference (classic Pogo style) */
