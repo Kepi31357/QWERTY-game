@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '357';
+  var QWERTY_BUILD = '358';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -41,6 +41,8 @@
     return 'computer';
   }
   var SFX_BASE = '/sounds/';
+  /* Bump when replacing MP3s so browsers/CDN do not keep stale audio. */
+  var SFX_CACHE_VER = '2';
   /* Logical kind → filename under public/sounds/ */
   var SFX_FILES = {
     introduction: 'introduction3.mp3',
@@ -5167,7 +5169,7 @@ class Game {
 
   sfxUrl(kind) {
     var file = SFX_FILES[kind] || (kind + '.mp3');
-    return SFX_BASE + file;
+    return SFX_BASE + file + '?v=' + SFX_CACHE_VER;
   }
 
   /** Preload /sounds/*.mp3 so first play is snappy. */
