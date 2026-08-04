@@ -3,8 +3,8 @@
  *
  * Avatars are generated via the DiceBear HTTP API (no local image files).
  * Same id/seed always yields the same face. Gender presentation is controlled
- * so feminine/neutral names never get beards. Mouths are restricted to happy
- * variants so faces stay calm/friendly.
+ * so feminine/neutral names never get facial hair. Expressions are restricted
+ * to friendly mouths / eyes / brows so faces stay pleasant and colorful.
  *
  * API: https://api.dicebear.com/9.x/[style]/svg?seed=...
  */
@@ -15,8 +15,8 @@
   var DEFAULT_ID = 'maya';
   var COMPUTER_ID = 'computer';
 
-  /** People style — calm hand-drawn faces (friendlier than avataaars). */
-  var STYLE = 'lorelei';
+  /** People style — full-color cartoon faces that fit the game palette. */
+  var STYLE = 'avataaars';
   /** Computer opponent style. */
   var COMPUTER_STYLE = 'bottts';
   var API_VERSION = '9.x';
@@ -24,20 +24,25 @@
   /** Requested SVG size (scales cleanly in CSS at board / picker sizes). */
   var AVATAR_SIZE = 160;
 
-  /**
-   * Lorelei mouth variants that read as smiling / pleasant.
-   * Excludes sad01–sad09 so seeds never land on distressed expressions.
-   */
-  var HAPPY_MOUTHS = [
-    'happy01', 'happy02', 'happy03', 'happy04', 'happy05', 'happy06',
-    'happy07', 'happy08', 'happy09', 'happy10', 'happy11', 'happy12',
-    'happy13', 'happy14', 'happy15', 'happy16', 'happy17', 'happy18',
+  /* Friendly expression pools — exclude angry, sad, scream, vomit, etc. */
+  var FRIENDLY_MOUTHS = ['smile', 'twinkle', 'default'].join(',');
+  var FRIENDLY_EYES = ['happy', 'default', 'wink', 'hearts', 'side', 'closed'].join(',');
+  var FRIENDLY_BROWS = [
+    'default',
+    'defaultNatural',
+    'raisedExcited',
+    'raisedExcitedNatural',
+    'flatNatural',
+    'upDown',
+    'upDownNatural',
   ].join(',');
+  /** Clothes hues that echo QWERTY purple / orange. */
+  var GAME_CLOTHES = ['7c3aed', 'a855f7', 'f97316', 'ea580c', '8b5cf6', 'fb923c'].join(',');
 
   /**
    * Catalog — keep existing ids valid for saved localStorage selections.
    * presentation: 'feminine' | 'masculine' | 'neutral'
-   * Optional: seed (defaults to label).
+   * Optional: seed (defaults to label), top (e.g. hijab).
    */
   var PERSON_DEFS = [
     /* —— original set (keep ids) —— */
@@ -47,7 +52,7 @@
     { id: 'kenji', label: 'Kenji', age: '30s', presentation: 'masculine' },
     { id: 'riley', label: 'Riley', age: '40s', presentation: 'neutral' },
     { id: 'marcus', label: 'Marcus', age: '50s', presentation: 'masculine' },
-    { id: 'amira', label: 'Amira', age: '20s', presentation: 'feminine' },
+    { id: 'amira', label: 'Amira', age: '20s', presentation: 'feminine', top: 'hijab' },
     { id: 'finn', label: 'Finn', age: '30s', presentation: 'masculine' },
     { id: 'nova', label: 'Nova', age: '20s', presentation: 'feminine' },
     { id: 'harold', label: 'Harold', age: '70s', presentation: 'masculine' },
@@ -95,7 +100,7 @@
     { id: 'carlos', label: 'Carlos', age: '40s', presentation: 'masculine' },
     { id: 'rosa', label: 'Rosa', age: '60s', presentation: 'feminine' },
     { id: 'diego', label: 'Diego', age: '20s', presentation: 'masculine' },
-    { id: 'leila', label: 'Leila', age: '30s', presentation: 'feminine' },
+    { id: 'leila', label: 'Leila', age: '30s', presentation: 'feminine', top: 'hijab' },
     { id: 'omar', label: 'Omar', age: '40s', presentation: 'masculine' },
 
     /* —— broader ages / styles —— */
@@ -103,21 +108,21 @@
     { id: 'sam', label: 'Sam', age: '30s', presentation: 'neutral' },
     { id: 'ruby', label: 'Ruby', age: '50s', presentation: 'feminine' },
     { id: 'arthur', label: 'Arthur', age: '80s', presentation: 'masculine' },
-    { id: 'mina', label: 'Mina', age: '40s', presentation: 'feminine' },
+    { id: 'mina', label: 'Mina', age: '40s', presentation: 'feminine', top: 'hijab' },
     { id: 'kai', label: 'Kai', age: '20s', presentation: 'neutral' },
     { id: 'pearl', label: 'Pearl', age: '90s', presentation: 'feminine' },
     { id: 'devon', label: 'Devon', age: '30s', presentation: 'neutral' },
     { id: 'chloe', label: 'Chloe', age: '20s', presentation: 'feminine' },
     { id: 'ivan', label: 'Ivan', age: '50s', presentation: 'masculine' },
-    { id: 'fatima', label: 'Fatima', age: '50s', presentation: 'feminine' },
+    { id: 'fatima', label: 'Fatima', age: '50s', presentation: 'feminine', top: 'hijab' },
     { id: 'tomas', label: 'Tomas', age: '60s', presentation: 'masculine' },
   ];
 
-  /** Soft backgrounds so faces read well on board / picker circles. */
+  /** Soft purple / peach backgrounds that fit the QWERTY palette. */
   var BG_BY_PRESENTATION = {
-    feminine: 'ffd5dc',
-    masculine: 'b6e3f4',
-    neutral: 'c0aede',
+    feminine: 'ffdfbf',
+    masculine: 'c0aede',
+    neutral: 'd1d4f9',
   };
 
   function escapeAttr(value) {
@@ -129,7 +134,7 @@
 
   /**
    * Build a DiceBear SVG URL for a catalog entry or ad-hoc options.
-   * @param {{ style?: string, seed: string, presentation?: string }} opts
+   * @param {{ style?: string, seed: string, presentation?: string, top?: string }} opts
    */
   function buildUrl(opts) {
     var style = opts.style || STYLE;
@@ -143,12 +148,17 @@
     parts.push('backgroundColor=' + encodeURIComponent(bg));
 
     if (style === STYLE) {
-      /* Friendly expressions only — no sad / distressed mouths. */
-      parts.push('mouth=' + HAPPY_MOUTHS);
+      parts.push('mouth=' + FRIENDLY_MOUTHS);
+      parts.push('eyes=' + FRIENDLY_EYES);
+      parts.push('eyebrows=' + FRIENDLY_BROWS);
+      parts.push('clothesColor=' + GAME_CLOTHES);
       if (presentation === 'feminine' || presentation === 'neutral') {
-        parts.push('beardProbability=0');
+        parts.push('facialHairProbability=0');
       } else {
-        parts.push('beardProbability=35');
+        parts.push('facialHairProbability=35');
+      }
+      if (opts.top) {
+        parts.push('top=' + encodeURIComponent(opts.top));
       }
     }
 
@@ -167,9 +177,11 @@
         age: def.age || '',
         presentation: presentation,
         seed: seed,
+        top: def.top || null,
         url: buildUrl({
           seed: seed,
           presentation: presentation,
+          top: def.top,
         }),
       });
     }
