@@ -699,6 +699,9 @@ ul {
   color: #1f1238;
   -webkit-text-fill-color: #1f1238;
   letter-spacing: -0.01em;
+  align-self: stretch;
+  text-align: center;
+  width: 100%;
 }
 
 .shot-caption-text {
