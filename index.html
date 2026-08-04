@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="/images/qwerty-logo.png?v=4">
   <link rel="preload" as="image" href="/images/hero-board-live.jpg?v=32">
-  <link rel="stylesheet" href="site.css?v=67">
+  <link rel="stylesheet" href="site.css?v=68">
   <style id="card-lavender-force">
     /* Force light-lavender cards — beats cached cream backgrounds */
     :root {
@@ -46,9 +46,15 @@
     .shot-card {
       padding: 0 !important;
     }
+    /* Screenshot captions: hug text, centered, gold outline */
     #screens .shot-caption,
     .shot-caption {
-      margin-top: 16px !important;
+      margin: 16px auto 0 !important;
+      width: fit-content !important;
+      max-width: 100% !important;
+      border: 2px solid #d4a017 !important;
+      background: #d9c7f2 !important;
+      box-sizing: border-box !important;
     }
     @media (max-width: 779px) {
       .hero-preview,
@@ -58,7 +64,9 @@
       }
       #screens .shot-caption,
       .shot-caption {
-        margin-top: 12px !important;
+        margin: 12px auto 0 !important;
+        width: fit-content !important;
+        max-width: 100% !important;
       }
     }
   </style>
