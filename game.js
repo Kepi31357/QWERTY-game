@@ -2211,12 +2211,14 @@ class Game {
     av.style.setProperty('max-height', '32px', 'important');
     av.style.setProperty('overflow', 'hidden', 'important');
     av.style.setProperty('display', 'block', 'important');
-    var art = av.querySelector('.avatar-art, svg');
+    var art = av.querySelector('.avatar-art, img, svg');
     if (art) {
       art.style.setProperty('width', '100%', 'important');
       art.style.setProperty('height', '100%', 'important');
       art.style.setProperty('max-width', '32px', 'important');
       art.style.setProperty('max-height', '32px', 'important');
+      art.style.setProperty('object-fit', 'cover', 'important');
+      art.style.setProperty('border-radius', '50%', 'important');
     }
   }
 

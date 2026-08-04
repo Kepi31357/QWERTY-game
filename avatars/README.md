@@ -1,25 +1,26 @@
-# Avatar images (optional)
+# Avatars (DiceBear)
 
-Drop PNG or SVG files here to replace or add faces without editing the SVG generator.
+Player faces are generated on the fly from the [DiceBear](https://www.dicebear.com/) HTTP API. No PNG/SVG files are required in this folder.
 
-## How to add images
+## How it works
 
-1. Add a file named after the avatar id, e.g. `maya.png` or `claire.svg`.
-2. Register it in `avatars.js` under `IMAGE_OVERRIDES`:
+- Style for people: `avataaars` (`https://api.dicebear.com/9.x/avataaars/svg?seed=…`)
+- Computer opponent: `bottts`
+- Each catalog entry in `avatars.js` has a stable **seed** (usually the display name) so the same player always gets the same face
+- **Gender presentation** (`feminine` / `masculine` / `neutral`) sets `facialHairProbability` so feminine and neutral names never get beards
+- Hijab looks use DiceBear’s `top=hijab` option
 
-```js
-var IMAGE_OVERRIDES = {
-  maya: 'avatars/maya.png',
-  claire: 'avatars/claire.png',
-};
-```
+## Adding a new face
 
-3. If the id is **new**, also add a catalog entry in `PERSON_DEFS` (label/age; `face` can be a simple placeholder until art is ready):
+Append an entry to `PERSON_DEFS` in `avatars.js`:
 
 ```js
-{ id: 'claire', label: 'Claire', age: '30s', face: { skin: '#f0c8a0', hair: '#c4a574', hairStyle: 'long', shirt: '#7c3aed', collar: true, bg: '#ede9fe' } },
+{ id: 'alex', label: 'Alex', age: '20s', presentation: 'neutral' },
 ```
 
-When `IMAGE_OVERRIDES[id]` is set, that image is used everywhere (board, chat, picker). Otherwise the built-in SVG face is used.
+Optional fields:
 
-Keep images roughly square (e.g. 256×256). They are clipped to a circle by CSS.
+- `seed` — override the DiceBear seed (defaults to `label`)
+- `top` — e.g. `'hijab'` for head covering
+
+Saved selections use the avatar **id** in `localStorage` (`qwerty-avatar-id`), so keep existing ids stable.

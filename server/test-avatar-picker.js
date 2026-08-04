@@ -16,7 +16,18 @@ var htmlSrc = fs.readFileSync(path.join(root, 'play.html'), 'utf8');
 var cssSrc = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 var gameSrc = fs.readFileSync(path.join(root, 'game.js'), 'utf8');
 
-var ctx = { window: {}, localStorage: { getItem: function () { return null; }, setItem: function () {} } };
+var store = {};
+var ctx = {
+  window: {},
+  localStorage: {
+    getItem: function (k) {
+      return Object.prototype.hasOwnProperty.call(store, k) ? store[k] : null;
+    },
+    setItem: function (k, v) {
+      store[k] = String(v);
+    },
+  },
+};
 ctx.globalThis = ctx;
 vm.runInNewContext(avatarSrc, ctx);
 var A = ctx.window.QWERTYAvatars;
@@ -25,8 +36,35 @@ var list = A.listSelectable();
 assert(list.length >= 40, 'catalog has at least 40 selectable avatars (got ' + list.length + ')');
 assert(A.isValidId('maya') && A.isValidId('claire') && A.isValidId('grace'), 'legacy + new ids valid');
 assert(!A.isValidId('computer'), 'computer id not selectable');
-assert(typeof A.IMAGE_OVERRIDES === 'object', 'IMAGE_OVERRIDES map present for drop-in files');
-assert(fs.existsSync(path.join(root, 'avatars', 'README.md')), 'avatars/README.md documents drop-in images');
+
+assert(A.STYLE === 'avataaars', 'people style is avataaars');
+assert(A.COMPUTER_STYLE === 'bottts', 'computer style is bottts');
+assert(typeof A.getUrl === 'function', 'getUrl exported');
+
+var mayaUrl = A.getUrl('maya');
+assert(
+  mayaUrl.indexOf('https://api.dicebear.com/9.x/avataaars/svg?') === 0,
+  'maya URL uses DiceBear 9.x avataaars'
+);
+assert(mayaUrl.indexOf('seed=Maya') >= 0, 'maya URL seeded by name');
+assert(mayaUrl.indexOf('facialHairProbability=0') >= 0, 'feminine faces disable facial hair');
+
+var marcusUrl = A.getUrl('marcus');
+assert(marcusUrl.indexOf('facialHairProbability=40') >= 0, 'masculine faces allow facial hair');
+
+var amiraUrl = A.getUrl('amira');
+assert(amiraUrl.indexOf('top=hijab') >= 0, 'hijab presentation uses DiceBear top=hijab');
+
+var computerUrl = A.getUrl('computer');
+assert(computerUrl.indexOf('/bottts/svg?') >= 0, 'computer uses bottts style');
+
+var markup = A.getMarkup('maya');
+assert(markup.indexOf('<img class="avatar-art"') === 0, 'markup is DiceBear img tag');
+assert(markup.indexOf('api.dicebear.com') >= 0, 'markup points at DiceBear CDN');
+
+assert(A.loadStoredAvatarId() === A.DEFAULT_ID, 'default avatar when storage empty');
+A.saveStoredAvatarId('claire');
+assert(store[A.KEY] === 'claire', 'saveStoredAvatarId persists id');
 
 assert(htmlSrc.indexOf('id="avatar-picker-overlay"') >= 0, 'picker modal overlay present');
 assert(htmlSrc.indexOf('id="btn-open-avatar-picker"') >= 0, 'Choose Avatar button present');
@@ -39,4 +77,4 @@ assert(cssSrc.indexOf('minmax(96px') >= 0 || cssSrc.indexOf('minmax(84px') >= 0,
 assert(gameSrc.indexOf('openAvatarPicker') >= 0 && gameSrc.indexOf('closeAvatarPicker') >= 0, 'open/close picker API');
 assert(gameSrc.indexOf('_avatarPickerDraftId') >= 0, 'draft selection before confirm');
 
-console.log('Summary: avatar picker checks passed (' + list.length + ' avatars)');
+console.log('Summary: avatar picker checks passed (' + list.length + ' DiceBear avatars)');
