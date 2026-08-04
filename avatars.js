@@ -3,7 +3,8 @@
  *
  * Avatars are generated via the DiceBear HTTP API (no local image files).
  * Same id/seed always yields the same face. Gender presentation is controlled
- * so feminine/neutral names never get facial hair.
+ * so feminine/neutral names never get beards. Mouths are restricted to happy
+ * variants so faces stay calm/friendly.
  *
  * API: https://api.dicebear.com/9.x/[style]/svg?seed=...
  */
@@ -14,8 +15,8 @@
   var DEFAULT_ID = 'maya';
   var COMPUTER_ID = 'computer';
 
-  /** People style — diverse cartoon half-body, good for games. */
-  var STYLE = 'avataaars';
+  /** People style — calm hand-drawn faces (friendlier than avataaars). */
+  var STYLE = 'lorelei';
   /** Computer opponent style. */
   var COMPUTER_STYLE = 'bottts';
   var API_VERSION = '9.x';
@@ -24,9 +25,19 @@
   var AVATAR_SIZE = 160;
 
   /**
+   * Lorelei mouth variants that read as smiling / pleasant.
+   * Excludes sad01–sad09 so seeds never land on distressed expressions.
+   */
+  var HAPPY_MOUTHS = [
+    'happy01', 'happy02', 'happy03', 'happy04', 'happy05', 'happy06',
+    'happy07', 'happy08', 'happy09', 'happy10', 'happy11', 'happy12',
+    'happy13', 'happy14', 'happy15', 'happy16', 'happy17', 'happy18',
+  ].join(',');
+
+  /**
    * Catalog — keep existing ids valid for saved localStorage selections.
    * presentation: 'feminine' | 'masculine' | 'neutral'
-   * Optional: top (DiceBear hair/hat), seed (defaults to label).
+   * Optional: seed (defaults to label).
    */
   var PERSON_DEFS = [
     /* —— original set (keep ids) —— */
@@ -36,7 +47,7 @@
     { id: 'kenji', label: 'Kenji', age: '30s', presentation: 'masculine' },
     { id: 'riley', label: 'Riley', age: '40s', presentation: 'neutral' },
     { id: 'marcus', label: 'Marcus', age: '50s', presentation: 'masculine' },
-    { id: 'amira', label: 'Amira', age: '20s', presentation: 'feminine', top: 'hijab' },
+    { id: 'amira', label: 'Amira', age: '20s', presentation: 'feminine' },
     { id: 'finn', label: 'Finn', age: '30s', presentation: 'masculine' },
     { id: 'nova', label: 'Nova', age: '20s', presentation: 'feminine' },
     { id: 'harold', label: 'Harold', age: '70s', presentation: 'masculine' },
@@ -84,7 +95,7 @@
     { id: 'carlos', label: 'Carlos', age: '40s', presentation: 'masculine' },
     { id: 'rosa', label: 'Rosa', age: '60s', presentation: 'feminine' },
     { id: 'diego', label: 'Diego', age: '20s', presentation: 'masculine' },
-    { id: 'leila', label: 'Leila', age: '30s', presentation: 'feminine', top: 'hijab' },
+    { id: 'leila', label: 'Leila', age: '30s', presentation: 'feminine' },
     { id: 'omar', label: 'Omar', age: '40s', presentation: 'masculine' },
 
     /* —— broader ages / styles —— */
@@ -92,13 +103,13 @@
     { id: 'sam', label: 'Sam', age: '30s', presentation: 'neutral' },
     { id: 'ruby', label: 'Ruby', age: '50s', presentation: 'feminine' },
     { id: 'arthur', label: 'Arthur', age: '80s', presentation: 'masculine' },
-    { id: 'mina', label: 'Mina', age: '40s', presentation: 'feminine', top: 'hijab' },
+    { id: 'mina', label: 'Mina', age: '40s', presentation: 'feminine' },
     { id: 'kai', label: 'Kai', age: '20s', presentation: 'neutral' },
     { id: 'pearl', label: 'Pearl', age: '90s', presentation: 'feminine' },
     { id: 'devon', label: 'Devon', age: '30s', presentation: 'neutral' },
     { id: 'chloe', label: 'Chloe', age: '20s', presentation: 'feminine' },
     { id: 'ivan', label: 'Ivan', age: '50s', presentation: 'masculine' },
-    { id: 'fatima', label: 'Fatima', age: '50s', presentation: 'feminine', top: 'hijab' },
+    { id: 'fatima', label: 'Fatima', age: '50s', presentation: 'feminine' },
     { id: 'tomas', label: 'Tomas', age: '60s', presentation: 'masculine' },
   ];
 
@@ -118,7 +129,7 @@
 
   /**
    * Build a DiceBear SVG URL for a catalog entry or ad-hoc options.
-   * @param {{ style?: string, seed: string, presentation?: string, top?: string }} opts
+   * @param {{ style?: string, seed: string, presentation?: string }} opts
    */
   function buildUrl(opts) {
     var style = opts.style || STYLE;
@@ -132,14 +143,12 @@
     parts.push('backgroundColor=' + encodeURIComponent(bg));
 
     if (style === STYLE) {
+      /* Friendly expressions only — no sad / distressed mouths. */
+      parts.push('mouth=' + HAPPY_MOUTHS);
       if (presentation === 'feminine' || presentation === 'neutral') {
-        /* Avoid beards / stubble on feminine & neutral presentations. */
-        parts.push('facialHairProbability=0');
+        parts.push('beardProbability=0');
       } else {
-        parts.push('facialHairProbability=40');
-      }
-      if (opts.top) {
-        parts.push('top=' + encodeURIComponent(opts.top));
+        parts.push('beardProbability=35');
       }
     }
 
@@ -158,11 +167,9 @@
         age: def.age || '',
         presentation: presentation,
         seed: seed,
-        top: def.top || null,
         url: buildUrl({
           seed: seed,
           presentation: presentation,
-          top: def.top,
         }),
       });
     }
