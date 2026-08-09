@@ -803,7 +803,7 @@ function serveStatic(req, res) {
   }
   if (urlPath === '/') urlPath = '/index.html';
   if (urlPath === '/play' || urlPath === '/game') urlPath = '/play.html';
-  if (urlPath === '/favicon.ico') urlPath = '/favicon.svg';
+  if (urlPath === '/favicon.ico') urlPath = '/images/favicon.png';
 
   const filePath = resolveStaticPath(urlPath);
   if (!filePath) {
