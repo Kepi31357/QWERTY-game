@@ -486,6 +486,25 @@ body.game-exited .app {
   min-width: 4.5rem;
 }
 
+.online-code-row .btn-suggest-code {
+  min-width: 5.5rem;
+  font-size: 0.78rem;
+  padding: 8px 10px;
+}
+
+.online-menu-actions-row .btn {
+  flex: 1;
+}
+
+.online-code-hint {
+  margin: 0 0 8px;
+  font-size: 0.68rem;
+  line-height: 1.35;
+  color: var(--pogo-purple);
+  opacity: 0.85;
+  text-align: left;
+}
+
 .online-status {
   min-height: 1.2em;
   font-size: 0.78rem;

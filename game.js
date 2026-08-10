@@ -20,6 +20,8 @@
     '🎯', '🎮', '🤝', '💀', '😮', '😢', '🤣', '😘',
   ];
   var DEFAULT_ROOM_CODE = 'MAIN';
+  var ROOM_CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var PRODUCTION_SHARE_ORIGIN = 'https://qwerty-game.onrender.com';
   var SAVE_KEY = 'qwerty-pogo-save';
   var DIFFICULTY_KEY = 'qwerty-ai-difficulty';
   var SOUND_KEY = 'qwerty-sound-enabled';
@@ -898,6 +900,7 @@ class Game {
       exchangeNoticeOk: document.getElementById('exchange-notice-ok'),
       onlineNickname: document.getElementById('online-nickname'),
       onlineJoinCode: document.getElementById('online-join-code'),
+      btnSuggestRoomCode: document.getElementById('btn-suggest-room-code'),
       onlineStatus: document.getElementById('online-status'),
       onlineWaiting: document.getElementById('online-waiting'),
       onlineRoomCode: document.getElementById('online-room-code'),
@@ -2290,29 +2293,70 @@ class Game {
     });
   }
 
-  isShareableNetworkUrl(url) {
+  isPrivateOrLocalHostUrl(url) {
+    if (!url || typeof url !== 'string') return true;
+    return /127\.0\.0\.1|localhost|\/\/10\.\d+\.\d+\.\d+|\/\/192\.168\.\d+\.\d+|\/\/172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+/i.test(
+      url
+    );
+  }
+
+  /** True for public internet hosts (Render, ngrok, etc.) — not LAN/localhost. */
+  isPublicInternetUrl(url) {
     if (!url || typeof url !== 'string') return false;
-    return !/127\.0\.0\.1|localhost/i.test(url);
+    if (this.isPrivateOrLocalHostUrl(url)) return false;
+    return /^https?:\/\//i.test(url);
+  }
+
+  isShareableNetworkUrl(url) {
+    return this.isPublicInternetUrl(url);
+  }
+
+  makeSuggestedRoomCode() {
+    var code = '';
+    var i;
+    for (i = 0; i < 6; i++) {
+      code += ROOM_CODE_CHARS.charAt(Math.floor(Math.random() * ROOM_CODE_CHARS.length));
+    }
+    return code;
+  }
+
+  suggestMenuRoomCode(force) {
+    var codeEl = this.ui.onlineJoinCode;
+    if (!codeEl) return '';
+    if (!force && codeEl.value && String(codeEl.value).trim()) {
+      return String(codeEl.value).trim().toUpperCase();
+    }
+    var code = this.makeSuggestedRoomCode();
+    codeEl.value = code;
+    return code;
   }
 
   pickShareUrl(hostInfo) {
-    if (!hostInfo) return '';
     var candidates = [];
-    if (hostInfo.publicUrl) candidates.push(hostInfo.publicUrl);
-    if (hostInfo.preferredLanUrl) candidates.push(hostInfo.preferredLanUrl);
-    if (hostInfo.lanUrls && hostInfo.lanUrls.length) {
-      candidates = candidates.concat(hostInfo.lanUrls);
+    var loc =
+      location.protocol && location.host
+        ? location.protocol + '//' + location.host + '/'
+        : '';
+    var onProductionHost = /qwerty-game\.onrender\.com$/i.test(location.hostname || '');
+
+    /* Public internet first — never a 10.x / 192.168.x LAN address when a real public host exists. */
+    if (hostInfo && hostInfo.publicUrl) candidates.push(hostInfo.publicUrl);
+    if (this.isPublicInternetUrl(loc)) candidates.push(loc);
+    if (onProductionHost || (hostInfo && hostInfo.viaRender)) {
+      candidates.push(PRODUCTION_SHARE_ORIGIN + '/');
+      if (hostInfo && hostInfo.productionUrl) candidates.push(hostInfo.productionUrl);
     }
-    if (
-      location.hostname &&
-      this.isShareableNetworkUrl(location.protocol + '//' + location.host + '/')
-    ) {
-      candidates.push(location.protocol + '//' + location.host + '/');
-    }
+
     var i, u;
     for (i = 0; i < candidates.length; i++) {
       u = candidates[i];
-      if (this.isShareableNetworkUrl(u)) return u;
+      if (this.isPublicInternetUrl(u)) return String(u).replace(/\/+$/, '') + '/';
+    }
+
+    /* Local-only fallback for same-Wi‑Fi play (shown with a warning in the UI). */
+    if (hostInfo) {
+      if (hostInfo.preferredLanUrl) return hostInfo.preferredLanUrl;
+      if (hostInfo.lanUrls && hostInfo.lanUrls.length) return hostInfo.lanUrls[0];
     }
     return '';
   }
@@ -2326,8 +2370,9 @@ class Game {
 
   updateOnlineShareUI(hostInfo, code) {
     var joinUrl = this.buildGuestJoinUrl(hostInfo, code);
+    var usingPublic = joinUrl && this.isPublicInternetUrl(joinUrl);
     var noLinkMsg =
-      'Do NOT send 127.0.0.1 to Blake. Open the black server window or BLAKE-OPEN-THIS-LINK.txt on this PC for the full http://192.168.1.??? link (real digits, not the letters xxx). After Create Game, tap Copy link.';
+      'Open https://qwerty-game.onrender.com to create a room, then Copy link — local Wi‑Fi addresses will not work for friends elsewhere.';
 
     var blocks = [
       { block: this.ui.onlineShareBlock, urlEl: this.ui.onlineShareUrl },
@@ -2338,7 +2383,8 @@ class Game {
       pair.block.hidden = false;
       if (joinUrl) {
         pair.urlEl.textContent = joinUrl;
-        pair.urlEl.classList.remove('online-share-warning');
+        if (usingPublic) pair.urlEl.classList.remove('online-share-warning');
+        else pair.urlEl.classList.add('online-share-warning');
       } else {
         pair.urlEl.textContent = noLinkMsg;
         pair.urlEl.classList.add('online-share-warning');
@@ -2430,13 +2476,13 @@ class Game {
       self.setOnlineStatus('Room ' + msg.code + ' — waiting for friend…');
       self.setMessage(
         joinUrl
-          ? 'Send Blake this link (NOT 127.0.0.1): ' + joinUrl
-          : msg.message || 'Share code ' + msg.code + ' — use Wi-Fi link from server window, NOT 127.0.0.1.'
+          ? 'Share this public link with your friend: ' + joinUrl
+          : msg.message || 'Share code ' + msg.code + ' with your friend.'
       );
       self.fetchHostInfo().then(function (info) {
         joinUrl = self.updateOnlineShareUI(info || self._hostInfo, msg.code);
         if (joinUrl) {
-          self.setMessage('Send Blake this link (NOT 127.0.0.1): ' + joinUrl);
+          self.setMessage('Share this public link with your friend: ' + joinUrl);
         }
       });
     });
@@ -2648,6 +2694,25 @@ class Game {
       });
     }
 
+    if (this.ui.btnSuggestRoomCode) {
+      this.ui.btnSuggestRoomCode.addEventListener('click', function () {
+        self.suggestMenuRoomCode(true);
+        self.setOnlineStatus('New unique code ready — tap Create, then share it with your friend.');
+      });
+    }
+
+    /* Prefill a unique code unless the URL already supplied one for joining. */
+    var urlCode = '';
+    try {
+      var params = new URLSearchParams(location.search || '');
+      urlCode = String(params.get('code') || '').trim().toUpperCase();
+    } catch (_) {}
+    if (urlCode && this.ui.onlineJoinCode) {
+      this.ui.onlineJoinCode.value = urlCode.slice(0, 6);
+    } else {
+      this.suggestMenuRoomCode(true);
+    }
+
     function bindCopy(btn, getText, statusFn) {
       if (!btn) return;
       btn.addEventListener('click', function () {
@@ -2693,14 +2758,22 @@ class Game {
       if (this.ui.onlineNickname) this.ui.onlineNickname.focus();
       return;
     }
-    var code = this.getMenuRoomCode();
-    if (code && (code.length < 4 || code.length > 6)) {
-      this.setOnlineStatus('Room code must be 4–6 characters (or leave blank for MAIN).', true);
+    var code = this.getMenuRoomCode() || this.suggestMenuRoomCode(true);
+    if (code === DEFAULT_ROOM_CODE) {
+      this.setOnlineStatus(
+        'Please use a unique room code instead of MAIN so other players don’t join your game.',
+        true
+      );
+      this.suggestMenuRoomCode(true);
+      return;
+    }
+    if (!code || code.length < 4 || code.length > 6) {
+      this.setOnlineStatus('Room code must be 4–6 characters (A–Z, 2–9).', true);
       return;
     }
     this.hideExitScreen();
     this.ensureGameShell();
-    this.setOnlineStatus(code ? 'Creating room ' + code + '…' : 'Creating default room MAIN…');
+    this.setOnlineStatus('Creating room ' + code + '…');
     QWERTYOnline.connect()
       .then(function () {
         if (QWERTYOnline.leaveRoom) QWERTYOnline.leaveRoom();
@@ -2709,7 +2782,7 @@ class Game {
         });
       })
       .then(function () {
-        QWERTYOnline.createRoom(nick, code || undefined);
+        QWERTYOnline.createRoom(nick, code);
       })
       .catch(function (err) {
         self.setOnlineStatus(err.message || 'Could not connect.', true);
@@ -2724,9 +2797,21 @@ class Game {
       if (this.ui.onlineNickname) this.ui.onlineNickname.focus();
       return;
     }
-    var code = this.getMenuRoomCode() || DEFAULT_ROOM_CODE;
+    var code = this.getMenuRoomCode();
+    if (!code) {
+      this.setOnlineStatus('Enter the unique room code your friend shared.', true);
+      if (this.ui.onlineJoinCode) this.ui.onlineJoinCode.focus();
+      return;
+    }
+    if (code === DEFAULT_ROOM_CODE) {
+      this.setOnlineStatus(
+        'MAIN is no longer used. Ask your friend for their unique room code.',
+        true
+      );
+      return;
+    }
     if (code.length < 4 || code.length > 6) {
-      this.setOnlineStatus('Room code must be 4–6 characters (or leave blank for MAIN).', true);
+      this.setOnlineStatus('Room code must be 4–6 characters (A–Z, 2–9).', true);
       return;
     }
     this.setOnlineStatus('Joining room ' + code + '…');

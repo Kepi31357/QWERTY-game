@@ -95,20 +95,35 @@ async function main() {
   try {
     await waitReady(proc);
 
-    /* --- Default MAIN room --- */
+    /* --- Blank create mints a unique private code (never MAIN) --- */
+    var hostAuto = await connect(port);
+    await onceMessage(hostAuto, 'hello');
+    send(hostAuto, { type: 'create_room', nickname: 'DebAuto' });
+    var createdAuto = await onceMessage(hostAuto, 'room_created');
+    assert(createdAuto.code && createdAuto.code !== 'MAIN', 'blank create mints private code');
+    assert(createdAuto.code.length >= 4, 'auto code length ok');
+    assert(createdAuto.defaultRoom !== true, 'auto room is not default MAIN');
+
+    var guestAuto = await connect(port);
+    await onceMessage(guestAuto, 'hello');
+    send(guestAuto, { type: 'join_room', nickname: 'BlakeAuto', code: createdAuto.code });
+    var joinedAuto = await onceMessage(guestAuto, 'joined');
+    assert(joinedAuto.code === createdAuto.code, 'guest joins auto-minted room');
+    assert(joinedAuto.state && joinedAuto.state.board, 'auto room guest receives state');
+
+    /* MAIN create is rejected */
     var hostMain = await connect(port);
     await onceMessage(hostMain, 'hello');
-    send(hostMain, { type: 'create_room', nickname: 'DebMain' });
-    var createdMain = await onceMessage(hostMain, 'room_created');
-    assert(createdMain.code === 'MAIN', 'blank create uses MAIN');
-    assert(createdMain.defaultRoom === true, 'room_created marks defaultRoom');
+    send(hostMain, { type: 'create_room', nickname: 'DebMain', code: 'MAIN' });
+    var mainErr = await onceMessage(hostMain, 'error');
+    assert(mainErr && /unique room code|MAIN/i.test(mainErr.message || ''), 'create MAIN rejected');
 
-    var guestMain = await connect(port);
-    await onceMessage(guestMain, 'hello');
-    send(guestMain, { type: 'join_room', nickname: 'BlakeMain' });
-    var joinedMain = await onceMessage(guestMain, 'joined');
-    assert(joinedMain.code === 'MAIN', 'blank join uses MAIN');
-    assert(joinedMain.state && joinedMain.state.board, 'MAIN guest receives state');
+    /* Blank join is rejected */
+    var guestBlank = await connect(port);
+    await onceMessage(guestBlank, 'hello');
+    send(guestBlank, { type: 'join_room', nickname: 'BlakeBlank' });
+    var blankErr = await onceMessage(guestBlank, 'error');
+    assert(blankErr && /room code/i.test(blankErr.message || ''), 'blank join rejected');
 
     /* --- Private rooms coexist --- */
     var hostA = await connect(port);
@@ -167,15 +182,16 @@ async function main() {
     var stateB = await onceMessage(guestB, 'game_start', 5000);
     assert(stateB && stateB.state && stateB.state.gameOver !== true, 'TESTB still in progress after TESTA resign');
 
-    /* Second blank create while MAIN exists → private auto code */
+    /* Another blank create → different private code */
     var hostExtra = await connect(port);
     await onceMessage(hostExtra, 'hello');
     send(hostExtra, { type: 'create_room', nickname: 'Extra' });
     var createdExtra = await onceMessage(hostExtra, 'room_created');
-    assert(createdExtra.code !== 'MAIN', 'blank create while MAIN busy mints private code');
+    assert(createdExtra.code !== 'MAIN', 'second blank create is not MAIN');
+    assert(createdExtra.code !== createdAuto.code, 'second blank create is a different code');
     assert(createdExtra.code.length >= 4, 'private code length ok');
 
-    [hostMain, guestMain, hostA, guestA, hostB, guestB, hostExtra].forEach(function (ws) {
+    [hostAuto, guestAuto, hostMain, guestBlank, hostA, guestA, hostB, guestB, hostExtra].forEach(function (ws) {
       try {
         ws.close();
       } catch (_) {}

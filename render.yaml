@@ -12,5 +12,5 @@ services:
       - key: NODE_VERSION
         value: "20"
       - key: PUBLIC_BASE_URL
-        sync: false
+        value: https://qwerty-game.onrender.com
     healthCheckPath: /
