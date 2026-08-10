@@ -1048,6 +1048,8 @@ class Game {
     }
     var headerEl = document.querySelector('.board-top-header');
     var headerH = headerEl && headerEl.offsetHeight > 0 ? headerEl.offsetHeight : 0;
+    /* Cap so a tall logo asset cannot shrink the board again. */
+    headerH = Math.min(headerH, 86);
     return {
       oppRackH: oppH,
       humanRackH: humanH,
@@ -1071,13 +1073,8 @@ class Game {
       reserved += parseFloat(appStyle.gap) || 0;
     }
     reserved += 6; /* table gap */
-    /* Compact logo header above the grid. */
-    var headerEl = document.querySelector('.board-top-header');
-    if (headerEl && headerEl.offsetHeight > 10) {
-      reserved += headerEl.offsetHeight;
-    } else {
-      reserved += 48;
-    }
+    /* Compact logo header above the grid — fixed budget, not live logo height. */
+    reserved += 64;
     /* Human rack sits under the board (outside the player panel). */
     var humanRack = document.querySelector('.board-human-rack');
     if (humanRack && humanRack.offsetHeight > 10) {
