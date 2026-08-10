@@ -175,8 +175,9 @@ body.game-exited .app {
 }
 
 .main-menu-title .qwerty-header-img {
-  width: min(100%, 280px);
-  max-height: 72px;
+  width: min(100%, 400px);
+  height: auto;
+  max-height: none;
   object-fit: contain;
   object-position: center;
   background: transparent;
@@ -740,8 +741,9 @@ body.game-exited .app {
   }
 
   .main-menu-title .qwerty-header-img {
-    max-height: 56px;
-    width: min(100%, 240px);
+    width: min(100%, 360px);
+    height: auto;
+    max-height: none;
   }
 
   .main-menu-section {
@@ -810,8 +812,9 @@ body.game-exited .app {
 
 @media (max-height: 740px) {
   .main-menu-title .qwerty-header-img {
-    max-height: 44px;
-    width: min(100%, 200px);
+    width: min(100%, 320px);
+    height: auto;
+    max-height: none;
   }
 
   .difficulty-hints {
@@ -1837,8 +1840,9 @@ body.game-exited .app {
 }
 
 .board-top-header .qwerty-header-img {
-  width: min(100%, 300px);
-  max-height: 64px;
+  width: min(100%, 400px);
+  height: auto;
+  max-height: none;
   object-fit: contain;
   object-position: center;
   background: transparent;
@@ -3725,8 +3729,9 @@ body.menu-visible .game-over-splash {
   }
 
   body:not(.menu-visible):not(.game-exited) .board-top-header .qwerty-header-img {
-    width: min(100%, 200px);
-    max-height: 44px;
+    width: min(100%, 320px);
+    height: auto;
+    max-height: none;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-opponent-rack.board-grid-rack {
