@@ -177,7 +177,7 @@ body.game-exited .app {
 .main-menu-title .qwerty-header-img {
   width: auto;
   height: auto;
-  max-width: min(100%, 365px);
+  max-width: min(100%, 425px);
   max-height: none;
   object-fit: contain;
   object-position: center;
@@ -744,7 +744,7 @@ body.game-exited .app {
 
   .main-menu-title .qwerty-header-img {
     width: auto;
-    max-width: min(100%, 320px);
+    max-width: min(100%, 380px);
     height: auto;
     max-height: none;
     object-fit: contain;
@@ -817,7 +817,7 @@ body.game-exited .app {
 @media (max-height: 740px) {
   .main-menu-title .qwerty-header-img {
     width: auto;
-    max-width: min(100%, 300px);
+    max-width: min(100%, 340px);
     height: auto;
     max-height: none;
     object-fit: contain;
@@ -1846,7 +1846,7 @@ body.game-exited .app {
   display: block;
   width: auto;
   height: auto;
-  max-width: min(100%, 365px);
+  max-width: min(100%, 425px);
   max-height: none;
   margin: 0 auto;
   object-fit: contain;
@@ -1859,12 +1859,12 @@ body.game-exited .app {
 
 .board-top-header .qwerty-header-img {
   /*
-   * ~365px wide; height:auto + contain for clean scale.
+   * ~425px wide; height:auto + contain for clean scale.
    * Header clips vertically so board chrome / cellSize stay stable.
    */
   width: auto;
   height: auto;
-  max-width: min(100%, 365px);
+  max-width: min(100%, 425px);
   max-height: none;
   object-fit: contain;
   object-position: center 45%;
@@ -3761,7 +3761,7 @@ body.menu-visible .game-over-splash {
   body:not(.menu-visible):not(.game-exited) .board-top-header .qwerty-header-img {
     width: auto;
     height: auto;
-    max-width: min(100%, 350px);
+    max-width: min(100%, 400px);
     max-height: none;
     object-fit: contain;
     object-position: center 45%;
