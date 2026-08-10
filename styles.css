@@ -177,7 +177,7 @@ body.game-exited .app {
 .main-menu-title .qwerty-header-img {
   width: auto;
   height: auto;
-  max-width: min(100%, 350px);
+  max-width: min(100%, 365px);
   max-height: none;
   object-fit: contain;
   object-position: center;
@@ -1841,12 +1841,12 @@ body.game-exited .app {
   overflow: visible;
 }
 
-/* Brand header art — 1000px source, normal browser downscaling */
+/* Brand header art — 1400px transparent source, normal browser downscaling */
 .qwerty-header-img {
   display: block;
   width: auto;
   height: auto;
-  max-width: min(100%, 350px);
+  max-width: min(100%, 365px);
   max-height: none;
   margin: 0 auto;
   object-fit: contain;
@@ -1859,12 +1859,12 @@ body.game-exited .app {
 
 .board-top-header .qwerty-header-img {
   /*
-   * ~350px wide; height:auto + contain for clean scale.
+   * ~365px wide; height:auto + contain for clean scale.
    * Header clips vertically so board chrome / cellSize stay stable.
    */
   width: auto;
   height: auto;
-  max-width: min(100%, 350px);
+  max-width: min(100%, 365px);
   max-height: none;
   object-fit: contain;
   object-position: center 45%;
@@ -3761,7 +3761,7 @@ body.menu-visible .game-over-splash {
   body:not(.menu-visible):not(.game-exited) .board-top-header .qwerty-header-img {
     width: auto;
     height: auto;
-    max-width: min(100%, 340px);
+    max-width: min(100%, 350px);
     max-height: none;
     object-fit: contain;
     object-position: center 45%;
