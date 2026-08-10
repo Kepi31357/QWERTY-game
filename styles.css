@@ -177,11 +177,12 @@ body.game-exited .app {
 .main-menu-title .qwerty-header-img {
   width: auto;
   height: auto;
-  max-width: min(100%, 300px);
+  max-width: min(100%, 320px);
   max-height: none;
   object-fit: contain;
   object-position: center;
   background: transparent;
+  image-rendering: auto;
 }
 
 .main-menu-section {
@@ -742,10 +743,11 @@ body.game-exited .app {
   }
 
   .main-menu-title .qwerty-header-img {
-    width: min(100%, 280px);
-    max-width: min(100%, 280px);
+    width: auto;
+    max-width: min(100%, 300px);
     height: auto;
     max-height: none;
+    object-fit: contain;
   }
 
   .main-menu-section {
@@ -814,10 +816,11 @@ body.game-exited .app {
 
 @media (max-height: 740px) {
   .main-menu-title .qwerty-header-img {
-    width: min(100%, 260px);
-    max-width: min(100%, 260px);
+    width: auto;
+    max-width: min(100%, 280px);
     height: auto;
     max-height: none;
+    object-fit: contain;
   }
 
   .difficulty-hints {
@@ -1838,12 +1841,12 @@ body.game-exited .app {
   overflow: visible;
 }
 
-/* Brand header art — normal browser downscaling (no crisp-edges) */
+/* Brand header art — 800px source, normal browser downscaling */
 .qwerty-header-img {
   display: block;
   width: auto;
   height: auto;
-  max-width: min(100%, 300px);
+  max-width: min(100%, 320px);
   max-height: none;
   margin: 0 auto;
   object-fit: contain;
@@ -1856,15 +1859,15 @@ body.game-exited .app {
 
 .board-top-header .qwerty-header-img {
   /*
-   * Keep ~300px wide look; uniform scale via max-width + height:auto.
-   * Header clips vertically (overflow:hidden) so board chrome stays short.
+   * ~320px wide; height:auto + contain for clean scale.
+   * Header clips vertically so board chrome / cellSize stay stable.
    */
   width: auto;
   height: auto;
-  max-width: min(100%, 300px);
+  max-width: min(100%, 320px);
   max-height: none;
   object-fit: contain;
-  object-position: center 42%;
+  object-position: center 45%;
   background: transparent;
   flex-shrink: 0;
   image-rendering: auto;
@@ -3758,10 +3761,10 @@ body.menu-visible .game-over-splash {
   body:not(.menu-visible):not(.game-exited) .board-top-header .qwerty-header-img {
     width: auto;
     height: auto;
-    max-width: min(100%, 280px);
+    max-width: min(100%, 300px);
     max-height: none;
     object-fit: contain;
-    object-position: center 42%;
+    object-position: center 45%;
     image-rendering: auto;
   }
 
