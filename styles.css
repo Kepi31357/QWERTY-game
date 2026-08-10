@@ -877,18 +877,28 @@ body.game-exited .app {
     padding: 6px;
     align-items: flex-start;
     padding-top: max(6px, env(safe-area-inset-top, 0px));
+    background: linear-gradient(165deg, #24143f 0%, #3d1d63 42%, #5c2d91 100%);
+    backdrop-filter: none;
   }
 
   .main-menu-dialog {
     width: min(100%, 400px);
     max-height: calc(100dvh - 12px);
-    padding: 8px 12px 10px;
+    padding: 0 12px 12px;
     border-radius: 16px;
+    /* Rich purple shell so the colorful logo pops; form blocks stay light below. */
+    background: linear-gradient(180deg, #2a1648 0%, #3d1d63 22%, #5c2d91 72%, #4a2578 100%);
+    border-color: rgba(255, 255, 255, 0.28);
+    color: #fff8e7;
+    box-shadow: 0 16px 40px rgba(18, 8, 36, 0.55);
   }
 
   .main-menu-title {
-    margin: 0 0 4px;
+    margin: 0 -12px 8px;
+    padding: 14px 12px 12px;
     line-height: 0;
+    background: linear-gradient(180deg, #1e1038 0%, #2d1b4e 55%, transparent 100%);
+    border-radius: 14px 14px 0 0;
   }
 
   .main-menu-title .qwerty-header-img {
@@ -899,6 +909,43 @@ body.game-exited .app {
     object-fit: contain;
     object-position: center;
     margin: 0 auto;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
+  }
+
+  /* Light panels keep nickname/avatar/room controls readable on the dark shell */
+  .main-menu-section--online {
+    background: rgba(255, 248, 231, 0.97);
+    border-color: rgba(255, 255, 255, 0.45);
+    color: var(--text-dark);
+  }
+
+  .main-menu-section--online .main-menu-heading,
+  .main-menu-section--online .main-menu-online-hint,
+  .main-menu-section--online .online-nickname-label {
+    color: var(--pogo-purple);
+  }
+
+  .main-menu-section:not(.main-menu-section--online) {
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: rgba(255, 248, 231, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .main-menu-section:not(.main-menu-section--online) .main-menu-heading,
+  .main-menu-section:not(.main-menu-section--online) .main-menu-subheading,
+  .main-menu-section:not(.main-menu-section--online) .main-menu-online-hint {
+    color: #f3e8ff;
+    opacity: 1;
+  }
+
+  .main-menu-rules-link {
+    color: var(--pogo-yellow);
+  }
+
+  .main-menu-rules-link:hover,
+  .main-menu-rules-link:focus-visible {
+    color: #ffe082;
   }
 
   .main-menu-section {
