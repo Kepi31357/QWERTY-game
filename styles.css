@@ -175,7 +175,7 @@ body.game-exited .app {
 }
 
 .main-menu-title .qwerty-header-img {
-  width: min(100%, 300px);
+  width: auto;
   height: auto;
   max-width: min(100%, 300px);
   max-height: none;
@@ -980,13 +980,15 @@ body.game-exited .app {
   grid-column: 1;
   grid-row: 1;
   /*
-   * Keep header chrome ~pre-logo-resize height so .board-wrap (and cellSize)
-   * stay large. Logo stays wide; vertical crop shows the wordmark cleanly.
+   * Fixed chrome height so board sizing stays stable. Logo is clipped here
+   * (not transform-scaled) so it can use height:auto for sharper resampling.
    */
-  flex: 0 0 auto;
+  flex: 0 0 86px;
   flex-shrink: 0;
   width: 100%;
+  height: 86px;
   max-height: 86px;
+  min-height: 0;
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -1836,10 +1838,10 @@ body.game-exited .app {
   overflow: visible;
 }
 
-/* Brand header art (tile wordmark + tagline) — ~300px wide, natural aspect */
+/* Brand header art (tile wordmark + tagline) — crisp downscale from 1366×768 source */
 .qwerty-header-img {
   display: block;
-  width: min(100%, 300px);
+  width: auto;
   height: auto;
   max-width: min(100%, 300px);
   max-height: none;
@@ -1849,18 +1851,28 @@ body.game-exited .app {
   background: transparent;
   user-select: none;
   -webkit-user-drag: none;
+  /* Prefer high-quality downscaling on retina / 1x */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
+  image-rendering: crisp-edges;
+  -ms-interpolation-mode: bicubic;
+  transform: none;
 }
 
 .board-top-header .qwerty-header-img {
-  /* Wide + sharp wordmark without reclaiming board height */
-  width: min(100%, 300px);
+  /*
+   * Keep ~300px wide look; uniform scale via max-width + height:auto.
+   * Header clips vertically (overflow:hidden) so board chrome stays short.
+   */
+  width: auto;
+  height: auto;
   max-width: min(100%, 300px);
-  height: 72px;
-  max-height: 72px;
-  object-fit: cover;
+  max-height: none;
+  object-fit: contain;
   object-position: center 42%;
   background: transparent;
   flex-shrink: 0;
+  transform: none;
 }
 
 .tagline {
@@ -3727,12 +3739,14 @@ body.menu-visible .game-over-splash {
   body:not(.menu-visible):not(.game-exited) .board-top-header {
     order: 1;
     display: flex;
-    flex: 0 0 auto;
+    flex: 0 0 70px;
     flex-shrink: 0;
     justify-content: center;
     align-items: center;
     width: 100%;
+    height: 70px;
     max-height: 70px;
+    min-height: 0;
     overflow: hidden;
     padding: 3px 4px 2px;
     background: transparent;
@@ -3747,12 +3761,13 @@ body.menu-visible .game-over-splash {
   }
 
   body:not(.menu-visible):not(.game-exited) .board-top-header .qwerty-header-img {
-    width: min(100%, 280px);
+    width: auto;
+    height: auto;
     max-width: min(100%, 280px);
-    height: 58px;
-    max-height: 58px;
-    object-fit: cover;
+    max-height: none;
+    object-fit: contain;
     object-position: center 42%;
+    transform: none;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-opponent-rack.board-grid-rack {

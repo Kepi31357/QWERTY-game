@@ -104,12 +104,17 @@ ul {
 }
 
 .nav-brand img {
-  width: clamp(132px, 28vw, 168px);
+  width: auto;
   height: auto;
+  max-width: clamp(132px, 28vw, 168px);
   max-height: calc(var(--nav-h) - 0.85rem);
   object-fit: contain;
   object-position: left center;
   background: transparent;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
+  image-rendering: crisp-edges;
+  transform: none;
 }
 
 .nav-links {
@@ -289,14 +294,15 @@ ul {
 .hero-brand {
   width: min(86vw, 380px);
   margin: 0;
-  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.3));
+  /* Avoid filter: drop-shadow on the logo — it softens the bitmap */
+  filter: none;
   line-height: 0;
   background: transparent;
 }
 
 .hero-brand img {
   display: block;
-  width: min(100%, 380px);
+  width: auto;
   height: auto;
   max-width: min(100%, 380px);
   max-height: none;
@@ -305,6 +311,10 @@ ul {
   object-position: center;
   background: transparent;
   mix-blend-mode: normal;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
+  image-rendering: crisp-edges;
+  transform: none;
 }
 
 .hero-line {
@@ -952,10 +962,10 @@ ul {
   }
 
   .hero-brand img {
-    width: min(100%, 320px);
+    width: auto;
+    height: auto;
     max-width: min(100%, 320px);
     max-height: none;
-    height: auto;
   }
 
   .hero .btn-play-lg {
@@ -1039,15 +1049,16 @@ ul {
     order: 1;
     width: min(72vw, var(--hero-logo-max-w));
     margin: 0.15rem auto 0.05rem;
-    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.28));
+    filter: none;
   }
 
   .hero-brand img {
-    width: min(100%, var(--hero-logo-max-w));
+    width: auto;
+    height: auto;
     max-width: min(100%, var(--hero-logo-max-w));
     max-height: none;
-    height: auto;
     object-fit: contain;
+    transform: none;
   }
 
   .hero-line {
