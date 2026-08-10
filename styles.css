@@ -1838,7 +1838,7 @@ body.game-exited .app {
   overflow: visible;
 }
 
-/* Brand header art (tile wordmark + tagline) — crisp downscale from 1366×768 source */
+/* Brand header art — normal browser downscaling (no crisp-edges) */
 .qwerty-header-img {
   display: block;
   width: auto;
@@ -1851,12 +1851,7 @@ body.game-exited .app {
   background: transparent;
   user-select: none;
   -webkit-user-drag: none;
-  /* Prefer high-quality downscaling on retina / 1x */
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: high-quality;
-  image-rendering: crisp-edges;
-  -ms-interpolation-mode: bicubic;
-  transform: none;
+  image-rendering: auto;
 }
 
 .board-top-header .qwerty-header-img {
@@ -1872,7 +1867,7 @@ body.game-exited .app {
   object-position: center 42%;
   background: transparent;
   flex-shrink: 0;
-  transform: none;
+  image-rendering: auto;
 }
 
 .tagline {
@@ -3767,7 +3762,7 @@ body.menu-visible .game-over-splash {
     max-height: none;
     object-fit: contain;
     object-position: center 42%;
-    transform: none;
+    image-rendering: auto;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-opponent-rack.board-grid-rack {

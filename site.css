@@ -111,10 +111,7 @@ ul {
   object-fit: contain;
   object-position: left center;
   background: transparent;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: high-quality;
-  image-rendering: crisp-edges;
-  transform: none;
+  image-rendering: auto;
 }
 
 .nav-links {
@@ -294,7 +291,6 @@ ul {
 .hero-brand {
   width: min(86vw, 380px);
   margin: 0;
-  /* Avoid filter: drop-shadow on the logo — it softens the bitmap */
   filter: none;
   line-height: 0;
   background: transparent;
@@ -311,10 +307,7 @@ ul {
   object-position: center;
   background: transparent;
   mix-blend-mode: normal;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: high-quality;
-  image-rendering: crisp-edges;
-  transform: none;
+  image-rendering: auto;
 }
 
 .hero-line {
@@ -1058,7 +1051,7 @@ ul {
     max-width: min(100%, var(--hero-logo-max-w));
     max-height: none;
     object-fit: contain;
-    transform: none;
+    image-rendering: auto;
   }
 
   .hero-line {
