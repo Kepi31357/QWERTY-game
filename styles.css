@@ -175,9 +175,10 @@ body.game-exited .app {
 }
 
 .main-menu-title .qwerty-header-img {
-  width: min(100%, 400px);
+  width: auto;
   height: auto;
-  max-height: none;
+  max-width: min(100%, 320px);
+  max-height: 88px;
   object-fit: contain;
   object-position: center;
   background: transparent;
@@ -741,9 +742,10 @@ body.game-exited .app {
   }
 
   .main-menu-title .qwerty-header-img {
-    width: min(100%, 360px);
+    max-width: min(100%, 280px);
+    max-height: 72px;
+    width: auto;
     height: auto;
-    max-height: none;
   }
 
   .main-menu-section {
@@ -812,9 +814,10 @@ body.game-exited .app {
 
 @media (max-height: 740px) {
   .main-menu-title .qwerty-header-img {
-    width: min(100%, 320px);
+    max-width: min(100%, 260px);
+    max-height: 64px;
+    width: auto;
     height: auto;
-    max-height: none;
   }
 
   .difficulty-hints {
@@ -976,15 +979,19 @@ body.game-exited .app {
 .board-top-header {
   grid-column: 1;
   grid-row: 1;
+  /* Fixed chrome budget — logo size must not steal board height */
+  flex: 0 0 auto;
   flex-shrink: 0;
   width: 100%;
+  max-height: 96px;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
   background: transparent;
   border-radius: 14px 14px 0 0;
   box-sizing: border-box;
-  padding: 4px 8px 2px;
+  padding: 6px 8px 4px;
 }
 
 .board-top-header .board-grid-header {
@@ -1829,8 +1836,10 @@ body.game-exited .app {
 /* Brand header art (tile wordmark + tagline) */
 .qwerty-header-img {
   display: block;
-  width: min(100%, 520px);
+  width: auto;
   height: auto;
+  max-width: min(100%, 320px);
+  max-height: 88px;
   margin: 0 auto;
   object-fit: contain;
   object-position: center;
@@ -1840,12 +1849,14 @@ body.game-exited .app {
 }
 
 .board-top-header .qwerty-header-img {
-  width: min(100%, 400px);
+  width: auto;
   height: auto;
-  max-height: none;
+  max-width: min(100%, 320px);
+  max-height: 80px;
   object-fit: contain;
   object-position: center;
   background: transparent;
+  flex-shrink: 0;
 }
 
 .tagline {
@@ -3712,11 +3723,14 @@ body.menu-visible .game-over-splash {
   body:not(.menu-visible):not(.game-exited) .board-top-header {
     order: 1;
     display: flex;
+    flex: 0 0 auto;
     flex-shrink: 0;
     justify-content: center;
     align-items: center;
     width: 100%;
-    padding: 2px 4px 0;
+    max-height: 72px;
+    overflow: hidden;
+    padding: 4px 4px 2px;
     background: transparent;
     border-radius: 10px 10px 0 0;
     grid-column: auto;
@@ -3724,14 +3738,16 @@ body.menu-visible .game-over-splash {
   }
 
   body:not(.menu-visible):not(.game-exited) .board-top-header .board-grid-header {
-    width: 100%;
+    width: max-content;
     max-width: 100%;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-top-header .qwerty-header-img {
-    width: min(100%, 320px);
+    max-width: min(100%, 270px);
+    max-height: 60px;
+    width: auto;
     height: auto;
-    max-height: none;
+    object-fit: contain;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-opponent-rack.board-grid-rack {

@@ -287,7 +287,7 @@ ul {
 }
 
 .hero-brand {
-  width: min(78vw, 500px);
+  width: min(78vw, 320px);
   margin: 0;
   filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.3));
   line-height: 0;
@@ -295,9 +295,11 @@ ul {
 }
 
 .hero-brand img {
-  width: 100%;
+  display: block;
+  width: auto;
   height: auto;
-  max-height: clamp(140px, 24vh, 220px);
+  max-width: min(100%, 320px);
+  max-height: 120px;
   margin: 0 auto;
   object-fit: contain;
   object-position: center;
@@ -944,12 +946,15 @@ ul {
   }
 
   .hero-brand {
-    width: min(82vw, 340px);
+    width: min(82vw, 280px);
     margin: 0;
   }
 
   .hero-brand img {
-    max-height: 82px;
+    max-width: min(100%, 280px);
+    max-height: 96px;
+    width: auto;
+    height: auto;
   }
 
   .hero-line {
@@ -1005,7 +1010,8 @@ ul {
 
   .hero {
     /* Tweak logo size here later without touching layout */
-    --hero-logo-max-h: 68px;
+    --hero-logo-max-w: 270px;
+    --hero-logo-max-h: 80px;
     --hero-stack-gap: 0.45rem;
     --hero-block-gap: 0.6rem;
     min-height: auto;
@@ -1027,13 +1033,17 @@ ul {
 
   .hero-brand {
     order: 1;
-    width: min(64vw, 240px);
-    margin: 0.1rem auto 0;
+    width: min(72vw, var(--hero-logo-max-w));
+    margin: 0.15rem auto 0.05rem;
     filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.28));
   }
 
   .hero-brand img {
+    max-width: min(100%, var(--hero-logo-max-w));
     max-height: var(--hero-logo-max-h);
+    width: auto;
+    height: auto;
+    object-fit: contain;
   }
 
   .hero-line {
@@ -1226,7 +1236,8 @@ ul {
   }
 
   .hero {
-    --hero-logo-max-h: 60px;
+    --hero-logo-max-w: 260px;
+    --hero-logo-max-h: 72px;
     --hero-stack-gap: 0.4rem;
     --hero-block-gap: 0.5rem;
     padding:
@@ -1236,7 +1247,7 @@ ul {
   }
 
   .hero-brand {
-    width: min(60vw, 220px);
+    width: min(68vw, var(--hero-logo-max-w));
   }
 
   .hero-line {
