@@ -287,7 +287,7 @@ ul {
 }
 
 .hero-brand {
-  width: min(78vw, 320px);
+  width: min(86vw, 380px);
   margin: 0;
   filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.3));
   line-height: 0;
@@ -296,10 +296,10 @@ ul {
 
 .hero-brand img {
   display: block;
-  width: auto;
+  width: min(100%, 380px);
   height: auto;
-  max-width: min(100%, 320px);
-  max-height: 120px;
+  max-width: min(100%, 380px);
+  max-height: none;
   margin: 0 auto;
   object-fit: contain;
   object-position: center;
@@ -335,10 +335,10 @@ ul {
 }
 
 .hero .btn-play-lg {
-  min-height: clamp(3.35rem, 6vh, 4.1rem);
-  min-width: min(92vw, 300px);
-  padding: 0.95rem 2.4rem;
-  font-size: clamp(1.15rem, 2.1vw, 1.35rem);
+  min-height: clamp(2.85rem, 5vh, 3.35rem);
+  min-width: min(88vw, 240px);
+  padding: 0.75rem 1.85rem;
+  font-size: clamp(1.02rem, 1.8vw, 1.15rem);
 }
 
 .hero-preview {
@@ -946,15 +946,22 @@ ul {
   }
 
   .hero-brand {
-    width: min(82vw, 280px);
+    width: min(84vw, 320px);
     margin: 0;
   }
 
   .hero-brand img {
-    max-width: min(100%, 280px);
-    max-height: 96px;
-    width: auto;
+    width: min(100%, 320px);
+    max-width: min(100%, 320px);
+    max-height: none;
     height: auto;
+  }
+
+  .hero .btn-play-lg {
+    min-width: min(88vw, 220px);
+    min-height: 3rem;
+    font-size: 1.05rem;
+    padding: 0.7rem 1.5rem;
   }
 
   .hero-line {
@@ -992,13 +999,8 @@ ul {
     padding-top: 0.1rem;
   }
 
-  .hero .btn-play-lg {
-    width: min(100%, 280px);
-    min-height: 3.25rem;
-  }
-
   .btn-play-lg {
-    width: min(100%, 300px);
+    width: min(100%, 240px);
   }
 }
 
@@ -1010,10 +1012,10 @@ ul {
 
   .hero {
     /* Tweak logo size here later without touching layout */
-    --hero-logo-max-w: 270px;
-    --hero-logo-max-h: 80px;
-    --hero-stack-gap: 0.45rem;
-    --hero-block-gap: 0.6rem;
+    --hero-logo-max-w: 300px;
+    --hero-logo-max-h: none;
+    --hero-stack-gap: 0.5rem;
+    --hero-block-gap: 0.65rem;
     min-height: auto;
     justify-content: flex-start;
     padding:
@@ -1039,9 +1041,9 @@ ul {
   }
 
   .hero-brand img {
+    width: min(100%, var(--hero-logo-max-w));
     max-width: min(100%, var(--hero-logo-max-w));
-    max-height: var(--hero-logo-max-h);
-    width: auto;
+    max-height: none;
     height: auto;
     object-fit: contain;
   }
@@ -1086,17 +1088,17 @@ ul {
   }
 
   .hero .btn-play-lg {
-    width: 100%;
-    max-width: none;
-    min-height: 3.35rem;
-    padding: 0.9rem 1.35rem;
-    font-size: 1.2rem;
+    width: min(100%, 220px);
+    max-width: 220px;
+    min-height: 2.85rem;
+    padding: 0.7rem 1.2rem;
+    font-size: 1.05rem;
     font-weight: 800;
-    letter-spacing: 0.06em;
-    border-radius: 15px;
-    margin: 0;
+    letter-spacing: 0.05em;
+    border-radius: 14px;
+    margin: 0 auto;
     box-shadow:
-      0 10px 22px rgba(0, 0, 0, 0.3),
+      0 8px 18px rgba(0, 0, 0, 0.28),
       0 2px 0 rgba(255, 255, 255, 0.35) inset;
   }
 
@@ -1236,10 +1238,10 @@ ul {
   }
 
   .hero {
-    --hero-logo-max-w: 260px;
-    --hero-logo-max-h: 72px;
-    --hero-stack-gap: 0.4rem;
-    --hero-block-gap: 0.5rem;
+    --hero-logo-max-w: 280px;
+    --hero-logo-max-h: none;
+    --hero-stack-gap: 0.45rem;
+    --hero-block-gap: 0.55rem;
     padding:
       max(0.65rem, env(safe-area-inset-top, 0px))
       0.85rem
@@ -1266,8 +1268,10 @@ ul {
   }
 
   .hero .btn-play-lg {
-    min-height: 3.2rem;
-    font-size: 1.14rem;
+    width: min(100%, 200px);
+    max-width: 200px;
+    min-height: 2.7rem;
+    font-size: 1rem;
   }
 
   .feature-grid {
