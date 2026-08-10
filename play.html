@@ -10,7 +10,7 @@
   <link rel="icon" href="/images/favicon.png?v=1" type="image/png" sizes="any">
   <link rel="apple-touch-icon" href="/images/favicon.png?v=1">
   <title>QWERTY Word Game</title>
-  <link rel="stylesheet" href="styles.css?v=396">
+  <link rel="stylesheet" href="styles.css?v=397">
   <style id="whos-here-opponent-layout">
     /*
      * Computer row — TABLE layout (cannot sit side-by-side with buttons).
@@ -161,7 +161,7 @@
         <button type="button" class="btn btn-secondary sound-toggle" id="btn-sound-toggle" aria-pressed="true" title="Mute game sounds">Sound: On</button>
       </div>
       <p class="main-menu-rules">
-        <a href="#" class="legend-link main-menu-rules-link" id="main-menu-rules-link">Game rules</a>
+        <a href="#" class="legend-link main-menu-rules-link" id="main-menu-rules-link" role="button">Game rules</a>
       </p>
     </div>
   </div>
@@ -487,14 +487,15 @@
       </div>
     </div>
 
-    <div class="rules-overlay" id="rules-modal" hidden aria-hidden="true">
-      <div class="rules-dialog" role="dialog" aria-labelledby="rules-title">
-        <h2 class="rules-title" id="rules-title">Game Rules</h2>
-        <div class="rules-body" id="rules-body"></div>
-        <button type="button" class="btn btn-primary rules-close" id="rules-close">OK</button>
-      </div>
-    </div>
+  </div>
 
+  <!-- Outside .app so it stacks above the start menu and stays tappable while menu-open. -->
+  <div class="rules-overlay" id="rules-modal" hidden aria-hidden="true">
+    <div class="rules-dialog" role="dialog" aria-modal="true" aria-labelledby="rules-title">
+      <h2 class="rules-title" id="rules-title">Game Rules</h2>
+      <div class="rules-body" id="rules-body"></div>
+      <button type="button" class="btn btn-primary rules-close" id="rules-close">OK</button>
+    </div>
   </div>
 
   <div class="exchange-notice-overlay" id="exchange-notice-overlay" hidden aria-hidden="true">
@@ -538,6 +539,6 @@
   <script src="validateAndScorePlacement.js?v=338"></script>
   <script src="game-engine.js?v=338"></script>
   <script src="online.js?v=338"></script>
-  <script src="game.js?v=360" onerror="qwertyBootError('Failed to load game.js — use OPEN ONLINE GAME.bat to launch.')"></script>
+  <script src="game.js?v=361" onerror="qwertyBootError('Failed to load game.js — use OPEN ONLINE GAME.bat to launch.')"></script>
 </body>
 </html>

@@ -8395,7 +8395,10 @@ class Game {
     this.renderRulesContent();
     var self = this;
     var openRules = function (e) {
-      if (e) e.preventDefault();
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       self.showRulesModal();
     };
     if (this.ui.rulesLink) {
