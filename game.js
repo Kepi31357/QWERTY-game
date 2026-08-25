@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '368';
+  var QWERTY_BUILD = '372';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -1106,10 +1106,10 @@ class Game {
       reserved += 200;
     }
     /* Single-line in-flow status strip under the rack. */
-    reserved += 20;
+    reserved += 16;
     reserved += 2;
-    /* Extra cushion so the top/bottom board rows are never clipped by overflow:hidden. */
-    reserved += 4;
+    /* Safe area + util-row breathing room so round icons are not clipped. */
+    reserved += 12;
     this._compactChromeReserve = reserved;
     return this._compactChromeReserve;
   }
@@ -1514,9 +1514,9 @@ class Game {
       this._compactChromeReserve = null;
     }
 
-    /* One-shot: shrink mobile chrome and fill the wrap with a larger board. */
-    if (!this._mobileBoardFill358) {
-      this._mobileBoardFill358 = true;
+    /* One-shot: pin square board under the logo; keep controls at the bottom. */
+    if (!this._mobilePlayFit372) {
+      this._mobilePlayFit372 = true;
       this._compactLayoutLock = null;
       this._compactChromeReserve = null;
     }
@@ -1556,21 +1556,22 @@ class Game {
         this._compactChromeReserve = null; /* refresh chrome estimate on real width change */
       }
       /*
-       * Fill the wrap: grow to unused wrap space, shrink if the canvas would clip.
-       * Height-only lock used to keep a small board even after chrome shrank.
+       * Never let the canvas taller than the wrap (clips top/bottom rows).
+       * Do not grow into leftover wrap height — a width-capped square board
+       * cannot use that leftover, and growing the wrap recreates a logo gap.
        */
       if (boardWrap && boardWrap.clientHeight > 80) {
         var wrapFitH = boardWrap.clientHeight - wrapPadV - 2;
         var wrapFitW = Math.floor(
           Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW) / COLS
         );
-        var fillCell = Math.min(
+        var fitCell = Math.min(
           Math.floor(wrapFitH / ROWS),
           wrapFitW,
           COMPACT_MAX_CELL_SIZE
         );
-        if (fillCell >= MIN_CELL_SIZE && fillCell !== nextCellSize) {
-          nextCellSize = fillCell;
+        if (fitCell >= MIN_CELL_SIZE && nextCellSize > fitCell) {
+          nextCellSize = fitCell;
           this._compactLayoutLock = { w: lockW, orient: orient, cellSize: nextCellSize };
         }
       }

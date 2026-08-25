@@ -4115,7 +4115,7 @@ body.menu-visible .game-over-splash {
     height: 100dvh;
     max-height: 100dvh;
     overflow: hidden;
-    padding: 2px;
+    padding: 2px 2px max(8px, env(safe-area-inset-bottom, 0px));
     gap: 2px;
     display: flex;
     flex-direction: column;
@@ -4144,6 +4144,25 @@ body.menu-visible .game-over-splash {
     flex-direction: column;
   }
 
+  /* Let the bottom icon row paint fully; only the board wrap clips tiles. */
+  body:not(.menu-visible):not(.game-exited) .game-layout,
+  body:not(.menu-visible):not(.game-exited) .game-main,
+  body:not(.menu-visible):not(.game-exited) .game-play-area,
+  body:not(.menu-visible):not(.game-exited) .game-play-stack,
+  body:not(.menu-visible):not(.game-exited) .game-table {
+    overflow: visible;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .game-board-row,
+  body:not(.menu-visible):not(.game-exited) .board-play-row {
+    overflow: visible;
+    flex: 0 1 auto;
+  }
+
+  body:not(.menu-visible):not(.game-exited) .game-table {
+    justify-content: flex-start;
+  }
+
   body:not(.menu-visible):not(.game-exited) .game-play-stack {
     display: flex;
     grid-template-columns: none;
@@ -4162,6 +4181,7 @@ body.menu-visible .game-over-splash {
   body:not(.menu-visible):not(.game-exited) .board-play-row {
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     grid-template-columns: none;
     grid-template-rows: none;
   }
@@ -4221,7 +4241,7 @@ body.menu-visible .game-over-splash {
     display: flex;
     justify-content: center;
     border-radius: 0 0 10px 10px;
-    padding: 1px 4px 2px;
+    padding: 1px 4px 0;
     flex: 0 0 auto;
   }
 
@@ -4233,10 +4253,10 @@ body.menu-visible .game-over-splash {
     --board-side-w: 0px;
     flex-direction: row;
     flex-wrap: nowrap;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     gap: 0;
-    padding: 1px 2px;
+    padding: 0 2px;
     column-gap: 0;
     box-sizing: border-box;
   }
@@ -4248,11 +4268,12 @@ body.menu-visible .game-over-splash {
 
   body:not(.menu-visible):not(.game-exited) .board-center {
     order: 1;
-    flex: 1 1 auto;
-    width: 100%;
+    flex: 0 0 auto;
+    align-self: flex-start;
+    width: auto;
     min-width: 0;
     max-width: 100%;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
   }
 
@@ -4427,15 +4448,21 @@ body.menu-visible .game-over-splash {
     touch-action: manipulation;
   }
 
+  body:not(.menu-visible):not(.game-exited) .player-panel .panel-details-wide .controls > .btn[hidden] {
+    display: none !important;
+  }
+
   body:not(.menu-visible):not(.game-exited) .mobile-util-row {
     display: flex;
-    flex: 1 1 100%;
+    flex: 0 0 100%;
     width: 100%;
     justify-content: center;
     align-items: center;
-    gap: 14px;
-    margin-top: 0;
-    padding: 0;
+    gap: 16px;
+    margin-top: 16px;
+    padding: 8px 0 10px;
+    box-sizing: border-box;
+    overflow: visible;
     order: 20;
   }
 
@@ -4531,10 +4558,11 @@ body.menu-visible .game-over-splash {
   }
 
   body:not(.menu-visible):not(.game-exited) .board-wrap {
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     min-height: 0;
     max-height: 100%;
     display: flex;
+    align-items: flex-start;
     overflow: hidden;
     grid-template-columns: none;
     grid-template-rows: none;
@@ -4543,7 +4571,9 @@ body.menu-visible .game-over-splash {
   body:not(.menu-visible):not(.game-exited) .board-center {
     min-height: 0;
     display: flex;
-    align-items: center;
+    flex: 0 0 auto;
+    align-self: flex-start;
+    align-items: flex-start;
     justify-content: center;
     overflow: hidden;
     position: relative;
@@ -4560,13 +4590,14 @@ body.menu-visible .game-over-splash {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    flex: 1 1 auto;
+    justify-content: flex-start;
+    flex: 0 1 auto;
     min-height: 0;
   }
 
   body:not(.menu-visible):not(.game-exited) .board-status-bar,
   body:not(.menu-visible):not(.game-exited) #panel-message-row {
-    --qwerty-status-h: 1.4em; /* single-line strip — frees height for a larger board */
+    --qwerty-status-h: 1.15em; /* tight single line — do not crowd the rack */
     position: relative;
     flex: 0 0 var(--qwerty-status-h);
     flex-grow: 0;
@@ -4622,9 +4653,9 @@ body.menu-visible .game-over-splash {
     height: auto;
     min-height: 0 !important;
     max-height: none;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 800;
-    line-height: 1.25;
+    line-height: 1.15;
     white-space: nowrap !important;
     text-align: center !important;
     overflow: visible;
@@ -4742,12 +4773,13 @@ body.menu-visible .game-over-splash {
       "submit"
       "ctrl";
     gap: 2px;
-    padding: 2px 6px 2px;
+    padding: 2px 6px max(14px, calc(env(safe-area-inset-bottom, 0px) + 10px));
+    overflow: visible;
     flex: 0 0 auto;
     flex-shrink: 0;
+    margin-top: auto;
     position: relative;
     z-index: 6;
-    margin-top: 0;
   }
 
   /* Guest: same rack-below-board layout as Deb (start appears bottom-left via 180° map). */
