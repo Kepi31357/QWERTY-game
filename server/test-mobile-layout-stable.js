@@ -59,6 +59,10 @@ assert(gameSrc.indexOf('_mobilePlayability353') >= 0, 'clears lock after shrinki
 assert(gameSrc.indexOf('_mobileHideProfiles354') >= 0, 'clears lock after hiding phone side profiles');
 assert(gameSrc.indexOf('_mobileNoClip355') >= 0, 'clears lock so clipped phone board can refit');
 assert(gameSrc.indexOf('_mobileTighten356') >= 0, 'clears lock after shrinking phone rack chrome');
+assert(gameSrc.indexOf('_mobileStatusLine357') >= 0, 'clears lock after single-line mobile status');
+assert(cssSrc.indexOf('white-space: nowrap !important') >= 0, 'mobile status stays on one line');
+assert(cssSrc.indexOf('overflow-x: auto') >= 0, 'long mobile status can scroll horizontally');
+assert(cssSrc.indexOf('--qwerty-status-h: 1.4em') >= 0, 'mobile status strip is single-line height');
 assert(gameSrc.indexOf('wrapFitH') >= 0 || gameSrc.indexOf('never let the canvas taller') >= 0, 'fits phone canvas inside board-wrap height');
 assert(gameSrc.indexOf('rackTileSize') >= 0, 'compact rack uses shorter tile size');
 assert(htmlSrc.indexOf('mobile-util-row') >= 0, 'mobile util row for round New/Sound/Chat');

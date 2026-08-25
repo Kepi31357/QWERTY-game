@@ -10,7 +10,7 @@
   <link rel="icon" href="/images/favicon.png?v=1" type="image/png" sizes="any">
   <link rel="apple-touch-icon" href="/images/favicon.png?v=1">
   <title>QWERTY Word Game</title>
-  <link rel="stylesheet" href="styles.css?v=400">
+  <link rel="stylesheet" href="styles.css?v=403">
   <style id="whos-here-opponent-layout">
     /*
      * Computer row — TABLE layout (cannot sit side-by-side with buttons).
@@ -165,7 +165,7 @@
         <button type="button" class="btn btn-secondary sound-toggle" id="btn-sound-toggle" aria-pressed="true" title="Mute game sounds">Sound: On</button>
       </div>
       <p class="main-menu-rules">
-        <a href="#" class="legend-link main-menu-rules-link" id="main-menu-rules-link" role="button">Game rules</a>
+        <a href="#" class="legend-link main-menu-rules-link" id="main-menu-rules-link" role="button" title="All words formed by your tiles (including vertical and horizontal crosses) must be valid dictionary words.">Game rules</a>
       </p>
     </div>
   </div>
@@ -419,8 +419,8 @@
         <div class="human-panel-body">
           <div class="human-panel-links-wrap" aria-label="Reference links">
             <div class="human-panel-links">
-              <a href="#" class="legend-link panel-rules-link" id="rules-link">Game rules</a>
-              <a href="#" class="legend-link panel-rules-link" id="two-letter-link">2-letter words</a>
+              <a href="#" class="legend-link panel-rules-link" id="rules-link" title="All words formed by your tiles (including vertical and horizontal crosses) must be valid dictionary words.">Game rules</a>
+              <a href="#" class="legend-link panel-rules-link" id="two-letter-link" title="All words formed by your tiles (including vertical and horizontal crosses) must be valid dictionary words.">2-letter words</a>
             </div>
           </div>
           <div class="human-panel-spacer" aria-hidden="true"></div>
@@ -486,6 +486,9 @@
         <p class="two-letter-intro" id="two-letter-title">
           Here is the full list of 2-letter words in our dictionary. You can play any of these words:
         </p>
+        <p class="two-letter-cross-tip">
+          All words formed by your tiles (including vertical and horizontal crosses) must be valid dictionary words. A 2-letter cross must be on this list too.
+        </p>
         <div class="two-letter-grid" id="two-letter-grid"></div>
         <button type="button" class="btn btn-primary two-letter-close" id="two-letter-close">OK</button>
       </div>
@@ -543,6 +546,6 @@
   <script src="validateAndScorePlacement.js?v=338"></script>
   <script src="game-engine.js?v=338"></script>
   <script src="online.js?v=338"></script>
-  <script src="game.js?v=362" onerror="qwertyBootError('Failed to load game.js — use OPEN ONLINE GAME.bat to launch.')"></script>
+  <script src="game.js?v=367" onerror="qwertyBootError('Failed to load game.js — use OPEN ONLINE GAME.bat to launch.')"></script>
 </body>
 </html>

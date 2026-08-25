@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '358';
+  var QWERTY_BUILD = '367';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -229,6 +229,11 @@
   var GAME_RULES = {
     intro:
       'To play, use the letters in your rack to make a word by placing your first word on the corner colored square. On your next turn, create another word to connect with your first word. You can stack letters. You cannot play on your opponent\'s words until a connection is made. Once both player\'s words are connected, the letter tiles will turn purple and play continues except now you can play on your opponent\'s words.',
+    crossTitle: 'Every new word counts',
+    crossTip:
+      'All words formed by your tiles (including vertical and horizontal crosses) must be valid dictionary words.',
+    crossExample:
+      'Example: if you play EVE next to DINKY, you also make the little up-and-down words KE and YV. If those aren\'t real words, the whole play is rejected — even though EVE is.',
     bullets: [
       'Cover a gold star for an additional 50 points.',
       'Score 10 points per letter for every new word you form (full word length).',
@@ -242,6 +247,7 @@
       'You can choose which level bot you want to play against: Easy, Medium, or Hard.',
     ],
   };
+  var CROSS_WORDS_TIP = GAME_RULES.crossTip;
 
   var TILE_BAG = (function () {
     var counts = { A: 9, B: 2, C: 2, D: 4, E: 12, F: 2, G: 3, H: 2, I: 9, J: 1, K: 1, L: 4, M: 2, N: 6, O: 8, P: 2, Q: 1, R: 6, S: 4, T: 6, U: 4, V: 2, W: 2, X: 1, Y: 2, Z: 1 };
@@ -509,6 +515,9 @@ const BINGO_BONUS = 100; // empty the rack this turn
 const TURN_SECONDS = 120;
 const TIMER_WARN_SECONDS = 30;
 const TIMER_TICK_SECONDS = 10;
+/* Keep invalid-play errors on the status bar; timer warn must not replace them. */
+const PLAY_ERROR_HOLD_MS = 6000;
+const PLAY_ERROR_BANNER_MS = 4200;
 const WIN_SCORE = 1000;
 const AI_THINK_MS = 10000;
 /* How long submitted / opponent plays stay highlighted on the board (desktop + mobile). */
@@ -607,6 +616,9 @@ var BOARD_THEME = {
   bannerExchangeFill: 'rgba(45, 27, 78, 0.94)',
   bannerExchangeBorder: '#ffd23f',
   bannerExchangeGlow: 'rgba(255, 210, 63, 0.45)',
+  bannerErrorFill: 'rgba(92, 18, 32, 0.95)',
+  bannerErrorBorder: '#fb7185',
+  bannerErrorGlow: 'rgba(251, 113, 133, 0.5)',
 };
 
 function applyBoardThemeCss() {
@@ -956,7 +968,8 @@ class Game {
     this.opponentHighlightTimerId = null;
     this.playWordHighlight = null; /* { cellSet, words, scoreResult, pulseAt } */
     this.scoreFx = null; /* floating breakdown after submit */
-    this.boardBannerFx = null; /* upper-band CONNECTION! / bingo / exchange banner */
+    this.boardBannerFx = null; /* upper-band CONNECTION! / bingo / exchange / error banner */
+    this._playErrorUntil = 0; /* pin invalid-play status so the 30s timer cannot replace it */
     this.rackSettleFx = null; /* soft bounce when tiles return to rack */
     this._uiAnimId = null;
     this._previewUiEpoch = 0; /* bumped on every invalid/reset so stale anims die */
@@ -1092,9 +1105,9 @@ class Game {
     } else {
       reserved += 260;
     }
-    /* In-flow status strip under the board + gap so the last row is never covered. */
-    reserved += 28;
-    reserved += 8;
+    /* Single-line in-flow status strip under the rack. */
+    reserved += 22;
+    reserved += 4;
     /* Extra cushion so the top/bottom board rows are never clipped by overflow:hidden. */
     reserved += 16;
     this._compactChromeReserve = reserved;
@@ -1490,6 +1503,13 @@ class Game {
     /* One-shot: shrink phone rack/status chrome so the board can grow. */
     if (!this._mobileTighten356) {
       this._mobileTighten356 = true;
+      this._compactLayoutLock = null;
+      this._compactChromeReserve = null;
+    }
+
+    /* One-shot: single-line mobile status frees height for a larger board. */
+    if (!this._mobileStatusLine357) {
+      this._mobileStatusLine357 = true;
       this._compactLayoutLock = null;
       this._compactChromeReserve = null;
     }
@@ -4187,7 +4207,11 @@ class Game {
   }
 
   showOnlineAlert(text, type) {
-    this.setMessage(text, type);
+    if (type === 'error' && this.isPlayValidationErrorText(text)) {
+      this.showPlayValidationError(text, null, { banner: true });
+    } else {
+      this.setMessage(text, type);
+    }
     if (this.ui.onlineStatus) {
       this.ui.onlineStatus.textContent = text || '';
       this.ui.onlineStatus.classList.toggle('error', type === 'error');
@@ -4942,6 +4966,7 @@ class Game {
     this.pendingPlacements.clear();
     this.scoreFx = null;
     this.boardBannerFx = null;
+    this._playErrorUntil = 0;
     this.playWordHighlight = null;
     this.rackSelectedSlot = -1;
     this.exchangeMode = false;
@@ -5562,7 +5587,9 @@ class Game {
       this.playTimerTickSound();
     }
     if (this.turnSecondsLeft === TIMER_WARN_SECONDS) {
-      this.setMessage(TIMER_WARN_SECONDS + ' seconds left!');
+      if (!this.shouldDeferTimerWarnMessage()) {
+        this.setMessage(TIMER_WARN_SECONDS + ' seconds left!');
+      }
     }
     if (this.turnSecondsLeft <= 0) {
       this.stopTurnTimer();
@@ -5582,12 +5609,134 @@ class Game {
   setMessage(text, type) {
     if (!this.ui.message) return;
     var msg = text || '';
+    if (this.isTimerWarnMessage(msg) && this.shouldDeferTimerWarnMessage()) {
+      return;
+    }
+    if (type === 'success') {
+      this.clearPlayValidationError();
+    } else if (type === 'error') {
+      this._playErrorUntil = Date.now() + PLAY_ERROR_HOLD_MS;
+    }
     this.ui.message.textContent = msg;
     this.ui.message.className = 'message-bar' + (type ? ' ' + type : '');
     this.ui.message.hidden = !msg;
     this.ui.message.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
     var row = document.getElementById('panel-message-row');
     if (row) row.hidden = !msg;
+  }
+
+  isTimerWarnMessage(text) {
+    return /^\d+\s+seconds left!$/i.test(String(text || '').trim());
+  }
+
+  isPlayErrorPinned() {
+    return !!(this._playErrorUntil && Date.now() < this._playErrorUntil);
+  }
+
+  isPlayValidationErrorText(text) {
+    var s = String(text || '');
+    return /not a valid word|not in (the |this game's )?dictionary|Invalid words:|crosses must be words too/i.test(s);
+  }
+
+  isIncompletePlayReason(reason, previewText) {
+    var r = String(reason || '');
+    var t = String(previewText || '').replace(/[^A-Za-z]/g, '');
+    if (t.length < 2) return true;
+    if (/Must form at least one new word/i.test(r)) return true;
+    if (/No tiles placed/i.test(r)) return true;
+    return false;
+  }
+
+  hasIllegalDictionaryWords(scoreResult, message) {
+    if (this.collectInvalidWordLabels(scoreResult, message).length) return true;
+    return this.isPlayValidationErrorText(message);
+  }
+
+  formatQuietPlacementHint(previewText) {
+    var t = String(previewText || '').toUpperCase().replace(/[^A-Z]/g, '');
+    if (t.length === 1) {
+      return 'Trying: ' + t + ' — keep placing tiles to make a word.';
+    }
+    if (t) return 'Trying: ' + t + ' — keep placing tiles to make a word of 2 or more letters.';
+    return 'Keep placing tiles to make a word.';
+  }
+
+  shouldDeferTimerWarnMessage() {
+    if (this.isPlayErrorPinned()) return true;
+    if (this.boardBannerFx && this.boardBannerFx.kind === 'error') {
+      if (!this.boardBannerFx.expiresAt || Date.now() < this.boardBannerFx.expiresAt) {
+        return true;
+      }
+    }
+    var el = this.ui && this.ui.message;
+    if (el && !el.hidden && /(^|\s)error(\s|$)/.test(el.className || '')) return true;
+    return false;
+  }
+
+  collectInvalidWordLabels(scoreResult, formattedMsg) {
+    var out = [];
+    var i, raw, m, chunk, re, listed;
+    if (scoreResult && scoreResult.invalidWords && scoreResult.invalidWords.length) {
+      for (i = 0; i < scoreResult.invalidWords.length; i++) {
+        raw = String(scoreResult.invalidWords[i] || '')
+          .toUpperCase()
+          .replace(/[^A-Z]/g, '');
+        if (raw.length >= 2 && out.indexOf(raw) < 0) out.push(raw);
+      }
+    }
+    if (!out.length && formattedMsg) {
+      chunk = String(formattedMsg).replace(/\([^)]*\)/g, ' ');
+      m = chunk.match(/Invalid words:\s*(.+)/i);
+      if (m) {
+        listed = m[1];
+        re = /"([A-Za-z]{2,})"/g;
+        while ((m = re.exec(listed))) {
+          raw = m[1].toUpperCase();
+          if (out.indexOf(raw) < 0) out.push(raw);
+        }
+      } else {
+        m = chunk.match(/"([A-Za-z]{2,})" is not/i);
+        if (m) out.push(m[1].toUpperCase());
+      }
+    }
+    return out;
+  }
+
+  clearPlayValidationError() {
+    this._playErrorUntil = 0;
+    if (this.boardBannerFx && this.boardBannerFx.kind === 'error') {
+      this.boardBannerFx = null;
+    }
+  }
+
+  /**
+   * Status-bar error for illegal plays. The strong board banner is opt-in
+   * (submit of real dictionary rejects only) so partial placements stay quiet.
+   */
+  showPlayValidationError(message, scoreResult, opts) {
+    opts = opts || {};
+    var msg = String(message || '').trim() || 'That play is not valid.';
+    var words = this.collectInvalidWordLabels(scoreResult, msg);
+    var dictReject = words.length > 0 || this.isPlayValidationErrorText(msg);
+    if (dictReject) {
+      this._playErrorUntil = Date.now() + PLAY_ERROR_HOLD_MS;
+    }
+    this.setMessage(msg, 'error');
+    if (!opts.banner || !dictReject) return;
+    var subtitle;
+    if (words.length === 1) {
+      subtitle = '"' + words[0] + '" is not a dictionary word';
+    } else if (words.length > 1) {
+      subtitle = words.join(', ') + ' — crosses must be words too';
+    } else {
+      subtitle = msg.length > 56 ? msg.slice(0, 53) + '\u2026' : msg;
+    }
+    this.showBoardBanner({
+      kind: 'error',
+      title: 'NOT A VALID PLAY',
+      subtitle: subtitle,
+      durationMs: PLAY_ERROR_BANNER_MS,
+    });
   }
 
   withStableScroll(fn) {
@@ -6315,8 +6464,8 @@ class Game {
   }
 
   /**
-   * Centered temporary board banner (Pogo-style CONNECTION! / exchange notice).
-   * kind: 'connection' | 'exchange'
+   * Centered temporary board banner (Pogo-style CONNECTION! / exchange / error).
+   * kind: 'connection' | 'exchange' | 'bingo' | 'error'
    */
   showBoardBanner(opts) {
     if (!opts || !opts.title) return;
@@ -6486,17 +6635,18 @@ class Game {
      * Exchange notices sit a bit higher (less urgent / shorter copy).
      */
     var bandY =
-      fx.kind === 'exchange' ? boardH * 0.2 : boardH * 0.26;
+      fx.kind === 'exchange' || fx.kind === 'error' ? boardH * 0.2 : boardH * 0.26;
     var cy = bandY + bob;
     var isConnect = fx.kind === 'connection';
     var isBingo = fx.kind === 'bingo';
+    var isError = fx.kind === 'error';
     var T = BOARD_THEME;
 
     var fontTitle = Math.max(
-      isConnect || isBingo ? 22 : 14,
-      Math.round(cellSize * (isConnect || isBingo ? 0.72 : 0.42))
+      isConnect || isBingo ? 22 : isError ? 16 : 14,
+      Math.round(cellSize * (isConnect || isBingo ? 0.72 : isError ? 0.5 : 0.42))
     );
-    var fontSub = Math.max(14, Math.round(cellSize * 0.48));
+    var fontSub = Math.max(isError ? 13 : 14, Math.round(cellSize * (isError ? 0.4 : 0.48)));
 
     ctx.save();
     ctx.globalAlpha = alpha;
@@ -6533,13 +6683,17 @@ class Game {
       fill = 'rgba(76, 29, 64, 0.95)';
       border = T.bingoBadge;
       glow = 'rgba(244, 114, 182, 0.55)';
+    } else if (isError) {
+      fill = T.bannerErrorFill;
+      border = T.bannerErrorBorder;
+      glow = T.bannerErrorGlow;
     }
 
     ctx.shadowColor = glow;
-    ctx.shadowBlur = isConnect || isBingo ? 22 : 16;
+    ctx.shadowBlur = isConnect || isBingo || isError ? 22 : 16;
     ctx.fillStyle = fill;
     ctx.strokeStyle = border;
-    ctx.lineWidth = isConnect || isBingo ? 3.5 : 2.5;
+    ctx.lineWidth = isConnect || isBingo || isError ? 3.5 : 2.5;
     roundRect(ctx, boxX, boxY, boxW, boxH, Math.min(boxH / 2, 22));
     ctx.fill();
     ctx.stroke();
@@ -6551,7 +6705,7 @@ class Game {
     ctx.fillText(fx.title, cx, y);
     if (fx.subtitle) {
       y += fontTitle / 2 + lineGap + fontSub / 2;
-      ctx.fillStyle = '#ffd23f';
+      ctx.fillStyle = isError ? '#ffe4e6' : '#ffd23f';
       ctx.font = '800 ' + fontSub + 'px "Segoe UI", system-ui, sans-serif';
       ctx.fillText(fx.subtitle, cx, y);
     }
@@ -6652,7 +6806,7 @@ class Game {
         return (
           '"' + w + '" is not in the dictionary' +
           (preview && preview !== w ? ' (your new tiles are part of "' + preview + '")' : '') +
-          '. Every crossing word must be a real dictionary word.'
+          '. ' + CROSS_WORDS_TIP
         );
       }
       /* Full word on the board may include locked letters — don't imply the rack spelled it alone. */
@@ -6684,7 +6838,7 @@ class Game {
       return (
         'Invalid words: ' + listed +
         (preview ? ' (main play "' + preview + '")' : '') +
-        '. Only real dictionary words of 2+ letters are allowed (exact match).'
+        '. ' + CROSS_WORDS_TIP
       );
     }
 
@@ -6693,7 +6847,7 @@ class Game {
       return (
         'Invalid words: ' + multi[1] +
         (preview ? ' (main play "' + preview + '")' : '') +
-        '. Each formed word must be in the dictionary.'
+        '. ' + CROSS_WORDS_TIP
       );
     }
 
@@ -6733,24 +6887,40 @@ class Game {
       return;
     }
     /*
-     * Invalid preview (e.g. LINED): clear highlights/toasts only.
-     * Tiles stay so the player can edit. Full recall happens on SUBMIT failure
-     * via abortInvalidPlayAttempt() so the board returns to last committed state.
+     * Invalid preview: tiles stay so the player can edit. No strong banner
+     * while they are still placing — that fires only on SUBMIT of illegal words.
      */
     this.resetPlayPreviewUi();
     if (scoreResult && !scoreResult.valid && scoreResult.reason) {
-      this.setMessage(
-        this.formatMoveValidationError(preview.text, scoreResult.reason, scoreResult),
-        'error'
-      );
+      if (
+        this.isIncompletePlayReason(scoreResult.reason, preview.text) &&
+        !this.hasIllegalDictionaryWords(scoreResult, scoreResult.reason)
+      ) {
+        this.clearPlayValidationError();
+        this.setMessage(this.formatQuietPlacementHint(preview.text));
+      } else {
+        this.showPlayValidationError(
+          this.formatMoveValidationError(preview.text, scoreResult.reason, scoreResult),
+          scoreResult,
+          { banner: false }
+        );
+      }
       this.draw();
       return;
     }
     var valid = isValidWord(preview.text);
-    this.setMessage(
-      'Trying: ' + preview.text + (valid ? ' ✓ looks valid!' : ' — not in dictionary'),
-      valid ? 'success' : 'error'
-    );
+    if (preview.text && String(preview.text).replace(/[^A-Za-z]/g, '').length < 2) {
+      this.clearPlayValidationError();
+      this.setMessage(this.formatQuietPlacementHint(preview.text));
+    } else if (valid) {
+      this.setMessage('Trying: ' + preview.text + ' ✓ looks valid!', 'success');
+    } else {
+      this.showPlayValidationError(
+        'Trying: ' + preview.text + ' — not in dictionary',
+        null,
+        { banner: false }
+      );
+    }
     this.draw();
   }
 
@@ -8444,6 +8614,7 @@ class Game {
       this.ui.twoLetterGrid.appendChild(colEl);
     }
     if (this.ui.twoLetterLink) {
+      this.ui.twoLetterLink.title = CROSS_WORDS_TIP;
       this.ui.twoLetterLink.addEventListener('click', function (e) {
         e.preventDefault();
         self.showTwoLetterModal();
@@ -8488,9 +8659,11 @@ class Game {
     };
     if (this.ui.rulesLink) {
       this.ui.rulesLink.addEventListener('click', openRules);
+      this.ui.rulesLink.title = CROSS_WORDS_TIP;
     }
     if (this.ui.mainMenuRulesLink) {
       this.ui.mainMenuRulesLink.addEventListener('click', openRules);
+      this.ui.mainMenuRulesLink.title = CROSS_WORDS_TIP;
     }
     if (this.ui.rulesClose) {
       this.ui.rulesClose.addEventListener('click', function () { self.hideRulesModal(); });
@@ -8504,6 +8677,20 @@ class Game {
     if (!this.ui.rulesBody) return;
     var intro = document.createElement('p');
     intro.textContent = GAME_RULES.intro;
+    var callout = document.createElement('div');
+    callout.className = 'rules-callout';
+    var calloutTitle = document.createElement('strong');
+    calloutTitle.className = 'rules-callout-title';
+    calloutTitle.textContent = GAME_RULES.crossTitle;
+    var calloutTip = document.createElement('p');
+    calloutTip.className = 'rules-callout-tip';
+    calloutTip.textContent = GAME_RULES.crossTip;
+    var calloutEx = document.createElement('p');
+    calloutEx.className = 'rules-callout-example';
+    calloutEx.textContent = GAME_RULES.crossExample;
+    callout.appendChild(calloutTitle);
+    callout.appendChild(calloutTip);
+    callout.appendChild(calloutEx);
     var list = document.createElement('ul');
     list.className = 'rules-list';
     for (var i = 0; i < GAME_RULES.bullets.length; i++) {
@@ -8511,7 +8698,7 @@ class Game {
       item.textContent = GAME_RULES.bullets[i];
       list.appendChild(item);
     }
-    this.ui.rulesBody.replaceChildren(intro, list);
+    this.ui.rulesBody.replaceChildren(intro, callout, list);
   }
 
   isRulesModalOpen() {
@@ -10235,7 +10422,9 @@ class Game {
       );
       /* Submit rejected → full abort: highlights + recall pending tiles. */
       this.abortInvalidPlayAttempt(offlineFail);
-      this.setMessage(offlineFail, 'error');
+      this.showPlayValidationError(offlineFail, result, {
+        banner: this.hasIllegalDictionaryWords(result, offlineFail),
+      });
       return;
     }
 
