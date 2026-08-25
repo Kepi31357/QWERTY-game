@@ -12,7 +12,7 @@
     if (row) row.hidden = false;
   }
 
-  var QWERTY_BUILD = '367';
+  var QWERTY_BUILD = '368';
   var CHAT_EMOJI_LIST = [
     '😀', '😂', '😍', '😎', '🤩', '😇', '🥰', '😭',
     '❤️', '👍', '👎', '👏', '🙏', '💪', '👀', '👋',
@@ -506,7 +506,7 @@ const RACK_SIZE = 8;
 const MAX_CELL_SIZE = 100;
 const MIN_CELL_SIZE = 16;
 /* Phones: full-width board (side profiles hidden); height budget still wins. */
-const COMPACT_MAX_CELL_SIZE = 42;
+const COMPACT_MAX_CELL_SIZE = 48;
 const COMPACT_SIDE_W = 0;
 const LAYOUT_GAP = 8;
 const STAR_BONUS = 50;
@@ -1088,9 +1088,9 @@ class Game {
       reserved += (parseFloat(appStyle.paddingTop) || 0) + (parseFloat(appStyle.paddingBottom) || 0);
       reserved += parseFloat(appStyle.gap) || 0;
     }
-    reserved += 6; /* table gap */
+    reserved += 2; /* table gap */
     /* Compact logo header above the grid — fixed budget, not live logo height. */
-    reserved += 64;
+    reserved += 38;
     /* Human rack sits under the board (outside the player panel). */
     var humanRack = document.querySelector('.board-human-rack');
     if (humanRack && humanRack.offsetHeight > 10) {
@@ -1103,13 +1103,13 @@ class Game {
       /* Scores + submit + control buttons — must stay clear of the last board row. */
       reserved += panel.offsetHeight;
     } else {
-      reserved += 260;
+      reserved += 200;
     }
     /* Single-line in-flow status strip under the rack. */
-    reserved += 22;
-    reserved += 4;
+    reserved += 20;
+    reserved += 2;
     /* Extra cushion so the top/bottom board rows are never clipped by overflow:hidden. */
-    reserved += 16;
+    reserved += 4;
     this._compactChromeReserve = reserved;
     return this._compactChromeReserve;
   }
@@ -1514,6 +1514,13 @@ class Game {
       this._compactChromeReserve = null;
     }
 
+    /* One-shot: shrink mobile chrome and fill the wrap with a larger board. */
+    if (!this._mobileBoardFill358) {
+      this._mobileBoardFill358 = true;
+      this._compactLayoutLock = null;
+      this._compactChromeReserve = null;
+    }
+
     var nextCellSize;
     if (compact) {
       /*
@@ -1549,14 +1556,21 @@ class Game {
         this._compactChromeReserve = null; /* refresh chrome estimate on real width change */
       }
       /*
-       * Final fit: never let the canvas taller than the dark-blue wrap (that was
-       * clipping the top/bottom rows). Prefer a slightly smaller cell over cut-off tiles.
+       * Fill the wrap: grow to unused wrap space, shrink if the canvas would clip.
+       * Height-only lock used to keep a small board even after chrome shrank.
        */
       if (boardWrap && boardWrap.clientHeight > 80) {
-        var wrapFitH = boardWrap.clientHeight - wrapPadV - 8;
-        var fitCell = Math.floor(wrapFitH / ROWS);
-        if (fitCell >= MIN_CELL_SIZE && nextCellSize > fitCell) {
-          nextCellSize = fitCell;
+        var wrapFitH = boardWrap.clientHeight - wrapPadV - 2;
+        var wrapFitW = Math.floor(
+          Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW) / COLS
+        );
+        var fillCell = Math.min(
+          Math.floor(wrapFitH / ROWS),
+          wrapFitW,
+          COMPACT_MAX_CELL_SIZE
+        );
+        if (fillCell >= MIN_CELL_SIZE && fillCell !== nextCellSize) {
+          nextCellSize = fillCell;
           this._compactLayoutLock = { w: lockW, orient: orient, cellSize: nextCellSize };
         }
       }
@@ -1618,7 +1632,7 @@ class Game {
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     var rackTile = this.rackTileSize || this.tileSize;
-    var rackPadY = compact ? 6 : 11;
+    var rackPadY = compact ? 3 : 11;
     var rackH = rackTile + rackPadY * 2;
     const rackW = Math.min(centerW, RACK_SIZE * (rackTile + 8) + 24);
     this.rackCanvas.width = rackW * dpr;

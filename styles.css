@@ -4115,8 +4115,8 @@ body.menu-visible .game-over-splash {
     height: 100dvh;
     max-height: 100dvh;
     overflow: hidden;
-    padding: 4px;
-    gap: 4px;
+    padding: 2px;
+    gap: 2px;
     display: flex;
     flex-direction: column;
   }
@@ -4150,6 +4150,10 @@ body.menu-visible .game-over-splash {
     grid-template-rows: none;
   }
 
+  body:not(.menu-visible):not(.game-exited) .game-table {
+    gap: 2px;
+  }
+
   body:not(.menu-visible):not(.game-exited) .game-board-row {
     display: flex;
     gap: 0;
@@ -4178,16 +4182,16 @@ body.menu-visible .game-over-splash {
   body:not(.menu-visible):not(.game-exited) .board-top-header {
     order: 1;
     display: flex;
-    flex: 0 0 70px;
+    flex: 0 0 38px;
     flex-shrink: 0;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 70px;
-    max-height: 70px;
+    height: 38px;
+    max-height: 38px;
     min-height: 0;
     overflow: hidden;
-    padding: 3px 4px 2px;
+    padding: 0 4px;
     background: transparent;
     border-radius: 10px 10px 0 0;
     grid-column: auto;
@@ -4202,8 +4206,8 @@ body.menu-visible .game-over-splash {
   body:not(.menu-visible):not(.game-exited) .board-top-header .qwerty-header-img {
     width: auto;
     height: auto;
-    max-width: min(100%, 400px);
-    max-height: none;
+    max-width: min(100%, 280px);
+    max-height: 36px;
     object-fit: contain;
     object-position: center 45%;
     image-rendering: auto;
@@ -4232,7 +4236,7 @@ body.menu-visible .game-over-splash {
     align-items: center;
     justify-content: center;
     gap: 0;
-    padding: 4px 3px;
+    padding: 1px 2px;
     column-gap: 0;
     box-sizing: border-box;
   }
@@ -4408,7 +4412,7 @@ body.menu-visible .game-over-splash {
     flex-wrap: wrap;
     justify-content: center;
     align-items: stretch;
-    gap: 6px;
+    gap: 4px;
     margin-top: 0;
     padding-right: 0;
   }
@@ -4416,8 +4420,8 @@ body.menu-visible .game-over-splash {
   body:not(.menu-visible):not(.game-exited) .player-panel .panel-details-wide .controls > .btn {
     flex: 1 1 calc(50% - 4px);
     max-width: calc(50% - 3px);
-    padding: 10px 10px;
-    font-size: 0.74rem;
+    padding: 7px 8px;
+    font-size: 0.7rem;
     min-width: 0;
     min-height: 42px;
     touch-action: manipulation;
@@ -4429,9 +4433,9 @@ body.menu-visible .game-over-splash {
     width: 100%;
     justify-content: center;
     align-items: center;
-    gap: 18px;
-    margin-top: 4px;
-    padding: 2px 0 0;
+    gap: 14px;
+    margin-top: 0;
+    padding: 0;
     order: 20;
   }
 
@@ -4441,12 +4445,12 @@ body.menu-visible .game-over-splash {
     align-items: center;
     justify-content: center;
     position: relative;
-    flex: 0 0 48px;
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
-    max-width: 48px;
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    max-width: 40px;
     padding: 0 !important;
     margin: 0;
     border-radius: 999px;
@@ -4646,7 +4650,7 @@ body.menu-visible .game-over-splash {
     align-items: center;
     gap: 4px;
     width: 100%;
-    padding: 6px 8px;
+    padding: 4px 6px;
     border-radius: 10px;
     background: linear-gradient(165deg, #b388ff 0%, #7c3aed 45%, #5b21b6 100%);
     border: 1px solid rgba(255, 255, 255, 0.22);
@@ -4671,7 +4675,7 @@ body.menu-visible .game-over-splash {
     flex: 0 0 auto;
     visibility: visible !important;
     font-family: 'Segoe UI', 'Arial Black', 'Helvetica Neue', system-ui, sans-serif;
-    font-size: 1.2rem;
+    font-size: 1.05rem;
     font-weight: 900;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.04em;
@@ -4737,8 +4741,8 @@ body.menu-visible .game-over-splash {
       "mobbar"
       "submit"
       "ctrl";
-    gap: 3px;
-    padding: 3px 6px 4px;
+    gap: 2px;
+    padding: 2px 6px 2px;
     flex: 0 0 auto;
     flex-shrink: 0;
     position: relative;
@@ -4808,8 +4812,8 @@ body.menu-visible .game-over-splash {
     max-width: 140px;
     width: auto;
     min-width: 100px;
-    padding: 10px 18px;
-    font-size: 0.78rem;
+    padding: 8px 14px;
+    font-size: 0.74rem;
     line-height: 1.1;
   }
 
@@ -5074,12 +5078,12 @@ body.menu-visible .game-over-splash {
 @media (max-width: 480px) {
   body:not(.menu-visible):not(.game-exited) .mobile-util-btn,
   body:not(.menu-visible):not(.game-exited) .mobile-util-row .mobile-chat-fab {
-    flex-basis: 46px;
-    width: 46px;
-    height: 46px;
-    min-width: 46px;
-    min-height: 46px;
-    max-width: 46px;
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    max-width: 40px;
   }
 
   body:not(.menu-visible):not(.game-exited) .mobile-util-row {
