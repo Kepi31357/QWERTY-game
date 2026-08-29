@@ -28,7 +28,7 @@ var gameSrc = fs.readFileSync(path.join(root, 'game.js'), 'utf8');
 
 assert(cssSrc.indexOf('100svh') >= 0, 'phone lobby uses small viewport height (browser chrome)');
 assert(
-  /max-width: 640px[\s\S]*max-height:\s*104px/.test(cssSrc),
+  /max-width: 640px[\s\S]*max-height:\s*120px/.test(cssSrc),
   'phone lobby logo is large enough to read'
 );
 assert(

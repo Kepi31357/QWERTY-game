@@ -1099,8 +1099,8 @@ body.game-exited .app {
   }
 
   .main-menu-title {
-    margin: 0 0 10px;
-    padding: 4px 4px 6px;
+    margin: 0 0 6px;
+    padding: 2px 4px 4px;
     line-height: 0;
     background: none;
     border-radius: 0;
@@ -1109,8 +1109,8 @@ body.game-exited .app {
   .main-menu-title .qwerty-header-img {
     width: auto;
     height: auto;
-    max-width: min(88vw, 300px);
-    max-height: 104px;
+    max-width: min(90vw, 320px);
+    max-height: 120px;
     object-fit: contain;
     object-position: center;
     margin: 0 auto;
@@ -1283,8 +1283,8 @@ body.game-exited .app {
   }
 
   .main-menu-title .qwerty-header-img {
-    max-width: min(76vw, 230px);
-    max-height: 68px;
+    max-width: min(80vw, 250px);
+    max-height: 76px;
   }
 
   .main-menu-dialog {
