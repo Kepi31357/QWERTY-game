@@ -62,13 +62,23 @@ assert(gameSrc.indexOf('_mobileTighten356') >= 0, 'clears lock after shrinking p
 assert(gameSrc.indexOf('_mobileStatusLine357') >= 0, 'clears lock after single-line mobile status');
 assert(gameSrc.indexOf('_mobileBoardFill358') >= 0 || gameSrc.indexOf('_mobilePlayFit372') >= 0, 'clears lock so mobile board can fill wrap');
 assert(gameSrc.indexOf('_mobilePlayFit372') >= 0, 'clears lock after packing board under logo');
-assert(cssSrc.indexOf('flex: 0 0 38px') >= 0, 'mobile logo header is shorter');
-assert(cssSrc.indexOf('white-space: nowrap !important') >= 0, 'mobile status stays on one line');
-assert(cssSrc.indexOf('overflow-x: auto') >= 0, 'long mobile status can scroll horizontally');
-assert(cssSrc.indexOf('--qwerty-status-h: 1.15em') >= 0, 'mobile status strip is single-line height');
-assert(cssSrc.indexOf('margin-top: 16px') >= 0, 'round util icons have space above them');
+assert(gameSrc.indexOf('_mobileRackChrome374') >= 0, 'clears lock after unclipping rack and shrinking controls');
+assert(cssSrc.indexOf('flex: 0 0 30px') >= 0, 'mobile logo header is shorter');
+assert(
+  /board-play-row \{[\s\S]*?gap:\s*0/.test(cssSrc),
+  'mobile play row gap is 0 so the board sits under the logo'
+);
+assert(cssSrc.indexOf('white-space: normal !important') >= 0, 'mobile status can wrap so full text is readable');
+assert(cssSrc.indexOf('-webkit-line-clamp: 2') >= 0, 'long mobile status wraps to two short lines');
+assert(cssSrc.indexOf('--qwerty-status-h: 2.55em') >= 0, 'mobile status strip is two-line compact height');
+assert(cssSrc.indexOf('margin-top: 8px') >= 0, 'round util icons have space above them');
 assert(gameSrc.indexOf('wrapFitH') >= 0 || gameSrc.indexOf('never let the canvas taller') >= 0, 'fits phone canvas inside board-wrap height');
 assert(gameSrc.indexOf('rackTileSize') >= 0, 'compact rack uses shorter tile size');
+assert(gameSrc.indexOf('compact ? 6 : 11') >= 0, 'compact rack has pad above and below tiles');
+assert(
+  /controls > \.btn \{[\s\S]*min-height:\s*32px/.test(cssSrc),
+  'mobile action buttons are shorter'
+);
 assert(htmlSrc.indexOf('mobile-util-row') >= 0, 'mobile util row for round New/Sound/Chat');
 assert(
   /mobile-util-row[\s\S]*id="btn-new"[\s\S]*id="btn-sound-toggle-ingame"[\s\S]*id="btn-mobile-chat"/.test(htmlSrc),

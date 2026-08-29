@@ -1090,13 +1090,13 @@ class Game {
     }
     reserved += 2; /* table gap */
     /* Compact logo header above the grid — fixed budget, not live logo height. */
-    reserved += 38;
+    reserved += 30;
     /* Human rack sits under the board (outside the player panel). */
     var humanRack = document.querySelector('.board-human-rack');
     if (humanRack && humanRack.offsetHeight > 10) {
       reserved += humanRack.offsetHeight;
     } else {
-      reserved += 42; /* compact rack estimate */
+      reserved += 48; /* compact rack + padding above/below tiles */
     }
     var panel = document.getElementById('player-panel');
     if (panel && panel.offsetHeight > 20) {
@@ -1105,11 +1105,11 @@ class Game {
     } else {
       reserved += 200;
     }
-    /* Single-line in-flow status strip under the rack. */
-    reserved += 16;
+    /* Two-line compact status strip under the rack. */
+    reserved += 28;
     reserved += 2;
     /* Safe area + util-row breathing room so round icons are not clipped. */
-    reserved += 12;
+    reserved += 10;
     this._compactChromeReserve = reserved;
     return this._compactChromeReserve;
   }
@@ -1521,6 +1521,13 @@ class Game {
       this._compactChromeReserve = null;
     }
 
+    /* One-shot: shorter mobile controls + unclipped rack + readable status. */
+    if (!this._mobileRackChrome374) {
+      this._mobileRackChrome374 = true;
+      this._compactLayoutLock = null;
+      this._compactChromeReserve = null;
+    }
+
     var nextCellSize;
     if (compact) {
       /*
@@ -1601,9 +1608,9 @@ class Game {
 
     /* Classic 1px-per-side gap so each tile face is as large as the cell allows. */
     this.tileSize = Math.max(MIN_CELL_SIZE - 2, this.cellSize - 2);
-    /* Phones: shorter rack tiles free vertical space for a larger board. */
+    /* Phones: slightly shorter rack tiles, with pad so the full tile is visible. */
     this.rackTileSize = compact
-      ? Math.max(26, Math.min(32, Math.round(this.tileSize * 0.62)))
+      ? Math.max(28, Math.min(34, Math.round(this.tileSize * 0.64)))
       : this.tileSize;
 
     const boardW = COLS * this.cellSize;
@@ -1633,7 +1640,8 @@ class Game {
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     var rackTile = this.rackTileSize || this.tileSize;
-    var rackPadY = compact ? 3 : 11;
+    var rackPadY = compact ? 6 : 11;
+    this.rackPadY = rackPadY;
     var rackH = rackTile + rackPadY * 2;
     const rackW = Math.min(centerW, RACK_SIZE * (rackTile + 8) + 24);
     this.rackCanvas.width = rackW * dpr;
@@ -8079,7 +8087,8 @@ class Game {
 
     var rackCtx = this.rackCtx;
     var tileSize = this.getRackTileSize();
-    var ty = this.isCompactLayout() ? 6 : 8;
+    var canvasH = this.rackCanvas.height / canvasDpr();
+    var ty = Math.max(2, Math.round((canvasH - tileSize) / 2));
     rackCtx.save();
     rackCtx.setTransform(1, 0, 0, 1, 0, 0);
     rackCtx.clearRect(0, 0, this.rackCanvas.width, this.rackCanvas.height);
