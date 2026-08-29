@@ -1064,17 +1064,25 @@ body.game-exited .app {
 /* Phones — compact start menu so Create/Join/Start show without scrolling */
 @media (max-width: 640px) {
   .main-menu-overlay {
-    padding: 6px;
+    padding: 4px 6px 0;
     align-items: flex-start;
-    padding-top: max(6px, env(safe-area-inset-top, 0px));
+    padding-top: max(4px, env(safe-area-inset-top, 0px));
+    /* svh = visible height with the phone browser bar showing */
+    height: 100vh;
+    height: 100dvh;
+    height: 100svh;
+    max-height: 100vh;
+    max-height: 100dvh;
+    max-height: 100svh;
+    box-sizing: border-box;
     background: linear-gradient(165deg, #24143f 0%, #3d1d63 42%, #5c2d91 100%);
     backdrop-filter: none;
   }
 
   .main-menu-dialog {
     width: min(100%, 400px);
-    max-height: calc(100dvh - 12px);
-    padding: 0 12px 12px;
+    max-height: calc(100svh - 8px);
+    padding: 0 10px max(10px, env(safe-area-inset-bottom, 0px));
     border-radius: 16px;
     /* Rich purple shell so the colorful logo pops; form blocks stay light below. */
     background: linear-gradient(180deg, #2a1648 0%, #3d1d63 22%, #5c2d91 72%, #4a2578 100%);
@@ -1084,8 +1092,8 @@ body.game-exited .app {
   }
 
   .main-menu-title {
-    margin: 0 -12px 8px;
-    padding: 14px 12px 12px;
+    margin: 0 -10px 4px;
+    padding: 6px 10px 4px;
     line-height: 0;
     background: linear-gradient(180deg, #1e1038 0%, #2d1b4e 55%, transparent 100%);
     border-radius: 14px 14px 0 0;
@@ -1094,8 +1102,8 @@ body.game-exited .app {
   .main-menu-title .qwerty-header-img {
     width: auto;
     height: auto;
-    max-width: min(86vw, 280px);
-    max-height: 104px;
+    max-width: min(72vw, 210px);
+    max-height: 56px;
     object-fit: contain;
     object-position: center;
     margin: 0 auto;
@@ -1116,7 +1124,7 @@ body.game-exited .app {
   }
 
   .main-menu-section:not(.main-menu-section--online) {
-    padding: 8px 10px;
+    padding: 5px 8px;
     border-radius: 12px;
     background: rgba(255, 248, 231, 0.14);
     border: 1px solid rgba(255, 255, 255, 0.18);
@@ -1139,11 +1147,11 @@ body.game-exited .app {
   }
 
   .main-menu-section {
-    margin-top: 6px;
+    margin-top: 4px;
   }
 
   .main-menu-section--online {
-    padding: 8px;
+    padding: 6px 8px;
   }
 
   .main-menu-heading {
@@ -1167,44 +1175,63 @@ body.game-exited .app {
   }
 
   .online-nickname-label {
-    margin-top: 4px;
-    margin-bottom: 2px;
-    font-size: 0.68rem;
+    margin-top: 3px;
+    margin-bottom: 1px;
+    font-size: 0.64rem;
   }
 
   .online-nickname-input,
   .online-code-input {
-    padding: 7px 10px;
-    font-size: 0.9rem;
+    padding: 5px 8px;
+    font-size: 0.84rem;
+    margin-bottom: 4px;
   }
 
   .online-join-row {
-    gap: 6px;
-    margin-top: 4px;
+    gap: 5px;
+    margin-top: 3px;
   }
 
   .online-join-row .btn {
-    padding: 8px 12px;
-    font-size: 0.84rem;
+    padding: 6px 10px;
+    font-size: 0.78rem;
+    min-height: 34px;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+  }
+
+  .online-code-hint,
+  .main-menu-section:not(.main-menu-section--online) > .main-menu-online-hint,
+  .avatar-chooser-hint {
+    display: none;
+  }
+
+  .online-status {
+    margin: 4px 0 0;
+    min-height: 0;
   }
 
   .avatar-chooser {
-    gap: 8px;
-    padding: 6px 8px;
+    flex-wrap: nowrap;
+    gap: 6px;
+    padding: 4px 6px;
+    margin: 0 0 4px;
   }
 
   .avatar-chooser .avatar {
-    width: 48px;
-    height: 48px;
+    width: 36px;
+    height: 36px;
   }
 
   .avatar-chooser-hint {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
   }
 
   .avatar-chooser-open {
-    padding: 7px 10px !important;
-    font-size: 0.75rem !important;
+    width: auto;
+    flex: 0 0 auto;
+    padding: 5px 8px !important;
+    font-size: 0.7rem !important;
+    min-height: 32px;
   }
 
   .difficulty-row,
@@ -1218,39 +1245,53 @@ body.game-exited .app {
   }
 
   .main-menu-actions {
-    margin-top: 6px;
-    gap: 5px;
+    margin-top: 5px;
+    gap: 4px;
+    padding-bottom: 2px;
   }
 
   .main-menu-start,
   .main-menu-continue,
   .main-menu-actions .sound-toggle {
-    padding: 8px 12px;
-    font-size: 0.84rem;
+    padding: 6px 10px;
+    font-size: 0.78rem;
+    min-height: 36px;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
   }
 
   .main-menu-rules {
-    margin-top: 4px;
+    margin-top: 2px;
+  }
+
+  .main-menu-rules-link {
+    min-height: 28px;
+    padding: 2px 8px;
+    font-size: 0.74rem;
   }
 }
 
 @media (max-width: 640px) and (max-height: 700px) {
   .main-menu-title .qwerty-header-img {
-    max-width: min(80vw, 240px);
-    max-height: 88px;
+    max-width: min(64vw, 180px);
+    max-height: 48px;
   }
 
   .main-menu-dialog {
-    padding: 6px 10px 8px;
+    padding: 0 8px max(8px, env(safe-area-inset-bottom, 0px));
+  }
+
+  .main-menu-title {
+    padding: 4px 8px 2px;
+    margin: 0 -8px 2px;
   }
 
   .main-menu-section {
-    margin-top: 4px;
+    margin-top: 3px;
   }
 
   .avatar-chooser .avatar {
-    width: 42px;
-    height: 42px;
+    width: 32px;
+    height: 32px;
   }
 }
 
@@ -4996,12 +5037,22 @@ body.menu-visible .game-over-splash {
     grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
   }
 
-  .avatar-chooser {
+  body:not(.menu-visible) .avatar-chooser {
     flex-wrap: wrap;
   }
 
-  .avatar-chooser-open {
+  body:not(.menu-visible) .avatar-chooser-open {
     width: 100%;
+  }
+
+  /* Phone lobby: do not wrap Choose Avatar onto its own tall row. */
+  body.menu-visible .main-menu-dialog .avatar-chooser {
+    flex-wrap: nowrap;
+  }
+
+  body.menu-visible .main-menu-dialog .avatar-chooser-open {
+    width: auto;
+    flex: 0 0 auto;
   }
 
   .board-gutter-score {
@@ -5136,6 +5187,17 @@ body.menu-visible .game-over-splash {
 }
 
 @media (max-width: 480px) {
+  /* Keep lobby actions compact — do not inherit the 44px in-game touch rule. */
+  body.menu-visible .main-menu-start,
+  body.menu-visible .main-menu-continue,
+  body.menu-visible .main-menu-actions .sound-toggle,
+  body.menu-visible .main-menu-dialog .online-join-row .btn,
+  body.menu-visible .main-menu-dialog .avatar-chooser-open {
+    min-height: 34px;
+    padding: 5px 8px;
+    font-size: 0.76rem;
+  }
+
   body:not(.menu-visible):not(.game-exited) .mobile-util-btn,
   body:not(.menu-visible):not(.game-exited) .mobile-util-row .mobile-chat-fab {
     flex-basis: 36px;

@@ -26,6 +26,20 @@ var htmlSrc = fs.readFileSync(path.join(root, 'play.html'), 'utf8');
 var cssSrc = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 var gameSrc = fs.readFileSync(path.join(root, 'game.js'), 'utf8');
 
+assert(cssSrc.indexOf('100svh') >= 0, 'phone lobby uses small viewport height (browser chrome)');
+assert(
+  /max-width: 640px[\s\S]*max-height:\s*56px/.test(cssSrc),
+  'phone lobby logo is compact'
+);
+assert(
+  cssSrc.indexOf('body.menu-visible .main-menu-dialog .avatar-chooser') >= 0,
+  'phone lobby keeps Choose Avatar on one row'
+);
+assert(
+  /max-width: 640px[\s\S]*\.main-menu-start[\s\S]*min-height:\s*36px/.test(cssSrc),
+  'phone lobby Start Game is shorter so it stays on screen'
+);
+
 assert(htmlSrc.indexOf('viewport') >= 0 && htmlSrc.indexOf('maximum-scale=1') >= 0, 'viewport maximum-scale=1');
 assert(htmlSrc.indexOf('user-scalable=no') >= 0, 'viewport user-scalable=no');
 assert(
