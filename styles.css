@@ -1064,9 +1064,11 @@ body.game-exited .app {
 /* Phones — compact start menu so Create/Join/Start show without scrolling */
 @media (max-width: 640px) {
   .main-menu-overlay {
-    padding: 4px 6px 0;
-    align-items: flex-start;
-    padding-top: max(4px, env(safe-area-inset-top, 0px));
+    /* balance lobby in the visible phone viewport — leftover space splits above and below */
+    padding: 8px 8px max(8px, env(safe-area-inset-bottom, 0px));
+    align-items: stretch;
+    justify-content: center;
+    padding-top: max(8px, env(safe-area-inset-top, 0px));
     /* svh = visible height with the phone browser bar showing */
     height: 100vh;
     height: 100dvh;
@@ -1081,8 +1083,13 @@ body.game-exited .app {
 
   .main-menu-dialog {
     width: min(100%, 400px);
-    max-height: calc(100svh - 8px);
-    padding: 0 10px max(10px, env(safe-area-inset-bottom, 0px));
+    min-height: 0;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    box-sizing: border-box;
+    padding: 10px 12px max(12px, env(safe-area-inset-bottom, 0px));
     border-radius: 16px;
     /* Rich purple shell so the colorful logo pops; form blocks stay light below. */
     background: linear-gradient(180deg, #2a1648 0%, #3d1d63 22%, #5c2d91 72%, #4a2578 100%);
@@ -1092,18 +1099,18 @@ body.game-exited .app {
   }
 
   .main-menu-title {
-    margin: 0 -10px 4px;
-    padding: 6px 10px 4px;
+    margin: 0 0 10px;
+    padding: 4px 4px 6px;
     line-height: 0;
-    background: linear-gradient(180deg, #1e1038 0%, #2d1b4e 55%, transparent 100%);
-    border-radius: 14px 14px 0 0;
+    background: none;
+    border-radius: 0;
   }
 
   .main-menu-title .qwerty-header-img {
     width: auto;
     height: auto;
-    max-width: min(72vw, 210px);
-    max-height: 56px;
+    max-width: min(88vw, 300px);
+    max-height: 104px;
     object-fit: contain;
     object-position: center;
     margin: 0 auto;
@@ -1147,7 +1154,7 @@ body.game-exited .app {
   }
 
   .main-menu-section {
-    margin-top: 4px;
+    margin-top: 6px;
   }
 
   .main-menu-section--online {
@@ -1271,18 +1278,23 @@ body.game-exited .app {
 }
 
 @media (max-width: 640px) and (max-height: 700px) {
+  .main-menu-overlay {
+    padding-top: max(6px, env(safe-area-inset-top, 0px));
+  }
+
   .main-menu-title .qwerty-header-img {
-    max-width: min(64vw, 180px);
-    max-height: 48px;
+    max-width: min(76vw, 230px);
+    max-height: 68px;
   }
 
   .main-menu-dialog {
-    padding: 0 8px max(8px, env(safe-area-inset-bottom, 0px));
+    justify-content: space-evenly;
+    padding: 6px 10px max(10px, env(safe-area-inset-bottom, 0px));
   }
 
   .main-menu-title {
-    padding: 4px 8px 2px;
-    margin: 0 -8px 2px;
+    padding: 2px 4px 4px;
+    margin: 0 0 6px;
   }
 
   .main-menu-section {

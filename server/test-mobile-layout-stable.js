@@ -28,8 +28,12 @@ var gameSrc = fs.readFileSync(path.join(root, 'game.js'), 'utf8');
 
 assert(cssSrc.indexOf('100svh') >= 0, 'phone lobby uses small viewport height (browser chrome)');
 assert(
-  /max-width: 640px[\s\S]*max-height:\s*56px/.test(cssSrc),
-  'phone lobby logo is compact'
+  /max-width: 640px[\s\S]*max-height:\s*104px/.test(cssSrc),
+  'phone lobby logo is large enough to read'
+);
+assert(
+  cssSrc.indexOf('balance lobby in the visible phone viewport') >= 0,
+  'phone lobby is vertically centered so leftover space is not all at the bottom'
 );
 assert(
   cssSrc.indexOf('body.menu-visible .main-menu-dialog .avatar-chooser') >= 0,
