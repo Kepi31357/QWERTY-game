@@ -85,7 +85,12 @@ assert(
 assert(cssSrc.indexOf('white-space: normal !important') >= 0, 'mobile status can wrap so full text is readable');
 assert(cssSrc.indexOf('-webkit-line-clamp: 2') >= 0, 'long mobile status wraps to two short lines');
 assert(cssSrc.indexOf('--qwerty-status-h: 2.55em') >= 0, 'mobile status strip is two-line compact height');
-assert(cssSrc.indexOf('margin-top: 8px') >= 0, 'round util icons have space above them');
+assert(cssSrc.indexOf('margin-top: 4px') >= 0, 'round util icons have a compact gap above them');
+assert(gameSrc.indexOf('_mobileLowerTight375') >= 0, 'clears lock after tightening the lower mobile panel');
+assert(
+  /player-panel\.human \{[\s\S]*?margin-top:\s*4px/.test(cssSrc),
+  'mobile cream panel sits close under the status'
+);
 assert(gameSrc.indexOf('wrapFitH') >= 0 || gameSrc.indexOf('never let the canvas taller') >= 0, 'fits phone canvas inside board-wrap height');
 assert(gameSrc.indexOf('rackTileSize') >= 0, 'compact rack uses shorter tile size');
 assert(gameSrc.indexOf('compact ? 6 : 11') >= 0, 'compact rack has pad above and below tiles');

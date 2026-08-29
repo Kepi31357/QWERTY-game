@@ -4197,7 +4197,7 @@ body.menu-visible .game-over-splash {
   body:not(.menu-visible):not(.game-exited) .game-board-row,
   body:not(.menu-visible):not(.game-exited) .board-play-row {
     overflow: visible;
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     height: auto;
     max-height: none;
     justify-content: flex-start;
@@ -4519,9 +4519,9 @@ body.menu-visible .game-over-splash {
     width: 100%;
     justify-content: center;
     align-items: center;
-    gap: 16px;
-    margin-top: 8px;
-    padding: 4px 0 6px;
+    gap: 14px;
+    margin-top: 4px;
+    padding: 2px 0 2px;
     box-sizing: border-box;
     overflow: visible;
     order: 20;
@@ -4744,7 +4744,7 @@ body.menu-visible .game-over-splash {
     align-items: center;
     gap: 4px;
     width: 100%;
-    padding: 3px 6px;
+    padding: 2px 6px;
     border-radius: 10px;
     background: linear-gradient(165deg, #b388ff 0%, #7c3aed 45%, #5b21b6 100%);
     border: 1px solid rgba(255, 255, 255, 0.22);
@@ -4836,11 +4836,11 @@ body.menu-visible .game-over-splash {
       "submit"
       "ctrl";
     gap: 2px;
-    padding: 2px 6px max(8px, calc(env(safe-area-inset-bottom, 0px) + 6px));
+    padding: 3px 6px max(6px, calc(env(safe-area-inset-bottom, 0px) + 4px));
     overflow: visible;
     flex: 0 0 auto;
     flex-shrink: 0;
-    margin-top: auto;
+    margin-top: 4px;
     position: relative;
     z-index: 6;
   }
@@ -4853,7 +4853,7 @@ body.menu-visible .game-over-splash {
 
   body.qwerty-guest-view:not(.menu-visible):not(.game-exited) .game-table > .game-board-row {
     order: 0;
-    flex: 1;
+    flex: 0 0 auto;
     min-height: 0;
   }
 
@@ -5210,8 +5210,8 @@ body.menu-visible .game-over-splash {
 
   body:not(.menu-visible):not(.game-exited) .mobile-util-row {
     gap: 14px;
-    margin-top: 8px;
-    padding: 4px 0 6px;
+    margin-top: 4px;
+    padding: 2px 0 2px;
   }
 
   body:not(.menu-visible):not(.game-exited) .player-panel .panel-details-wide .controls > .btn {

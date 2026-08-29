@@ -1528,6 +1528,13 @@ class Game {
       this._compactChromeReserve = null;
     }
 
+    /* One-shot: sit the cream panel under the status instead of stretching a gap. */
+    if (!this._mobileLowerTight375) {
+      this._mobileLowerTight375 = true;
+      this._compactLayoutLock = null;
+      this._compactChromeReserve = null;
+    }
+
     var nextCellSize;
     if (compact) {
       /*
@@ -1563,25 +1570,10 @@ class Game {
         this._compactChromeReserve = null; /* refresh chrome estimate on real width change */
       }
       /*
-       * Never let the canvas taller than the wrap (clips top/bottom rows).
-       * Do not grow into leftover wrap height — a width-capped square board
-       * cannot use that leftover, and growing the wrap recreates a logo gap.
+       * Compact wrap is height:auto around the canvas — never let wrapFitH
+       * shrink a full-width board down to the current (already-hugging) wrap.
+       * Height is already capped by getCanvasHeightBudget vs chrome.
        */
-      if (boardWrap && boardWrap.clientHeight > 80) {
-        var wrapFitH = boardWrap.clientHeight - wrapPadV - 2;
-        var wrapFitW = Math.floor(
-          Math.max(120, boardWrap.clientWidth - wrapPadH - gutterW) / COLS
-        );
-        var fitCell = Math.min(
-          Math.floor(wrapFitH / ROWS),
-          wrapFitW,
-          COMPACT_MAX_CELL_SIZE
-        );
-        if (fitCell >= MIN_CELL_SIZE && nextCellSize > fitCell) {
-          nextCellSize = fitCell;
-          this._compactLayoutLock = { w: lockW, orient: orient, cellSize: nextCellSize };
-        }
-      }
     } else {
       this._compactLayoutLock = null;
       /*
